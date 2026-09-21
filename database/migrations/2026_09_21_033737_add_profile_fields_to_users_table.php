@@ -20,13 +20,13 @@ return new class extends Migration
             //add new columns
             $table->string('lastname')->after('id');
             $table->string('firstname')->after('lastname');
-            $table->string('middlename')->after('firstname');
+            $table->string('middlename')->nullable()->after('firstname');
             $table->string('nickname')->after('middlename');
             $table->date('birthdate')->nullable()->after('nickname');
-            $table->string('userType')->after('birthdate');
-            $table->string('address')->after('userType');
+            $table->string('user_type')->after('birthdate');
+            $table->string('address')->after('user_type');
             $table->string('cellphone')->after('address');
-            $table->string('accommodation_type')->after('email');
+            $table->string('accommodation_type')->after('password');
             $table->string('payment_schedule')->after('accommodation_type');
         });
     }
@@ -47,7 +47,7 @@ return new class extends Migration
                 'middlename',
                 'nickname',
                 'birthdate',
-                'userType',
+                'user_type',
                 'address',
                 'cellphone',
                 'accommodation_type',

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +26,16 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        //admin access
+        Gate::define('access-admin', function (User $user) {
+            return $user->isAdmin();
+        });
+
+        //all users access
+        Gate::define('all-users', function (User $user) {
+            return $user->isAdmin() || $user->isDormer();
+        });
     }
 
     /**

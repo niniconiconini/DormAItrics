@@ -14,36 +14,36 @@ use Illuminate\Support\Str;
 
 /**
  * @property int $id
- * @property string $firstname
  * @property string $lastname
+ * @property string $firstname
  * @property string|null $middlename
  * @property string|null $nickname
  * @property Carbon|null $birthdate
- * @property string $userType
+ * @property string $user_type
  * @property string|null $address
  * @property string|null $cellphone
  * @property string $email
  * @property Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $accommodation_type
- * @property string|null $payment_mode
+ * @property string|null $payment_schedule
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
 #[Fillable([
-    'firstname', 
     'lastname', 
+    'firstname', 
     'middlename', 
     'nickname', 
     'birthdate', 
-    'userType', 
+    'user_type', 
     'address', 
     'cellphone', 
     'email', 
     'password', 
     'accommodation_type', 
-    'payment_mode'
+    'payment_schedule'
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
@@ -70,11 +70,19 @@ class User extends Authenticatable
      */
     public function initials(): string
     {
-        $fullName = $this->firstname . ' ' . $this->lastname;
+        $fullName = $this->firstname . ' ' . $this->middlename . ' '. $this->lastname;
         $initials = Str::initials($fullName, true);
 
         return Str::length($initials) > 1
             ? Str::substr($initials, 0, 1).Str::substr($initials, -1)
             : $initials;
+    }
+
+    public function isAdmin(): bool {
+        return in_array($this->user_type, ['Admin', 'Manager']);
+    }
+
+    public function isDormer(): bool {
+        return in_array($this->user_type, ['Student', 'Employee']);
     }
 }

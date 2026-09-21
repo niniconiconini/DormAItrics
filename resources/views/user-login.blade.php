@@ -129,7 +129,7 @@
                 <button type="submit" class="btn-primary">Login</button>
             </div>
             <div id="link">
-                <p>No account yet? <a href="#">Become a Dormer Now</a>!</p>
+                <p>No account yet? <a href="{{ route('Registration') }}">Become a Dormer Now</a>!</p>
             </div>
         </form>
     </section>

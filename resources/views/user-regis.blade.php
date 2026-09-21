@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
+    <title>Registration</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
         * {
@@ -62,24 +62,27 @@
             color: var(--text-color);
         }
 
-        #registration-form .fullname, .info, .contact, .accommodation {
+        #registration-form .fullname, .info, .contact, .login-details, .accommodation {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 0.5vw;
-            /* width: 100%; */
         }
         
         #registration-form .lastname, .middlename {
             width: 25%;
         }
 
-        #registration-form .firstname, .cellphone, .email, .accommodation_type, .payment_schedule {
+        #registration-form .firstname, .accommodation_type, .payment_schedule, .email, .password  {
             width: 50%;
         }
 
-        #registration-form .nickname, .birthdate, .user_type {
+        #registration-form .nickname, .birthdate, .user_type, .cellphone {
             width: 33.33%;
+        }
+
+        #registration-form .address {
+            width: 66.67%;
         }
         
         #registration-form .form-input, .form-cb {
@@ -125,7 +128,17 @@
 <body>
     <section id="registration-form" class="form-section container">
         <header id="page-title">Register to become a Dormer!</header>
-        <form action="reservation_process.php" method="POST" class="form-container">
+        @if ($errors->any())
+        <div>
+            <ul>
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+        <form method="POST" action="{{ route('register') }}" class="form-container">
+            @csrf
             <div class="fullname">
                 <div class="form-group lastname">
                     <label for="lastname">Last Name:</label>
@@ -137,7 +150,7 @@
                 </div>
                 <div class="form-group middlename">
                     <label for="middlename">Middle Name:</label>
-                    <input type="text" id="middlename" name="middlename" class="form-input">
+                    <input type="text" id="middlename" name="middlename" class="form-input" placeholder="">
                 </div>
             </div>
             <div class="info">
@@ -149,27 +162,33 @@
                     <label for="birthdate">Birth Date:</label>
                     <input type="date" id="birthdate" name="birthdate" required class="form-input">
                 </div>
-                <div class="form-group userType">
-                <label for="userType">User Type:</label>
-                <select id="userType" name="userType" required class="form-cb">
+                <div class="form-group user_type">
+                <label for="user_type">User Type:</label>
+                <select id="user_type" name="user_type" required class="form-cb">
                     <option value="" selcted hidden></option>
-                    <option value="student">Student</option>
-                    <option value="faculty">Faculty</option>
+                    <option value="Student">Student</option>
+                    <option value="Employee">Employee</option>
                 </select>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="address">Address:</label>
-                <input type="text" id="address" name="address" required class="form-input">
-            </div>
             <div class="contact">
+                <div class="form-group address">
+                    <label for="address">Address:</label>
+                    <input type="text" id="address" name="address" required class="form-input">
+                </div>
                 <div class="form-group cellphone">
                     <label for="cellphone">Cellphone Number:</label>
                     <input type="tel" id="cellphone" name="cellphone" required class="form-input">
                 </div>
+            </div>
+            <div class="login-details">
                 <div class="form-group email">
                     <label for="email">Email Address:</label>
                     <input type="email" id="email" name="email" required class="form-input">
+                </div>
+                <div class="form-group password">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required class="form-input">
                 </div>
             </div>
             <div class="accommodation">
@@ -199,7 +218,7 @@
                 <button type="submit" class="btn-primary">Register</button>
             </div>
             <div id="link">
-                <p>Already a Dormer? <a href="#">Sign in here</a>!</p>
+                <p>Already a Dormer? <a href="{{ route('login') }}">Sign in here</a>!</p>
             </div>
         </form>
     </section>
