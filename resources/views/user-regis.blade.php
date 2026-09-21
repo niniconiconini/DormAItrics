@@ -67,13 +67,14 @@
             justify-content: center;
             align-items: center;
             gap: 0.5vw;
+            /* width: 100%; */
         }
         
         #registration-form .lastname, .middlename {
             width: 25%;
         }
 
-        #registration-form .firstname, .cellphone, .email, .accommodation_type, .payment_mode {
+        #registration-form .firstname, .cellphone, .email, .accommodation_type, .payment_schedule {
             width: 50%;
         }
 
@@ -183,9 +184,9 @@
                         <option value="2_in_room">2 in a room</option>
                     </select>
                 </div>
-                <div class="form-group payment_mode">
-                    <label for="payment_mode">Mode of Payment:</label>
-                    <select id="payment_mode" name="payment_mode" required class="form-cb">
+                <div class="form-group payment_schedule">
+                    <label for="payment_schedule">Schedule of Payment:</label>
+                    <select id="payment_schedule" name="payment_schedule" required class="form-cb">
                         <option value="" selcted hidden></option>
                         <option value="full_payment">Full Payment</option>
                         <option value="2_equal_payments">2 Equal Payments</option>
