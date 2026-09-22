@@ -1,9 +1,10 @@
 <x-layout>
     <x-slot:title>Home</x-slot:title>
     <header class="page-title">ANNOUNCEMENTS</header>
-    <section class="post">
+    @if (auth()->user()->isAdmin())
+        <section class="post">
         <div class="input-message">
-            <form method="POST" action="/">
+            <form method="POST" action="{{ route('post-announcement') }}">
                 @csrf
                 <textarea
                     name="message"
@@ -18,12 +19,15 @@
         </div>
     </section>
     <hr>
-    {{-- <section id="announcements">
-        @foreach ($announcements as $announcement)
+    @endif
+    <section id="announcements">
+        @forelse ($announcements as $announcement)
             <div class="posts">
-                <div class="author">{{ $announcement['author'] }}</div>
-                <div class="message">{{ $announcement['message'] }}</div>
+                <div class="author">{{ $announcement->author }}</div>
+                <div class="message">{{ $announcement->message }}</div>
             </div>
-        @endforeach
-    </section> --}}
+        @empty 
+            <p>No announcements yet. Please standby.</p>
+        @endforelse
+    </section>
 </x-layout>

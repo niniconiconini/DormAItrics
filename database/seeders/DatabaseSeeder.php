@@ -19,8 +19,15 @@ class DatabaseSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'resurreccion.nini@gmail.com'],
             [
-                'name' => 'Nini',
+                'lastname' => 'Resurreccion',
+                'firstname' => 'Nini',
+                'nickname' => 'Nini',
+                'user_type' => 'Student',
+                'address' => 'Default Address',
+                'cellphone' => '09123456789',
                 'password' => Hash::make('spum123'),
+                'accommodation_type' => '2_in_room',
+                'payment_schedule' => '4_equal_payments',
             ],
         );
     }

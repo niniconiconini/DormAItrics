@@ -15,10 +15,10 @@
             <div class="menu-bar">
                 {{-- all nav --}}
                 <ul class="menu-links">
-                    <li>
-                        <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') || request()->is('/home') ? 'active' : '' }}">Announcements</a></li>
-                    <li><a href="" class="nav-link">Reviews</a></li>
-                    <li><a href="" class="nav-link">Concerns</a></li>
+                    <li><a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') || request()->is('/') ? 'active' : '' }}">Announcements</a></li>
+                    <li><a href="{{ route('reviews') }}" class="nav-link {{ request()->routeIs('reviews') || request()->is('/reviews') ? 'active' : '' }}">Reviews</a></li>
+                    <li><a href="{{ route('concerns') }}" class="nav-link {{ request()->routeIs('concerns') || request()->is('/concerns') ? 'active' : '' }}">Concerns</a></li>
+                    <li><a href="{{ route('pass-slips') }}" class="nav-link {{ request()->routeIs('pass-slips') || request()->is('/pass-slips') ? 'active' : '' }}">Pass Slips</a></li>
                 </ul>
                 <br>
                 {{-- admin nav --}}
@@ -26,16 +26,16 @@
                     <header class="text header-text">Dormitory Management System</header>
                     <ul class="menu-links">
                         <li><a href="{{ route('dormer-mgmt') }}" class="nav-link {{ request()->routeIs('dormer-mgmt') || request()->is('/dormer-mgmt') ? 'active' : '' }}">Dormer Management</a></li>
-                        <li><a href="" class="nav-link">Room Management</a></li>
-                        <li><a href="" class="nav-link">Reports</a></li>
-                        <li><a href="" class="nav-link">Analytics</a></li>
-                        <li><a href="" class="nav-link">Biometrics</a></li>
+                        <li><a href="{{ route('room-mgmt') }}" class="nav-link {{ request()->routeIs('room-mgmt') || request()->is('/room-mgmt') ? 'active' : '' }}">Room Management</a></li>
+                        <li><a href="{{ route('reports') }}" class="nav-link {{ request()->routeIs('reports') || request()->is('/reports') ? 'active' : '' }}">Reports</a></li>
+                        <li><a href="{{ route('analytics') }}" class="nav-link {{ request()->routeIs('analytics') || request()->is('/analytics') ? 'active' : '' }}">Analytics</a></li>
+                        <li><a href="{{ route('biometrics') }}" class="nav-link {{ request()->routeIs('biometrics') || request()->is('/logbook') ? 'active' : '' }}">Biometrics</a></li>
                     </ul>
                 @endif
             </div>
 
             <div class="bottom-content">
-                <div class="column left-column"><a href="#"><img src="{{ asset('images/user-profile.png') }}" alt="User" class="user-profile"></div>
+                <div class="column left-column"><a href="{{ route('profile') }}"><img src="{{ asset('images/user-profile.png') }}" alt="User" class="user-profile"></div>
                 <div class="column middle-column">Hi! {{ Auth::user()->nickname }}</a></div>
                 <div class="column right-column"><a href="{{ route('logout') }}"><img src="{{ asset('images/logout.png') }}" alt="logout" class="logout-icon"></a></div>
             </div>

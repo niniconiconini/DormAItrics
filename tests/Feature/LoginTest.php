@@ -2,19 +2,33 @@
 
 use App\Models\User;
 
-it('allows login with the default dormer account even when the database is empty', function () {
+it('creates a default dormer account when the database is empty and allows login', function () {
     $this->assertDatabaseCount('users', 0);
 
     $response = $this->from(route('login'))->post(route('login.attempt'), [
-        'email' => 'email@email.com',
-        'password' => 'password',
+        'email' => '',
+        'password' => '',
     ]);
 
     $response->assertRedirect(route('home'));
     $this->assertAuthenticated();
     $this->assertDatabaseHas('users', [
-        'email' => 'email@email.com',
+        'email' => '',
     ]);
-    expect(User::first()->email)->toBe('email@email.com');
+    expect(User::first()->email)->toBe('');
 });
--->
+
+it('allows a user to log in with valid credentials', function () {
+    $user = User::factory()->create([
+        'email' => '',
+        'password' => '',
+    ]);
+
+    $response = $this->from(route('login'))->post(route('login.attempt'), [
+        'email' => '',
+        'password' => '',
+    ]);
+
+    $response->assertRedirect(route('home'));
+    $this->assertAuthenticatedAs($user);
+}); -->

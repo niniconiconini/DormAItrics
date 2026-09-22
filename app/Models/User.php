@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -32,18 +33,18 @@ use Illuminate\Support\Str;
  * @property Carbon|null $updated_at
  */
 #[Fillable([
-    'lastname', 
-    'firstname', 
-    'middlename', 
-    'nickname', 
-    'birthdate', 
-    'user_type', 
-    'address', 
-    'cellphone', 
-    'email', 
-    'password', 
-    'accommodation_type', 
-    'payment_schedule'
+    'lastname',
+    'firstname',
+    'middlename',
+    'nickname',
+    'birthdate',
+    'user_type',
+    'address',
+    'cellphone',
+    'email',
+    'password',
+    'accommodation_type',
+    'payment_schedule',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
@@ -65,12 +66,17 @@ class User extends Authenticatable
         ];
     }
 
+    public function announcements(): HasMany
+    {
+        return $this->hasMany(Announcement::class);
+    }
+
     /**
      * Get the user's initials based on their first and last name
      */
     public function initials(): string
     {
-        $fullName = $this->firstname . ' ' . $this->middlename . ' '. $this->lastname;
+        $fullName = $this->firstname.' '.$this->middlename.' '.$this->lastname;
         $initials = Str::initials($fullName, true);
 
         return Str::length($initials) > 1
@@ -78,11 +84,13 @@ class User extends Authenticatable
             : $initials;
     }
 
-    public function isAdmin(): bool {
+    public function isAdmin(): bool
+    {
         return in_array($this->user_type, ['Admin', 'Manager']);
     }
 
-    public function isDormer(): bool {
+    public function isDormer(): bool
+    {
         return in_array($this->user_type, ['Student', 'Employee']);
     }
 }
