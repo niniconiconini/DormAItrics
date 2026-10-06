@@ -22,10 +22,12 @@ body {
     height: 100%;
     background-color: var(--body-color);
     display: flex;
+    align-items: flex-start;
 }
 
 /* nav bar start */
 #sidebar {
+    position: sticky;
     top: 0;
     left: 0;
     height: 100vh;
@@ -121,10 +123,10 @@ body {
 /* content start */
 #content {
     height: 100%;
-    width: 85%;
+    width: 80%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     color: var(--primary-color);
     margin: 2vh 1vw;
 }
@@ -158,7 +160,9 @@ hr {
     margin: 2vh;
     font-size: 2.5vh;
     width: 50%;
-    height: 100%;
+    box-sizing: border-box;
+    height: auto;
+    min-height: 1vh;
     padding: 1.5vh 1vw;
     color: var(--sidebar-color);
 }
@@ -167,29 +171,42 @@ hr {
     font-weight: 700;
 }
 
+#announcements .message {
+    box-sizing: border-box;
+    height: auto;
+    min-height: 2vh;
+    resize: none;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
 .input-message {
     background-color: rgba(255, 255, 255, 0.548);
     border: 0.3vh solid var(--sidebar-color);
     border-radius: 1vh;
     width: 40%;
     padding: 1vh;
-    
-    
+    /* transition: var(--tran04); */
+    transition: width 0.3s ease, padding 0.3s ease;
 }
 
-textarea {
+.input-message:focus-within {
+    width: 55%;
+    padding: 2vh;
+    /* transition: var(--tran-04); */
+}
+
+.input-message textarea {
     background-color: rgba(255, 255, 255, 0);
     border: none;
-    min-width: 100%;
-    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    height: auto;
+    min-height: 2vh;
     resize: none;
     font-size: 1vw;
     field-sizing: content;
     padding: 1vw;
-}
-
-textarea:focus {
-    border: none;
     outline: none;
 }
 

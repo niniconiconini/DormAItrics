@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
+    <link rel="shortcut icon" href="images/spumlogo.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
         * {
@@ -117,8 +118,8 @@
         <form method="POST" action="{{ route('login.attempt') }}" class="form-container">
             @csrf
             <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="email" name="email" id="username" placeholder="" required class="form-input">
+                <label for="email">Email:</label>
+                <input type="email" name="email" id="email" placeholder="" required class="form-input">
             </div>
             <div class="form-group">
                 <label for="address">Password:</label>

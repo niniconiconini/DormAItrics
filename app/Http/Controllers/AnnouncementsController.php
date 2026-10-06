@@ -34,6 +34,7 @@ class AnnouncementsController extends Controller
         // validate
         $validate = $request->validate([
             'message' => 'required|string|max:255',
+            // 'message' => 'required|string',
         ]);
         
         $user = Auth::user();
