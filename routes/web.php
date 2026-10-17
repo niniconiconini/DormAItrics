@@ -50,6 +50,9 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
     // room management
     Route::view('room-management','room-mgmt')->name('room-mgmt');
     
+    // pass slip management
+    Route::view('pass-slip-management','slips-mgmt')->name('slips-mgmt');
+
     // reports
     Route::view('reports','reports')->name('reports');
 
