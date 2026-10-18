@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\RoomController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -45,10 +46,11 @@ Route::middleware(['auth', 'can:all-users'])->group(function () {
 //      ADMIN ONLY ACCESS
 Route::middleware(['auth', 'can:admins'])->group(function () {
     // dormer management
-    Route::view('dormer-management', 'dormer-mgmt')->name('dormer-mgmt');
+    Route::view('residents', 'residents')->name('residents');
 
     // room management
-    Route::view('room-management', 'room-mgmt')->name('room-mgmt');
+    Route::get('/rooms', [RoomController::class, 'index'])->name('rooms');
+    // Route::view('rooms', 'rooms')->name('rooms');
 
     // pass slip management
     Route::view('pass-slip-management', 'slips-mgmt')->name('slips-mgmt');

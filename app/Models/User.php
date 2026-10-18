@@ -42,6 +42,7 @@ use Illuminate\Support\Str;
     'phone_number',
     'email',
     'password',
+    'profile_picture',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable

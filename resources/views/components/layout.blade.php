@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DormAItrics</title>
     <link rel="shortcut icon" href="images/spumlogo.png">
-    @vite(['resources/css/main.css', 'resources/js/app.js']) {{-- css stylesheet --}}
+    @vite(['resources/css/main2.css', 'resources/js/app.js']) {{-- css stylesheet --}}
 </head>
 <body>
     <nav id="sidebar">
@@ -18,16 +18,18 @@
                     <li><a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') || request()->is('/') ? 'active' : '' }}">Announcements</a></li>
                     <li><a href="{{ route('reviews') }}" class="nav-link {{ request()->routeIs('reviews') || request()->is('/reviews') ? 'active' : '' }}">Reviews</a></li>
                     <li><a href="{{ route('concerns') }}" class="nav-link {{ request()->routeIs('concerns') || request()->is('/concerns') ? 'active' : '' }}">Concerns</a></li>
-                    <li><a href="{{ route('pass-slips') }}" class="nav-link {{ request()->routeIs('pass-slips') || request()->is('/pass-slips') ? 'active' : '' }}">Pass Slips</a></li>
+                    @if (auth()->user()->isDormer())
+                        <li><a href="{{ route('pass-slips') }}" class="nav-link {{ request()->routeIs('pass-slips') || request()->is('/pass-slips') ? 'active' : '' }}">Pass Slips</a></li>
+                    @endif
                 </ul>
                 <br>
                 {{-- admin nav --}}
-                @if (auth()->user()->isAdmin())
+                @if (auth()->user()->isAdmin()||auth()->user()->isManager())
                     <header class="text header-text">Dormitory Management System</header>
                     <ul class="menu-links">
-                        <li><a href="{{ route('dormer-mgmt') }}" class="nav-link {{ request()->routeIs('dormer-mgmt') || request()->is('/dormer-mgmt') ? 'active' : '' }}">Dormer Management</a></li>
-                        <li><a href="{{ route('room-mgmt') }}" class="nav-link {{ request()->routeIs('room-mgmt') || request()->is('/room-mgmt') ? 'active' : '' }}">Room Management</a></li>
-                        <li><a href="{{ route('slips-mgmt') }}" class="nav-link {{ request()->routeIs('slips-mgmt') || request()->is('/slips-mgmt') ? 'active' : '' }}"> Pass Slip Management</a></li>
+                        <li><a href="{{ route('residents') }}" class="nav-link {{ request()->routeIs('residents') || request()->is('/residents') ? 'active' : '' }}">Dormer Management</a></li>
+                        <li><a href="{{ route('rooms') }}" class="nav-link {{ request()->routeIs('rooms') || request()->is('/rooms') ? 'active' : '' }}">Room Management</a></li>
+                        <li><a href="{{ route('pass-slips') }}" class="nav-link {{ request()->routeIs('pass-slips') || request()->is('/pass-slips') ? 'active' : '' }}">Pass Slip Management</a></li>
                         <li><a href="{{ route('reports') }}" class="nav-link {{ request()->routeIs('reports') || request()->is('/reports') ? 'active' : '' }}">Reports</a></li>
                         <li><a href="{{ route('analytics') }}" class="nav-link {{ request()->routeIs('analytics') || request()->is('/analytics') ? 'active' : '' }}">Analytics</a></li>
                         <li><a href="{{ route('biometrics') }}" class="nav-link {{ request()->routeIs('biometrics') || request()->is('/logbook') ? 'active' : '' }}">Biometrics</a></li>

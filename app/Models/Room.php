@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
     'room_number',
+    'room_image',
     'dorm_name',
     'capacity',
 ])]

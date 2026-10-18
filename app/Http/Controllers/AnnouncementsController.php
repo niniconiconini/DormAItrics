@@ -10,9 +10,7 @@ use Illuminate\View\View;
 
 class AnnouncementsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    /* get announcements from db and get user */
     public function index(): View
     {
         $announcements = Announcement::with('user')->latest()->take(5)->get();
@@ -20,28 +18,24 @@ class AnnouncementsController extends Controller
         return view('home', ['announcements' => $announcements]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    /* Show the form for creating a new resource. */
     public function create(): void
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    /* Store a newly created resource in storage. */
     public function store(Request $request): RedirectResponse
     {
         // validate
         $validate = $request->validate([
-            // 'title' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'message' => 'required|string',
         ]);
 
         Announcement::create([
             'user_id' => Auth::id(),
-            // 'title' => $validate['title'],
+            'title' => $validate['title'],
             'message' => $validate['message'],
         ]);
 
