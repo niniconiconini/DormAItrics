@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Announcement;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class AnnouncementsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View
     {
         $announcements = Announcement::with('user')->latest()->take(5)->get();
 
@@ -21,7 +23,7 @@ class AnnouncementsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): void
     {
         //
     }
@@ -29,16 +31,17 @@ class AnnouncementsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         // validate
         $validate = $request->validate([
-            'title' => 'required|string|max:255',
+            // 'title' => 'required|string|max:255',
             'message' => 'required|string',
         ]);
 
         Announcement::create([
             'user_id' => Auth::id(),
+            // 'title' => $validate['title'],
             'message' => $validate['message'],
         ]);
 
@@ -49,7 +52,7 @@ class AnnouncementsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): void
     {
         //
     }
@@ -57,7 +60,7 @@ class AnnouncementsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id): void
     {
         //
     }
@@ -65,7 +68,7 @@ class AnnouncementsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): void
     {
         //
     }
@@ -73,7 +76,7 @@ class AnnouncementsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): void
     {
         //
     }

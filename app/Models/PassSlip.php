@@ -20,11 +20,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PassSlip extends Model
 {
+    /**
+     * @return BelongsTo<Resident, $this>
+     */
     public function resident(): BelongsTo
     {
         return $this->belongsTo(Resident::class);
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function approver(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by_user_id');

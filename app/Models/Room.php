@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Room extends Model
 {
+    /**
+     * @return HasMany<Resident, $this>
+     */
     public function residents(): HasMany
     {
         return $this->hasMany(Resident::class);

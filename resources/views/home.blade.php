@@ -7,6 +7,12 @@
             <form method="POST" action="{{ route('post-announcement') }}">
                 @csrf
                 <textarea
+                    name="title"
+                    placeholder="What is the title of your announcement?"
+                    class="message-box"
+                    minlength="10"
+                ></textarea>
+                <textarea
                     name="message"
                     placeholder="What would you like to announce?"
                     class="message-box"
@@ -23,7 +29,7 @@
     <section id="announcements">
         @forelse ($announcements as $announcement)
             <div class="posts">
-                <div class="author">{{ $announcement->author }}</div>
+                {{-- <div class="author">{{ $announcement->author }}</div> --}}
                 <div class="message">{{ $announcement->message }}</div>
             </div>
         @empty 
