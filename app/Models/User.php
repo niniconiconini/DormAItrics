@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -15,36 +16,32 @@ use Illuminate\Support\Str;
 
 /**
  * @property int $id
- * @property string $lastname
- * @property string $firstname
- * @property string|null $middlename
- * @property string|null $nickname
- * @property Carbon|null $birthdate
+ * @property string $last_name
+ * @property string $first_name
+ * @property string|null $middle_name
+ * @property string $nickname
+ * @property Carbon $birthdate
  * @property string $user_type
  * @property string|null $address
- * @property string|null $cellphone
+ * @property string|null $phone_number
  * @property string $email
  * @property Carbon|null $email_verified_at
  * @property string $password
- * @property string|null $accommodation_type
- * @property string|null $payment_schedule
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
 #[Fillable([
-    'lastname',
-    'firstname',
-    'middlename',
+    'last_name',
+    'first_name',
+    'middle_name',
     'nickname',
     'birthdate',
     'user_type',
     'address',
-    'cellphone',
+    'phone_number',
     'email',
     'password',
-    'accommodation_type',
-    'payment_schedule',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
@@ -76,7 +73,7 @@ class User extends Authenticatable
      */
     public function initials(): string
     {
-        $fullName = $this->firstname.' '.$this->middlename.' '.$this->lastname;
+        $fullName = $this->first_name.' '.$this->middle_name.' '.$this->last_name;
         $initials = Str::initials($fullName, true);
 
         return Str::length($initials) > 1
@@ -91,6 +88,25 @@ class User extends Authenticatable
 
     public function isDormer(): bool
     {
-        return in_array($this->user_type, ['Student', 'Employee']);
+        // return in_array($this->user_type, ['Student', 'Employee']);
+        return $this->user_type === 'Resident';
+    }
+
+    public function resident(): HasOne
+    {
+        return $this->hasOne(Resident::class);
+    }
+
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
+
+    public function approvedPassSlips(): HasMany
+    {
+        return $this->hasMany(
+            PassSlip::class,
+            'approved_by_user_id'
+        );
     }
 }

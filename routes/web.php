@@ -27,7 +27,7 @@ Route::middleware(['auth', 'can:all-users'])->group(function () {
     // homepage
     Route::get('/', [AnnouncementsController::class, 'index'])->name('home');
     Route::post('/', [AnnouncementsController::class, 'store'])->name('post-announcement');
-    
+
     // reviews
     Route::view('reviews', 'reviews')->name('reviews');
 
@@ -48,18 +48,18 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
     Route::view('dormer-management', 'dormer-mgmt')->name('dormer-mgmt');
 
     // room management
-    Route::view('room-management','room-mgmt')->name('room-mgmt');
-    
+    Route::view('room-management', 'room-mgmt')->name('room-mgmt');
+
     // pass slip management
-    Route::view('pass-slip-management','slips-mgmt')->name('slips-mgmt');
+    Route::view('pass-slip-management', 'slips-mgmt')->name('slips-mgmt');
 
     // reports
-    Route::view('reports','reports')->name('reports');
+    Route::view('reports', 'reports')->name('reports');
 
-    //analytics
-    Route::view('analytics','analytics')->name('analytics');
+    // analytics
+    Route::view('analytics', 'analytics')->name('analytics');
 
-    //biometrics
-    Route::view('logbook','biometrics')->name('biometrics');
+    // biometrics
+    Route::view('logbook', 'biometrics')->name('biometrics');
 
 });

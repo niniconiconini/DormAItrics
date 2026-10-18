@@ -36,12 +36,12 @@ class AnnouncementsController extends Controller
             'message' => 'required|string|max:255',
             // 'message' => 'required|string',
         ]);
-        
+
         $user = Auth::user();
         $user->firstname;
         $user->lastname;
         $author = $user->firstname.' '.$user->lastname;
-        
+
         Announcement::create([
             'user_id' => Auth::id(),
             'author' => $author,

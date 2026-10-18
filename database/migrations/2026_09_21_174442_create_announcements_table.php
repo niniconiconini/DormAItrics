@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('announcements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->string('author');
-            $table->string('message');
+            $table->text('title');
+            $table->text('message');
             $table->timestamps();
         });
     }
