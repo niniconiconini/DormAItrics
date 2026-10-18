@@ -62,7 +62,7 @@ class User extends Authenticatable
             'birthdate' => 'date', // Casts birthdate to a Carbon date instance
         ];
     }
-    
+
     /**
      * @return HasMany<Announcement, $this>
      */
@@ -94,7 +94,7 @@ class User extends Authenticatable
         // return in_array($this->user_type, ['Student', 'Employee']);
         return $this->user_type === 'Resident';
     }
-    
+
     /**
      * @return HasOne<Resident, $this>
      */
@@ -102,7 +102,7 @@ class User extends Authenticatable
     {
         return $this->hasOne(Resident::class);
     }
-    
+
     /**
      * @return HasMany<ActivityLog, $this>
      */

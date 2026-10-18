@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Review extends Model
 {
-    
     /**
      * @return BelongsTo<Resident, $this>
      */
