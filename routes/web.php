@@ -50,7 +50,6 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
 
     // room management
     Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
-    // Route::post('/rooms', [RoomController::class, 'store'])->name('rooms.store');
     Route::resource('rooms', RoomController::class);
 
     // pass slip management

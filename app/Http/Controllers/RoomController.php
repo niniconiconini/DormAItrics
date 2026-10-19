@@ -62,6 +62,7 @@ class RoomController extends Controller
     }
 
     // edit room modal
+    // public function update(Request $request, Room $room): RedirectResponse
     public function update(Request $request, Room $room)
     {
         // validate inputs
