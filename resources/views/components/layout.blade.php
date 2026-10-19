@@ -24,7 +24,7 @@
                 </ul>
                 <br>
                 {{-- admin nav --}}
-                @if (auth()->user()->isAdmin()||auth()->user()->isManager())
+                @if (auth()->user()->isAdmin())
                     <header class="text header-text">Dormitory Management System</header>
                     <ul class="menu-links">
                         <li><a href="{{ route('residents') }}" class="nav-link {{ request()->routeIs('residents') || request()->is('/residents') ? 'active' : '' }}">Residents</a></li>
