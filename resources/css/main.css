@@ -1,35 +1,53 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap');
 
 * {
-    font-family: 'Montserrat', sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
 }
 
+/* ===== VARIABLES ===== */
+
 :root {
-    /* Colors */
     --body-color: #dee2b1;
     --sidebar-color: #155332;
     --primary-color: #06362d;
     --secondary-color: #28a745;
     --toggle-color: #d1a505;
 
-    --tran-04: all 0.2s ease;
+    --card-background: rgba(255, 255, 255, .55);
+    --card-radius: 1rem;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+
+    --transition: all 0.2s ease;
 }
 
+/* ===== PAGE LAYOUT ===== */ 
 body {
-    height: 100%;
-    background-color: var(--body-color);
+    min-height: 100vh;
     display: flex;
-    align-items: flex-start;
+    background-color: var(--body-color);
 }
 
-/* nav bar start */
+#content {
+    flex: 1;
+    margin: 2vh 1vw;
+    color: var(--primary-color);
+}
+
+.page-title {
+    width: 100%;
+    text-align: center;
+    font-size: 5vh;
+    font-weight: 850;
+    margin-bottom: 1rem;
+}
+
+/* ===== SIDEBAR ===== */
 #sidebar {
     position: sticky;
     top: 0;
-    left: 0;
     height: 100vh;
     width: 15%;
     display: flex;
@@ -53,42 +71,47 @@ body {
 }
 
 #sidebar li .nav-link {
-    height: 100%;
     width: 100%;
     display: flex;
     text-decoration: none;
-    color: var(--background-color);
+    color: var(--body-color);
     padding: 1vh 1.5vw;
+}
+
+#sidebar .nav-link:hover{
+    background-color: #dee2b1da;
+    color: #155332;
+}
+
+#sidebar .nav-link.active {
+background-color: var(--body-color);
+color: var(--primary-color);
 }
 
 #sidebar .nav-link:hover,
 #sidebar .nav-link.active {
-    transition: var(--tran-04);
-    background-color: var(--body-color);
-    color: var(--primary-color);
     padding: 1.5vh 1vw;
+    transition: var(--transition);
+    font-weight: 600;
 }
 
 #sidebar .menu-bar {
     height: 100%;
-    justify-content: space-between;
 }
 
 #sidebar .bottom-content {
-    background-color: var(--body-color);
-    color: var(--primary-color);
-    padding: 2.5vh 0.5vw 2vh 0.5vw;
-    margin: 0px 0.5vw 0.5vh 0.2vw;
     display: flex;
     align-items: center;
+    background-color: var(--body-color);
     color: var(--primary-color);
-    border-radius: 1;
+    margin: 0 0.5vw 0.5vh 0.2vw;
+    padding: 2.5vh 0.5vw 2vh;
     height: 4vw;
+    border-radius: 1rem;
 }
 
 #sidebar .bottom-content .column {
     flex: 0 0 auto;
-    display: flex;
 }
 
 #sidebar .bottom-content .left-column {
@@ -104,134 +127,189 @@ body {
     width: 20%;
 }
 
-#sidebar .left-column img {
-    height: 3vw;
-}
-
 #sidebar img {
     height: 2vw;
 }
 
-#sidebar .bottom-content a{
+#sidebar .left-column img {
+    height: 3vw;
+}
+
+#sidebar .bottom-content a {
     text-decoration: none;
     color: var(--sidebar-color);
     font-size: 2.25vh;
     font-weight: 600;
 }
-/* nav bar end */
+/* ===== SIDEBAR END ===== */
 
-/* content start */
-#content {
-    height: 100%;
-    width: 80%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    color: var(--primary-color);
-    margin: 2vh 1vw;
+/* ===== ANNOUNCEMENT START ===== */
+.announcement-card {
+    width: min(900px, 90%);
+    margin: 0 auto;
 }
 
-.page-title {
-    font-size: 5vh;
-    font-weight: 850;
-    color: var(--primary-color);
-    text-align: center;
-}
-
-#announcements {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.post-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 1vw;
-    justify-content: space-evenly;
-}
-
-hr {
-    background-color: var(--primary-color);
-    border: none;
-    height: 0.2vh;
-}
-
-.container {
-    background-color: rgba(255, 255, 255, 0.548);
-    border: 0.3vh solid var(--sidebar-color);
-    border-radius: 1vw;
-    box-shadow: 0.3vw 0.3vw 0.3vw rgba(128, 128, 128, 0.699);
-    margin: 2vh auto;
-    font-size: 2.5vh;
-    width: 50%;
-    height: auto;
-    min-height: 1vh;
-    padding: 1.5vh 1vw;
-    color: var(--sidebar-color);
-}
-
-#announcements .author {
+.author {
+    font-size: 1.3rem;
     font-weight: 700;
+    margin-bottom: 0.75rem;
 }
 
-#announcements .title {
+.title {
+    font-size: 1.15rem;
     font-weight: 600;
-    padding-top: 10px;
-    padding-bottom: 5px;
+    margin-bottom: 0.75rem;
 }
 
-#announcements .message {
-    height: auto;
-    min-height: 2vh;
-    resize: none;
+.message {
+    font-size: 1rem;
+    line-height: 1.6;
     white-space: pre-wrap;
     overflow-wrap: break-word;
 }
+/* ===== ANNOUNCEMENT END ===== */
+
+/* ===== ROOMS START ===== */
+.dorm-section {
+    margin-bottom: 3rem;
+}
+
+.dorm-section h2 {
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.dorm-section hr {
+    margin-bottom: 1rem;
+}
+
+#rooms small {
+    font-weight: 500;
+}
+
+.dorm-card {
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.flex-view a{
+    text-decoration: none;
+}
+
+.dorm-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary-color);
+}
+
+.dorm-card.active {
+    transform: translateY(-10px);
+    border-color: var(--primary-color);
+
+}
+
+.room-card {
+    overflow: hidden;
+}
+
+.room-image img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: .75rem;
+    margin-bottom: 1rem;
+}
+
+.room-number {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: .5rem;
+}
+
+.room-info {
+    margin-bottom: .25rem;
+}
+/* ===== ROOMS END ===== */
+
+/* ===== REUSABLE STYLES ===== */
+.list-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.flex-view {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.grid-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.card {
+    background-color: var(--card-background);
+    border: 0.3vh solid var(--sidebar-color);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    color: var(--sidebar-color);
+    padding: 1rem;
+}
+
+.post-box {
+    display: flex; 
+    justify-content: center;
+    margin: 1rem 0;
+}
 
 .input-message {
-    background-color: rgba(255, 255, 255, 0.548);
-    border: 0.3vh solid var(--sidebar-color);
-    border-radius: 1vh;
-    width: 40%;
-    padding: 1vh;
-    /* transition: var(--tran04); */
-    transition: width 0.3s ease, padding 0.3s ease;
+    width: min(700px, 90%);
+    background-color: var(--card-background);
+    border: .3vh solid var(--sidebar-color);
+    border-radius: var(--card-radius);
+    padding: 1rem;
+    transition: width .3s ease;
 }
 
 .input-message:focus-within {
-    width: 55%;
-    padding: 2vh;
-    /* transition: var(--tran-04); */
+    width: min(900px, 95%);
 }
 
 .input-message textarea {
-    background-color: rgba(255, 255, 255, 0);
-    border: none;
     width: 100%;
-    box-sizing: border-box;
-    height: auto;
-    min-height: 2vh;
-    resize: none;
-    font-size: 1vw;
-    field-sizing: content;
-    padding: 1vw;
+    padding: .75rem;
+    border: none;
     outline: none;
+    resize: none;
+    background: transparent;
+    font-size: 1rem;
 }
 
 .btn-primary {
+    padding: .75rem 1rem;
+    border: none;
+    border-radius: .5rem;
+    cursor: pointer;
     background-color: var(--primary-color);
     color: var(--body-color);
-    padding: 1vh;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    width: 25%;
-}
+    transition: var(--transition);
+} 
 
 .btn-primary:hover {
     background-color: var(--secondary-color);
     color: var(--primary-color);
 }
 
+hr {
+    border: none;
+    height: 2px;
+    margin: 1rem 0;
+    background-color: var(--primary-color);
+}
+/* ===== REUSABLE STYLES END ===== */

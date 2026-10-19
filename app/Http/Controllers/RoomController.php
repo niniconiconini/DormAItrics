@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Room;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 // use Pest\Support\View;
 use Illuminate\View\View;
@@ -12,16 +11,18 @@ class RoomController extends Controller
 {
     public function index(): View
     {
-        $rooms = Room::latest()->get();
 
-        return view('rooms', ['rooms' => $rooms]);
+        $query = Room::query();
+        if (request('dorm')) {
+            $query->where('dorm_name', request('dorm'));
+        }
+
+        $rooms = $query->latest()->get();
+        $roomsByDorm = $rooms->groupBy(fn ($room) => $room->dorm_name);
+
+        return view('rooms', compact('roomsByDorm'));
     }
 
     // store room info
-    // public function store(Request $request): RedirectResponse {
-    //     // validate
-    //     $validate = $request->validate([
-    //         'room_number' => 'required'
-    //     ]);
-    // }
+    public function store(Request $request): void {}
 }

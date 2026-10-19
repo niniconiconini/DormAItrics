@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DormAItrics</title>
     <link rel="shortcut icon" href="images/spumlogo.png">
-    @vite(['resources/css/main2.css', 'resources/js/app.js']) {{-- css stylesheet --}}
+    @vite(['resources/css/main.css', 'resources/js/app.js']) {{-- css stylesheet --}}
 </head>
 <body>
     <nav id="sidebar">
@@ -28,7 +28,7 @@
                     <header class="text header-text">Dormitory Management System</header>
                     <ul class="menu-links">
                         <li><a href="{{ route('residents') }}" class="nav-link {{ request()->routeIs('residents') || request()->is('/residents') ? 'active' : '' }}">Dormer Management</a></li>
-                        <li><a href="{{ route('rooms') }}" class="nav-link {{ request()->routeIs('rooms') || request()->is('/rooms') ? 'active' : '' }}">Room Management</a></li>
+                        <li><a href="{{ route('rooms.index') }}" class="nav-link {{ request()->routeIs('rooms') || request()->is('/rooms') ? 'active' : '' }}">Room Management</a></li>
                         <li><a href="{{ route('pass-slips') }}" class="nav-link {{ request()->routeIs('pass-slips') || request()->is('/pass-slips') ? 'active' : '' }}">Pass Slip Management</a></li>
                         <li><a href="{{ route('reports') }}" class="nav-link {{ request()->routeIs('reports') || request()->is('/reports') ? 'active' : '' }}">Reports</a></li>
                         <li><a href="{{ route('analytics') }}" class="nav-link {{ request()->routeIs('analytics') || request()->is('/analytics') ? 'active' : '' }}">Analytics</a></li>
