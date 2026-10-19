@@ -283,6 +283,10 @@ color: var(--primary-color);
     margin-bottom: 2rem;
 }
 
+.modal span {
+    font-weight: 650;
+}
+
 .dorm-section a,
 .modal a {
     text-decoration: none;
