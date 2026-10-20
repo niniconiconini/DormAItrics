@@ -4,6 +4,7 @@ use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\PassSlipController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -36,7 +37,9 @@ Route::middleware(['auth', 'can:all-users'])->group(function () {
     Route::view('concerns', 'concerns')->name('concerns');
 
     // pass slips
-    Route::view('pass-slip', 'slips')->name('pass-slips');
+    Route::get('pass-slip', [PassSlipController::class, 'index'])->name('pass-slips');
+    Route::post('pass-slip', [PassSlipController::class, 'store'])->name('pass-slips.store');
+    Route::patch('pass-slip/{passSlip}/cancel', [PassSlipController::class, 'cancel'])->name('pass-slips.cancel');
 
     // profile
     Route::view('profile', 'profile')->name('profile');

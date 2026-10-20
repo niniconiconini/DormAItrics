@@ -356,29 +356,15 @@ color: var(--primary-color);
 }
 /* ===== ROOMS END ===== */
 
-/* ===== PASS SLIP (DORMER) START ===== */
-
-.passslip-wrap {
-    width: min(900px, 90%);
-    margin: 0 auto;
-}
-
-/* --- Dropdown header --- */
+/* ===== PASS SLIPS START ===== */
 .passslip-toggle {
     width: 100%;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 1rem 1.25rem;
-    background-color: var(--card-background);
-    border: 0.3vh solid var(--sidebar-color);
-    border-radius: var(--card-radius);
-    box-shadow: var(--card-shadow);
-    color: var(--sidebar-color);
+    align-items: center;
     font-size: 1.15rem;
     font-weight: 700;
     cursor: pointer;
-    transition: var(--transition);
 }
 
 .passslip-toggle:hover,
@@ -387,25 +373,19 @@ color: var(--primary-color);
     color: var(--primary-color);
 }
 
-.passslip-toggle:focus-visible {
-    outline: 3px solid var(--secondary-color);
-    outline-offset: 2px;
-}
-
-.passslip-toggle .chevron {
+.chevron {
     width: 0.7rem;
     height: 0.7rem;
-    border-right: 3px solid currentColor;
-    border-bottom: 3px solid currentColor;
-    transform: rotate(45deg) translateY(-2px);
-    transition: transform 0.25s ease;
+    border: solid currentColor;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    transition: var(--transition);
 }
 
-.passslip-toggle[aria-expanded="true"] .chevron {
-    transform: rotate(225deg) translateY(-2px);
+[aria-expanded="true"] .chevron {
+    transform: rotate(225deg);
 }
 
-/* --- Expanding panel (animates height without JS measuring) --- */
 .passslip-panel {
     display: grid;
     grid-template-rows: 0fr;
@@ -416,7 +396,7 @@ color: var(--primary-color);
     grid-template-rows: 1fr;
 }
 
-.passslip-panel > .panel-inner {
+.passslip-panel > div {
     overflow: hidden;
     min-height: 0;
 }
@@ -426,47 +406,15 @@ color: var(--primary-color);
     padding: 1.5rem 2rem;
 }
 
-/* --- Paper-style form heading (mirrors the printed slip) --- */
 .slip-heading {
-    position: relative;
     text-align: center;
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
     border-bottom: 2px solid var(--sidebar-color);
 }
 
-.slip-heading .school {
-    font-size: 1.1rem;
-    font-weight: 700;
-}
-
-.slip-heading .system {
-    font-size: 0.8rem;
-}
-
-.slip-heading .slip-title {
-    margin-top: 0.5rem;
-    font-size: 1.2rem;
-    font-weight: 800;
-}
-
-.slip-heading .slip-note {
-    font-size: 0.75rem;
-}
-
-.slip-heading .form-code {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0.2rem 0.5rem;
-    border: 1px solid var(--sidebar-color);
-    border-radius: 0.35rem;
-    font-size: 0.7rem;
-    font-weight: 600;
-}
-
-/* --- Fields --- */
-.slip-grid {
+.slip-grid,
+.pair {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem 1.5rem;
@@ -489,109 +437,105 @@ color: var(--primary-color);
     padding: 0 0.75rem;
     border: 1px solid #ccc;
     border-radius: 8px;
-    background-color: white;
-    color: var(--primary-color);
-    font-size: 0.95rem;
-}
-
-.slip-field input:focus {
-    outline: none;
-    border-color: var(--sidebar-color);
-    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.25);
 }
 
 .slip-field input[readonly] {
-    background-color: #f1f3e0;
-    cursor: not-allowed;
+    background: #f1f3e0;
 }
 
-.slip-field .pair {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-}
-
-.passslip-form .form-buttons {
-    margin-top: 1.5rem;
-}
-
-/* --- Previous pass slips --- */
-.passslip-history h2 {
-    text-align: center;
+/* Messages */
+.slip-error,
+.slip-success {
     margin-bottom: 1rem;
-}
-
-.slip-card {
-    width: min(900px, 90%);
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 0.25rem 1rem;
-    align-items: start;
-}
-
-.slip-card .slip-destination {
-    font-size: 1.15rem;
-    font-weight: 700;
-}
-
-.slip-card .slip-meta {
-    font-size: 0.9rem;
-    line-height: 1.6;
-}
-
-.slip-card .slip-meta span {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
     font-weight: 600;
 }
 
-.slip-card .slip-remarks {
-    grid-column: 1 / -1;
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    font-style: italic;
+.slip-error {
+    background: #f8d7da;
+    color: #842029;
 }
 
-/* --- Status badges --- */
+.slip-success {
+    margin-top: 1rem;
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+/* Previous pass slips */
+.slip-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem 1rem;
+    align-items: start;
+}
+
+.slip-card > :nth-child(n+3) {
+    grid-column: 1 / -1;
+}
+
+.slip-card form {
+    text-align: right;
+}
+
+.slip-card button {
+    padding: 0.45rem 0.9rem;
+    border: 2px solid #c0392b;
+    border-radius: 0.5rem;
+    background: none;
+    color: #c0392b;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.slip-card button:hover {
+    background: #c0392b;
+    color: white;
+}
+
+/* Status badges */
 .status {
     padding: 0.3rem 0.85rem;
     border-radius: 999px;
     font-size: 0.8rem;
     font-weight: 700;
     white-space: nowrap;
+    color: white;
 }
 
-.status-pending  { background-color: var(--toggle-color);    color: #3b2f00; }
-.status-approved { background-color: var(--secondary-color); color: white; }
-.status-denied   { background-color: #c0392b;                color: white; }
-.status-expired  { background-color: #9aa09a;                color: white; }
+.status-pending {
+    background: var(--toggle-color);
+    color: #3b2f00;
+}
 
-.empty-state {
-    text-align: center;
-    padding: 2rem 0;
+.status-approved {
+    background: var(--secondary-color);
+}
+
+.status-denied {
+    background: #c0392b;
+}
+
+.status-expired {
+    background: #9aa09a;
+}
+
+.status-cancelled {
+    background: none;
+    color: #6b716b;
+    border: 2px solid #9aa09a;
 }
 
 @media (max-width: 700px) {
-    .slip-grid { grid-template-columns: 1fr; }
-    .passslip-form { padding: 1rem; }
-}
-/* ===== PASS SLIP (DORMER) END ===== */
-
-/* --- Messages (PHP validation + success) --- */
-.slip-error,
-.slip-success {
-    margin-bottom: 1rem;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 0.9rem;
-    font-weight: 600;
+    .slip-grid,
+    .pair {
+        grid-template-columns: 1fr;
+    }
 }
 
-.slip-error   { background-color: #f8d7da; color: #842029; }
-.slip-success { margin-top: 1rem; background-color: #d1e7dd; color: #0f5132; }
-
-/* Make the hidden attribute win over the display rules above */
-.slip-error[hidden],
-.slip-success[hidden] { display: none; }
-
+/* ===== PASS SLIPS END ===== */
 /* ===== REUSABLE STYLES ===== */
 .list-view {
     display: flex;

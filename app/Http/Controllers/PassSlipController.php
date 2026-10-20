@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\PassSlip;
+use App\Models\Resident;
+use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+
+class PassSlipController extends Controller
+{
+    private function currentResident(): ?Resident
+    {
+        return Resident::where('user_id', auth()->id())->first();
+    }
+
+    public function index(): View
+    {
+        // get the dormer's own pass slips, newest first
+        $resident = $this->currentResident();
+        $passSlips = $resident
+            ? PassSlip::where('resident_id', $resident->id)->latest()->get()
+            : collect();
+
+        // full name from the users table (first + middle + last)
+        $user = auth()->user();
+        $fullName = collect([$user->first_name, $user->middle_name, $user->last_name])->filter()->implode(' ');
+
+        return view('slips', compact('passSlips', 'fullName'));
+    }
+
+    // fill up pass slip form
+    public function store(Request $request): RedirectResponse
+    {
+        $resident = $this->currentResident();
+        abort_unless($resident, 403);
+
+        // validate inputs
+        $validated = $request->validate([
+            'requested_date_out' => 'required|date|after_or_equal:today',
+            'requested_time_out' => 'required|date_format:H:i',
+            'purpose' => 'required|string|max:255',
+            'requested_date_in' => 'required|date|after_or_equal:requested_date_out',
+            'requested_time_in' => 'required|date_format:H:i',
+        ]);
+
+        // expected return must be after the time out
+        $out = Carbon::parse($validated['requested_date_out'].' '.$validated['requested_time_out']);
+        $in = Carbon::parse($validated['requested_date_in'].' '.$validated['requested_time_in']);
+        if ($in->lessThanOrEqualTo($out)) {
+            return back()->withErrors([
+                'requested_time_in' => 'Expected return must be after your time out.',
+            ])->withInput();
+        }
+
+        PassSlip::create($validated + [
+            'resident_id' => $resident->id,
+            'status' => 'Pending',
+        ]);
+
+        return redirect()->route('pass-slips')->with('success', 'Pass slip submitted. It is now waiting for approval.');
+    }
+
+    // cancel button (only while still "For approval")
+    public function cancel(PassSlip $passSlip): RedirectResponse
+    {
+        $resident = $this->currentResident();
+        abort_unless($resident && $passSlip->resident_id === $resident->id, 403);
+
+        if ($passSlip->displayStatus() !== 'For approval') {
+            return back()->with('error', 'Only pass slips that are still for approval can be cancelled.');
+        }
+
+        $passSlip->update(['status' => 'Cancelled']);
+
+        return redirect()->route('pass-slips')->with('success', 'Pass slip request cancelled.');
+    }
+}
