@@ -85,7 +85,7 @@
             <div class="modal">
                 <div class="card room-modal">
                     <h2 class="modal-title">Add Room</h2>
-                    <form action="{{ route('rooms.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('rooms.store') }}" method="POST" enctype="multipart/form-data" id="addroom-form">
                         @csrf
                         <div class="form-group">
                             <label for="Room Image">Room Image: </label>
@@ -126,13 +126,12 @@
                                 </ul>
                             </div>
                         @endif
-                        
-                        <div class="form-buttons">
-                            <button class="btn-primary" type="submit">Save Room</button>
-                            <button class="btn-primary" type="reset">Clear</button>
-                            <a href="{{ route('rooms.index')}}" class="btn-primary">Close</a>
-                        </div>
                     </form>
+                    <div class="form-buttons">
+                        <button class="btn-primary" type="reset" form="addroom-form">Reset Changes</button>
+                        <button class="btn-primary" type="submit" form="addroom-form">Add Room</button>
+                        <a href="{{ route('rooms.index')}}" class="btn-primary">Close</a>
+                    </div>
                 </div>
             </div>
         @endif
@@ -168,7 +167,11 @@
                             <label for="Room Image">Room Image: </label>
                             <div class="image-upload">
                                 <div class="image-preview">
-                                    <img src="{{ asset($selectedRoom->room_image) }}">
+                                    <img 
+                                        src="{{ asset($selectedRoom->room_image) }}"
+                                        id="preview-image"
+                                        alt="Preview">
+                                    <span id="preview-text" style="display:none;"></span>
                                 </div>
                                 <input type="file" name="room_image" id="room_image" accept="image/*">
                             </div>
@@ -211,20 +214,22 @@
         {{-- confirmation receipt --}}
         @if(session('success'))
             <div class="modal">
-                <div class="card room-modal">
+                <div class="card room-modal receipt-modal">
                     <h2 class="modal-title">Success!</h2>
                     <p style="text-align:center;">{{ session('success') }}</p>
                         @if(session('receipt'))
                             <div class="receipt-box">
                                 <p><strong>Action: </strong>{{ session('receipt.action') }}</p>
-                                <p><strong>Dormitory: </strong>{{ session('receipt.dorm_name') }}</p>
-                                <p><strong>Room Number: </strong>{{ session('receipt.room_number') }}</p>
-                                <p><strong>Capacity: </strong>{{ session('receipt.capacity') }}</p>
                                 @if(session('receipt.image_deleted'))
                                     <p><strong>Image Deleted: </strong>{{ session('receipt.image_deleted') }}</p>
                                 @elseif(session('receipt.room_image'))
                                     <p><strong>Image: </strong>{{ basename(session('receipt.room_image')) }}</p>
+                                    <img src="{{ asset(session('receipt.room_image')) }}"
+                                        style="width: 200px; display:block; margin: 10px auto; border-radius: 8px;">
                                 @endif
+                                <p><strong>Room Number: </strong>{{ session('receipt.room_number') }}</p>
+                                <p><strong>Dormitory: </strong>{{ session('receipt.dorm_name') }}</p>
+                                <p><strong>Capacity: </strong>{{ session('receipt.capacity') }}</p>
                             </div>
                         @endif
                     <div class="form-buttons">

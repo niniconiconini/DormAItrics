@@ -51,12 +51,14 @@ class RoomController extends Controller
 
         // validate image input again
         if ($request->hasFile('room_image')) {
+            // rename image to match dormNameRoomNumber.ext
             $dormAbbr = match ($request->dorm_name) {
                 'Le Berceau' => 'lb',
                 'Maison Paul' => 'mp',
                 'Nini Dorm' => 'nd',
             };
             $imageName = $dormAbbr.$request->room_number.'.'.$request->file('room_image')->extension();
+            // validate image input
             $request->file('room_image')->move(public_path('images/rooms'), $imageName);
             $validated['room_image'] = '/images/rooms/'.$imageName;
         }
@@ -105,12 +107,18 @@ class RoomController extends Controller
 
         // validate image input again
         if ($request->hasFile('room_image')) {
+            // delete old image in project folder to be replaced
+            if ($room->room_image && file_exists(public_path($room->room_image))) {
+                unlink(public_path($room->room_image));
+            }
+            // rename new image
             $dormAbbr = match ($request->dorm_name) {
                 'Le Berceau' => 'lb',
                 'Maison Paul' => 'mp',
                 'Nini Dorm' => 'nd',
             };
             $imageName = $dormAbbr.$request->room_number.'.'.$request->file('room_image')->extension();
+            // validate image input
             $request->file('room_image')->move(public_path('images/rooms'), $imageName);
             $validated['room_image'] = '/images/rooms/'.$imageName;
         }
