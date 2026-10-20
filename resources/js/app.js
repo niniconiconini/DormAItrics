@@ -1,7 +1,5 @@
 const roomImage = document.getElementById('room_image');
-
 if (roomImage) {
-
     roomImage.addEventListener('change', function (event) {
 
         const file = event.target.files[0];
@@ -16,11 +14,9 @@ if (roomImage) {
         image.style.display = 'block';
         text.style.display = 'none';
     });
-
 }
 
 const form = document.querySelector('.room-modal form');
-
 if (form) {
 
     form.addEventListener('reset', () => {
@@ -29,13 +25,9 @@ if (form) {
         const text = document.getElementById('preview-text');
 
         if (image && text) {
-
             image.src = '';
-
             image.style.display = 'none';
-
             text.style.display = 'block';
         }
     });
-
 }

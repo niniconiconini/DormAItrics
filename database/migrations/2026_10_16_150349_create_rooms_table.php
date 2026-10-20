@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
             $table->string('room_image');
-            $table->string('room_number')->unique();
-            $table->enum('dorm_name', ['Le Berceau', 'Maison Paul']);
+            $table->string('room_number');
+            $table->enum('dorm_name', ['Le Berceau', 'Maison Paul', 'Nini Dorm']);
             $table->unsignedTinyInteger('capacity');
+            $table->unique(['dorm_name', 'room_number']);
             $table->timestamps();
         });
     }

@@ -16,7 +16,7 @@ class ResidentSeeder extends Seeder
             'user_id' => 3,
         ], [
             'room_id' => 1,
-            'resident_type' => 'Student',
+            'resident_type' => 'Employee',
             'accommodation_type' => 'Resident',
             'payment_schedule' => 'Full Payment',
             'check_in_date' => '2026-09-10',
@@ -42,7 +42,7 @@ class ResidentSeeder extends Seeder
             'accommodation_type' => 'Resident',
             'payment_schedule' => 'Full Payment',
             'check_in_date' => '2026-09-10',
-            'status' => 'Active',
+            'status' => 'Inactive',
         ]);
     }
 }

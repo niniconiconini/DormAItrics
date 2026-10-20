@@ -21,7 +21,6 @@ class PassSlipSeeder extends Seeder
             'requested_time_out' => '16:00:00',
             'requested_time_in' => '18:00:00',
             'status' => 'Approved',
-            'approved_at' => '2026-10-20 12:00:00',
         ]);
     }
 }

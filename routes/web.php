@@ -28,7 +28,7 @@ Route::get('logout', function () {
 Route::middleware(['auth', 'can:all-users'])->group(function () {
     // homepage
     Route::get('/', [AnnouncementsController::class, 'index'])->name('home');
-    Route::post('/', [AnnouncementsController::class, 'store'])->name('post-announcement');
+    Route::resource('announcements', AnnouncementsController::class);
 
     // reviews
     Route::view('reviews', 'reviews')->name('reviews');
@@ -52,11 +52,11 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
     Route::view('residents', 'residents')->name('residents');
 
     // room management
-    Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
+    // Route::get('/rooms', [RoomController::class, 'index'])->name('rooms');
     Route::resource('rooms', RoomController::class);
 
     // pass slip management
-    Route::view('pass-slip-management', 'slips-mgmt')->name('slips-mgmt');
+    Route::view('slips-mgmt', 'slips-mgmt')->name('slips-mgmt');
 
     // reports
     Route::view('reports', 'reports')->name('reports');
