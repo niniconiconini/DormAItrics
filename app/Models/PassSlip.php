@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'requested_time_out',
     'requested_time_in',
     'status',
-    'approved_at',
 ])]
 
 class PassSlip extends Model

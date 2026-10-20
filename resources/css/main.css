@@ -245,9 +245,54 @@ color: var(--primary-color);
 .room-info {
     margin-bottom: .25rem;
 }
+
 /* ===== ROOMS Add/Edit Modal ===== */
+.room-modal {
+    background-color: var(--body-color) !important;
+    width: 700px;
+    max-width: 90vw;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 20px 20px 50px var(--primary-color);
+    display: flex;
+    flex-direction: column;
+}
+
+#update-form {
+    width: 85%;
+    margin: 0 auto;
+    background-color: var(--body-color);
+}
+
+.delete-form {
+    margin: 0;
+    display: inline-block;
+}
+
+.form-buttons .btn-primary {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.form-buttons button:hover {
+    padding: 0 calc(1rem + 5px);
+}
+
+.delete-form button:hover {
+    background-color: rgba(255, 70, 70, 0.525) !important;
+    color: lch(23.77% 26.46 153.37) !important;
+}
+
+.dorm-section a,
+.modal a {
+    text-decoration: none;
+}
+
+/* reusable modal styles */
 .modal {
-    /* display: none; */
     position: fixed !important;
     inset: 0;
     display: flex !important;
@@ -261,23 +306,6 @@ color: var(--primary-color);
     display: flex;
 }
 
-.room-modal {
-    background-color: var(--body-color) !important;
-    width: 700px;
-    max-width: 90vw;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 20px 20px 50px var(--primary-color);
-    display: flex;
-    flex-direction: column;
-}
-
-.room-modal form {
-    width: 85%;
-    margin: 0 auto;
-    background-color: var(--body-color);
-}
-
 .modal-title {
     text-align: center;
     margin-bottom: 2rem;
@@ -285,11 +313,6 @@ color: var(--primary-color);
 
 .modal span {
     font-weight: 650;
-}
-
-.dorm-section a,
-.modal a {
-    text-decoration: none;
 }
 
 .form-group {
@@ -313,6 +336,13 @@ color: var(--primary-color);
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 0 0.75rem;
+}
+
+.readonly-field {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+    border: 1px solid #ced4da;
 }
 
 .image-upload {
@@ -350,9 +380,41 @@ color: var(--primary-color);
 
 .form-buttons {
     display: flex;
-    justify-content: flex-end;
     gap: 0.5rem;
-    margin-top: 1rem;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.error-box {
+    background: #ffecec;
+    border: 1px solid #ffb3b3;
+    color: #c70000;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 50px;
+    width: 70%;
+    text-align: center;
+    margin: auto;
+}
+
+.error-box ul {
+    list-style: none;
+}
+
+.receipt-box {
+    width: 75%;
+    margin: 1rem auto;
+    padding: 1rem;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+.receipt-box p {
+    margin-bottom: .5rem;
+}
+
+.receipt-box p:last-child {
+    margin-bottom: 0;
 }
 /* ===== ROOMS END ===== */
 
@@ -424,12 +486,13 @@ color: var(--primary-color);
     background-color: var(--primary-color);
     color: var(--body-color);
     transition: var(--transition);
+    white-space: nowrap;
 }
 
 .btn-primary:hover {
     background-color: #28a74686;
     color: var(--sidebar-color);
-    font-weight: 700;
+    font-weight: 600;
 }
 
 hr {

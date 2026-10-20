@@ -49,7 +49,7 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
     Route::view('residents', 'residents')->name('residents');
 
     // room management
-    Route::get('/rooms', [RoomController::class, 'index'])->name('rooms');
+    // Route::get('/rooms', [RoomController::class, 'index'])->name('rooms');
     Route::resource('rooms', RoomController::class);
 
     // pass slip management
