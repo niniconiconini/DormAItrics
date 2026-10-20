@@ -28,8 +28,8 @@
                     <header class="text header-text">Dormitory Management System</header>
                     <ul class="menu-links">
                         <li><a href="{{ route('residents') }}" class="nav-link {{ request()->routeIs('residents') || request()->is('/residents') ? 'active' : '' }}">Residents</a></li>
-                        <li><a href="{{ route('rooms.index') }}" class="nav-link {{ request()->routeIs('rooms') || request()->is('/rooms') ? 'active' : '' }}">Room Management</a></li>
-                        <li><a href="{{ route('pass-slips') }}" class="nav-link {{ request()->routeIs('pass-slips') || request()->is('/pass-slips') ? 'active' : '' }}">Pass Slip Management</a></li>
+                        <li><a href="{{ route('rooms.index') }}" class="nav-link {{ request()->routeIs('rooms.*') || request()->is('/rooms') ? 'active' : '' }}">Room Management</a></li>
+                        <li><a href="{{ route('slips-mgmt') }}" class="nav-link {{ request()->routeIs('slips-mgmt') || request()->is('/slips-mgmt') ? 'active' : '' }}">Pass Slip Management</a></li>
                         <li><a href="{{ route('reports') }}" class="nav-link {{ request()->routeIs('reports') || request()->is('/reports') ? 'active' : '' }}">Reports</a></li>
                         <li><a href="{{ route('analytics') }}" class="nav-link {{ request()->routeIs('analytics') || request()->is('/analytics') ? 'active' : '' }}">Analytics</a></li>
                         <li><a href="{{ route('biometrics') }}" class="nav-link {{ request()->routeIs('biometrics') || request()->is('/logbook') ? 'active' : '' }}">Biometrics</a></li>

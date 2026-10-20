@@ -5,7 +5,7 @@
         @if (auth()->user()->isAdmin())
             <section class="post-box">
             <div class="input-message">
-                <form method="POST" action="{{ route('post-announcement') }}">
+                <form method="POST" action="{{ route('announcements.store') }}">
                     @csrf
                     <textarea
                         name="title"

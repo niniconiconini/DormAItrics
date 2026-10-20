@@ -22,9 +22,11 @@ class RoomController extends Controller
         $roomsByDorm = $rooms->groupBy(fn ($room) => $room->dorm_name);
         $dormsOrder = collect(['Le Berceau', 'Maison Paul', 'Nini Dorm'])->mapWithKeys(function ($dorm) use ($roomsByDorm) {
             return [$dorm => $roomsByDorm->get($dorm, collect())];
+        })->filter(function ($rooms) {
+            return $rooms->isNotEmpty();
         });
 
-        return view('rooms', compact('roomsByDorm'));
+        return view('rooms', ['roomsByDorm' => $dormsOrder]);
     }
 
     // add button modal
@@ -41,7 +43,14 @@ class RoomController extends Controller
 
         // validate image input again
         if ($request->hasFile('room_image')) {
-            $validated['room_image'] = $request->file('room_image')->store('rooms', 'public');
+            $dormAbbr = match ($request->dorm_name) {
+                'Le Berceau' => 'lb',
+                'Maison Paul' => 'mp',
+                'Nini Dorm' => 'nd',
+            };
+            $imageName = $dormAbbr.$request->room_number.'.'.$request->file('room_image')->extension();
+            $request->file('room_image')->move(public_path('images/rooms'), $imageName);
+            $validated['room_image'] = '/images/rooms/'.$imageName;
         }
 
         // validation inputs for capacity depending on dorm
@@ -58,7 +67,7 @@ class RoomController extends Controller
 
         Room::create($validated);
 
-        return redirect()->route('rooms.index')->with('success', 'Room added successfuly!');
+        return redirect('rooms')->with('success', 'Room added successfuly!');
     }
 
     // edit room modal
@@ -72,6 +81,18 @@ class RoomController extends Controller
             'room_image' => 'nullable|image',
         ]);
 
+        // validate image input again
+        if ($request->hasFile('room_image')) {
+            $dormAbbr = match ($request->dorm_name) {
+                'Le Berceau' => 'lb',
+                'Maison Paul' => 'mp',
+                'Nini Dorm' => 'nd',
+            };
+            $imageName = $dormAbbr.$request->room_number.'.'.$request->file('room_image')->extension();
+            $request->file('room_image')->move(public_path('images/rooms'), $imageName);
+            $validated['room_image'] = '/images/rooms/'.$imageName;
+        }
+
         // validation inputs for capacity depending on dorm
         $allowedCapacities = match ($request->dorm_name) {
             'Le Berceau' => [2, 3, 4, 8],
@@ -82,11 +103,6 @@ class RoomController extends Controller
             return back()->withErrors([
                 'capacity' => 'Invalid capacity for the selected dorm.',
             ])->withInput();
-        }
-
-        // validation for image input
-        if ($request->hasFile('room_image')) {
-            $validated['room_image'] = $request->file('room_image')->store('rooms', 'public');
         }
 
         $room->update($validated);

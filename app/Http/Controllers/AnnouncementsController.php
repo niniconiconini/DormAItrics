@@ -13,15 +13,9 @@ class AnnouncementsController extends Controller
     /* get announcements from db and get user */
     public function index(): View
     {
-        $announcements = Announcement::with('user')->latest()->take(5)->get();
+        $announcements = Announcement::with('user')->latest()->get();
 
         return view('home', ['announcements' => $announcements]);
-    }
-
-    /* Show the form for creating a new resource. */
-    public function create(): void
-    {
-        //
     }
 
     /* Store a newly created resource in storage. */
@@ -39,39 +33,7 @@ class AnnouncementsController extends Controller
             'message' => $validate['message'],
         ]);
 
-        return redirect('/')->with('success', 'Announcement posted!');
+        return redirect('home')->with('success', 'Announcement posted!');
 
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id): void
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id): void
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id): void
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id): void
-    {
-        //
     }
 }
