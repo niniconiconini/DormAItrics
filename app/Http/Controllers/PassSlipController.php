@@ -18,7 +18,6 @@ class PassSlipController extends Controller
 
     public function index(): View
     {
-        // get the dormer's own pass slips, newest first
         $resident = $this->currentResident();
         $passSlips = $resident
             ? PassSlip::where('resident_id', $resident->id)->latest()->get()
