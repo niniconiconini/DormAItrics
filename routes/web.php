@@ -5,7 +5,6 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PassSlipController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoomController;
-use App\Http\Controllers\PassSlipController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
