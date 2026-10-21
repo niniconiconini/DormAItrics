@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PassSlipController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\PassSlipController;
@@ -52,7 +53,6 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
     Route::view('residents', 'residents')->name('residents');
 
     // room management
-    // Route::get('/rooms', [RoomController::class, 'index'])->name('rooms');
     Route::resource('rooms', RoomController::class);
 
     // pass slip management

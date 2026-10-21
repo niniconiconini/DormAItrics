@@ -2,7 +2,6 @@
     <x-slot:title>Pass Slips</x-slot:title>    
     <header class="page-title">PASS SLIPS</header>
     <section>
-
         {{-- ===== TOP HALF: FILL UP PASS SLIP ===== --}}
         <div class="announcement-card">
             <button type="button" class="card passslip-toggle" id="slipToggle" aria-expanded="{{ $errors->any() ? 'true' : 'false' }}" aria-controls="slipPanel">
@@ -127,6 +126,5 @@
 
             setDefaults();
         </script>
-
     </section>
 </x-layout>
