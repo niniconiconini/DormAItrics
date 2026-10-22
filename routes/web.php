@@ -6,6 +6,7 @@ use App\Http\Controllers\PassSlipController;
 use App\Http\Controllers\PassSlipMgmtController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -50,7 +51,7 @@ Route::middleware(['auth', 'can:all-users'])->group(function () {
 //      ADMIN ONLY ACCESS
 Route::middleware(['auth', 'can:admins'])->group(function () {
     // dormer management
-    Route::view('residents', 'residents')->name('residents');
+    Route::resource('residents', UserController::class);
 
     // room management
     Route::resource('rooms', RoomController::class);

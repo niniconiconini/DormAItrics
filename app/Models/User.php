@@ -90,9 +90,8 @@ class User extends Authenticatable
         return in_array($this->user_type, ['Admin', 'Manager']);
     }
 
-    public function isDormer(): bool
+    public function isResident(): bool
     {
-        // return in_array($this->user_type, ['Student', 'Employee']);
         return $this->user_type === 'Resident';
     }
 
