@@ -68,7 +68,7 @@ class PassSlip extends Model
     }
 
     // ===== ADMIN PAGE (pass slip management) =====
- 
+
     /**
      * the dormer who filed the slip (pass slip -> resident -> user)
      *
@@ -78,17 +78,17 @@ class PassSlip extends Model
     {
         return $this->hasOneThrough(User::class, Resident::class, 'id', 'id', 'resident_id', 'user_id');
     }
- 
+
     private function fullName(?User $user): string
     {
         return collect([$user?->first_name, $user?->middle_name, $user?->last_name])->filter()->implode(' ');
     }
- 
+
     public function dormerName(): string
     {
         return $this->fullName($this->user);
     }
- 
+
     public function approverName(): string
     {
         return $this->fullName($this->approver);
