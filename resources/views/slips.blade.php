@@ -2,6 +2,7 @@
     <x-slot:title>Pass Slips</x-slot:title>    
     <header class="page-title">PASS SLIPS</header>
     <section>
+
         {{-- ===== TOP HALF: FILL UP PASS SLIP ===== --}}
         <div class="announcement-card">
             <button type="button" class="card passslip-toggle" id="slipToggle" aria-expanded="{{ $errors->any() ? 'true' : 'false' }}" aria-controls="slipPanel">
@@ -36,8 +37,8 @@
                                 <input type="time" id="time_out" name="requested_time_out" value="{{ old('requested_time_out') }}" required>
                             </div>
                             <div class="slip-field full">
-                                <label for="destination">Purpose</label>
-                                <input type="text" id="destination" name="purpose" value="{{ old('purpose') }}" placeholder="Why are you going out?" required>
+                                <label for="destination">Destination</label>
+                                <input type="text" id="destination" name="purpose" value="{{ old('purpose') }}" placeholder="Where are you going?" required>
                             </div>
                             <div class="slip-field full">
                                 <label>Expected return</label>
@@ -47,8 +48,9 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="slip-submit">
-                            <button type="submit" class="btn-primary">Submit Pass Slip</button>
+                            <button type="submit" class="btn-primary">Submit pass slip</button>
                         </div>
                     </form>
                 </div>
@@ -62,7 +64,7 @@
         <hr>
 
         {{-- ===== BOTTOM HALF: PREVIOUS PASS SLIPS ===== --}}
-        <section class="dorm-section">
+        <section class="dorm-section" id="previous">
             <h2>Previous Pass Slips</h2>
 
             @if (session('error'))
@@ -81,7 +83,7 @@
 
                         {{-- date the admin decided (updated_at) --}}
                         @if (in_array($slip->status, ['Approved', 'Rejected']))
-                            <i>{{ $slip->status === 'Rejected' ? 'Denied' : 'Approved' }} on {{ $slip->updated_at->format('M j, Y') }} at {{ $slip->updated_at->format('g:i A') }}</i>
+                            <i>{{ $slip->status === 'Rejected' ? 'Denied' : 'Approved' }} on {{ $slip->updated_at->format('M j, Y') }}</i>
                         @endif
 
                         {{-- cancel only while still for approval --}}
@@ -97,6 +99,31 @@
                     <p>No pass slips yet. Fill one up above to get started.</p>
                 @endforelse
             </div>
+
+            {{-- page numbers (only shown when there is more than one page) --}}
+            @if ($passSlips->hasPages())
+                <nav class="pager" aria-label="Pagination">
+                    @if ($passSlips->onFirstPage())
+                        <span class="disabled">&laquo; Previous</span>
+                    @else
+                        <a href="{{ $passSlips->previousPageUrl() }}">&laquo; Previous</a>
+                    @endif
+
+                    @foreach ($passSlips->getUrlRange(1, $passSlips->lastPage()) as $page => $url)
+                        @if ($page == $passSlips->currentPage())
+                            <span class="active" aria-current="page">{{ $page }}</span>
+                        @else
+                            <a href="{{ $url }}">{{ $page }}</a>
+                        @endif
+                    @endforeach
+
+                    @if ($passSlips->hasMorePages())
+                        <a href="{{ $passSlips->nextPageUrl() }}">Next &raquo;</a>
+                    @else
+                        <span class="disabled">Next &raquo;</span>
+                    @endif
+                </nav>
+            @endif
         </section>
 
         <script>
@@ -110,9 +137,18 @@
                 toggle.setAttribute('aria-expanded', open);
             }
 
+            function setDefaults() {
+                const d = new Date();
+                const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                ['date', 'return_date'].forEach(id => {
+                    const el = document.getElementById(id);
+                    el.min = today;
+                    if (!el.value) el.value = today;
+                });
+            }
+
             toggle.addEventListener('click', () => setOpen(!panel.classList.contains('open')));
 
-            // quick check before sending (the controller checks it again)
             form.addEventListener('submit', e => {
                 const out = new Date(`${form.requested_date_out.value}T${form.requested_time_out.value}`);
                 const back = new Date(`${form.requested_date_in.value}T${form.requested_time_in.value}`);

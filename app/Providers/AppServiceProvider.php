@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
 
         // all users access
         Gate::define('all-users', function (User $user) {
-            return $user->isAdmin() || $user->isDormer();
+            return $user->isAdmin() || $user->isResident();
         });
     }
 
