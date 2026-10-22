@@ -47,9 +47,8 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="form-buttons">
-                            <button type="submit" class="btn-primary">Submit pass slip</button>
+                        <div class="slip-submit">
+                            <button type="submit" class="btn-primary">Submit Pass Slip</button>
                         </div>
                     </form>
                 </div>
