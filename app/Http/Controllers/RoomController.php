@@ -56,6 +56,7 @@ class RoomController extends Controller
                 'Le Berceau' => 'lb',
                 'Maison Paul' => 'mp',
                 'Nini Dorm' => 'nd',
+                default => throw new \InvalidArgumentException('Invalid dorm name'),
             };
             $imageName = $dormAbbr.$request->room_number.'.'.$request->file('room_image')->extension();
             // validate image input
@@ -88,7 +89,7 @@ class RoomController extends Controller
     }
 
     // =============================== EDIT ROOM ===============================
-    public function update(Request $request, Room $room)
+    public function update(Request $request, Room $room): RedirectResponse
     {
         // validate inputs
         $validated = $request->validate([
@@ -116,6 +117,7 @@ class RoomController extends Controller
                 'Le Berceau' => 'lb',
                 'Maison Paul' => 'mp',
                 'Nini Dorm' => 'nd',
+                default => throw new \InvalidArgumentException('Invalid dorm name'),
             };
             $imageName = $dormAbbr.$request->room_number.'.'.$request->file('room_image')->extension();
             // validate image input

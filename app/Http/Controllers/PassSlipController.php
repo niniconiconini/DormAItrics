@@ -20,7 +20,7 @@ class PassSlipController extends Controller
     public function index(): View
     {
         $resident = $this->currentResident();
-        $passSlips = PassSlip::where('resident_id', $resident?->id ?? 0)
+        $passSlips = PassSlip::where('resident_id', $resident->id ?? 0)
             ->latest('id')
             ->paginate(7)
             ->fragment('previous');
