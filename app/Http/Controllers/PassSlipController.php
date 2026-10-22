@@ -20,9 +20,10 @@ class PassSlipController extends Controller
     public function index(): View
     {
         $resident = $this->currentResident();
-        $passSlips = $resident
-            ? PassSlip::where('resident_id', $resident->id)->latest()->get()
-            : collect();
+        $passSlips = PassSlip::where('resident_id', $resident?->id ?? 0)
+            ->latest('id')
+            ->paginate(7)
+            ->fragment('previous');
 
         $user = Auth::user();
         $fullName = collect([$user->first_name, $user->middle_name, $user->last_name])->filter()->implode(' ');

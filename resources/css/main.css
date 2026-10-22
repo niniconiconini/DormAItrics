@@ -690,6 +690,46 @@ color: var(--primary-color);
     color: white;
 }
 
+.pager {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+ 
+.pager a,
+.pager span {
+    padding: 0.45rem 0.9rem;
+    border: 2px solid var(--sidebar-color);
+    border-radius: 0.5rem;
+    color: var(--sidebar-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+ 
+.pager a:hover {
+    background: var(--sidebar-color);
+    color: var(--body-color);
+}
+ 
+.pager .active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--body-color);
+}
+ 
+.pager .disabled {
+    opacity: 0.4;
+}
+ 
+@media (max-width: 700px) {
+    .slip-grid,
+    .pair {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Status badges */
 .status {
     padding: 0.3rem 0.85rem;
@@ -729,4 +769,5 @@ color: var(--primary-color);
         grid-template-columns: 1fr;
     }
 }
+
 /* ===== PASS SLIPS END ===== */
