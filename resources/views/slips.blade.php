@@ -36,8 +36,8 @@
                                 <input type="time" id="time_out" name="requested_time_out" value="{{ old('requested_time_out') }}" required>
                             </div>
                             <div class="slip-field full">
-                                <label for="destination">Destination</label>
-                                <input type="text" id="destination" name="purpose" value="{{ old('purpose') }}" placeholder="Where are you going?" required>
+                                <label for="destination">Purpose</label>
+                                <input type="text" id="destination" name="purpose" value="{{ old('purpose') }}" placeholder="Why are you going out?" required>
                             </div>
                             <div class="slip-field full">
                                 <label>Expected return</label>
@@ -81,7 +81,7 @@
 
                         {{-- date the admin decided (updated_at) --}}
                         @if (in_array($slip->status, ['Approved', 'Rejected']))
-                            <i>{{ $slip->status === 'Rejected' ? 'Denied' : 'Approved' }} on {{ $slip->updated_at->format('M j, Y') }}</i>
+                            <i>{{ $slip->status === 'Rejected' ? 'Denied' : 'Approved' }} on {{ $slip->updated_at->format('M j, Y') }} at {{ $slip->updated_at->format('g:i A') }}</i>
                         @endif
 
                         {{-- cancel only while still for approval --}}

@@ -7,13 +7,14 @@ use App\Models\Resident;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class PassSlipController extends Controller
 {
     private function currentResident(): ?Resident
     {
-        return Resident::where('user_id', auth()->id())->first();
+        return Resident::where('user_id', Auth::id())->first();
     }
 
     public function index(): View
@@ -23,20 +24,17 @@ class PassSlipController extends Controller
             ? PassSlip::where('resident_id', $resident->id)->latest()->get()
             : collect();
 
-        // full name from the users table (first + middle + last)
-        $user = auth()->user();
+        $user = Auth::user();
         $fullName = collect([$user->first_name, $user->middle_name, $user->last_name])->filter()->implode(' ');
 
         return view('slips', compact('passSlips', 'fullName'));
     }
 
-    // fill up pass slip form
     public function store(Request $request): RedirectResponse
     {
         $resident = $this->currentResident();
-        abort_unless($resident, 403);
+        abort_unless($resident !== null, 403);
 
-        // validate inputs
         $validated = $request->validate([
             'requested_date_out' => 'required|date|after_or_equal:today',
             'requested_time_out' => 'required|date_format:H:i',
@@ -45,7 +43,6 @@ class PassSlipController extends Controller
             'requested_time_in' => 'required|date_format:H:i',
         ]);
 
-        // expected return must be after the time out
         $out = Carbon::parse($validated['requested_date_out'].' '.$validated['requested_time_out']);
         $in = Carbon::parse($validated['requested_date_in'].' '.$validated['requested_time_in']);
         if ($in->lessThanOrEqualTo($out)) {

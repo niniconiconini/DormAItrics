@@ -671,6 +671,25 @@ color: var(--primary-color);
     color: white;
 }
 
+.slip-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.slip-actions button {
+    font-size: 1.1rem;
+}
+
+.slip-card .approve {
+    border-color: var(--secondary-color);
+    color: var(--secondary-color);
+}
+
+.slip-card .approve:hover {
+    background: var(--secondary-color);
+    color: white;
+}
+
 /* Status badges */
 .status {
     padding: 0.3rem 0.85rem;

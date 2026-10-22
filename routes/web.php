@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PassSlipController;
+use App\Http\Controllers\PassSlipMgmtController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoomController;
 use Illuminate\Support\Facades\Auth;
@@ -55,7 +56,9 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
     Route::resource('rooms', RoomController::class);
 
     // pass slip management
-    Route::view('slips-mgmt', 'slips-mgmt')->name('slips-mgmt');
+    Route::get('slips-mgmt', [PassSlipMgmtController::class, 'index'])->name('slips-mgmt');
+    Route::patch('slips-mgmt/{passSlip}/approve', [PassSlipMgmtController::class, 'approve'])->name('slips-mgmt.approve');
+    Route::patch('slips-mgmt/{passSlip}/deny', [PassSlipMgmtController::class, 'deny'])->name('slips-mgmt.deny');
 
     // reports
     Route::view('reports', 'reports')->name('reports');

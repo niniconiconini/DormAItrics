@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 #[Fillable([
     'resident_id',
@@ -64,5 +65,32 @@ class PassSlip extends Model
             'Cancelled' => 'status-cancelled',
             default => 'status-expired',
         };
+    }
+
+    // ===== ADMIN PAGE (pass slip management) =====
+ 
+    /**
+     * the dormer who filed the slip (pass slip -> resident -> user)
+     *
+     * @return HasOneThrough<User, Resident, $this>
+     */
+    public function user(): HasOneThrough
+    {
+        return $this->hasOneThrough(User::class, Resident::class, 'id', 'id', 'resident_id', 'user_id');
+    }
+ 
+    private function fullName(?User $user): string
+    {
+        return collect([$user?->first_name, $user?->middle_name, $user?->last_name])->filter()->implode(' ');
+    }
+ 
+    public function dormerName(): string
+    {
+        return $this->fullName($this->user);
+    }
+ 
+    public function approverName(): string
+    {
+        return $this->fullName($this->approver);
     }
 }
