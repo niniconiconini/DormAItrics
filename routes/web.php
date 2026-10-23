@@ -60,6 +60,7 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
     Route::get('slips-mgmt', [PassSlipMgmtController::class, 'index'])->name('slips-mgmt');
     Route::patch('slips-mgmt/{passSlip}/approve', [PassSlipMgmtController::class, 'approve'])->name('slips-mgmt.approve');
     Route::patch('slips-mgmt/{passSlip}/deny', [PassSlipMgmtController::class, 'deny'])->name('slips-mgmt.deny');
+    Route::delete('slips-mgmt', [PassSlipMgmtController::class, 'destroyAll'])->name('slips-mgmt.destroy-all');
 
     // reports
     Route::view('reports', 'reports')->name('reports');

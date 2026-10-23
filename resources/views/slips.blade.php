@@ -34,7 +34,7 @@
                             </div>
                             <div class="slip-field">
                                 <label for="time_out">Time out</label>
-                                <input type="time" id="time_out" name="requested_time_out" value="{{ old('requested_time_out') }}" required>
+                                <input type="time" id="time_out" name="requested_time_out" value="{{ old('requested_time_out') }}" max="21:00" required>
                             </div>
                             <div class="slip-field full">
                                 <label for="destination">Destination</label>
@@ -44,13 +44,14 @@
                                 <label>Expected return</label>
                                 <div class="pair">
                                     <input type="date" id="return_date" name="requested_date_in" value="{{ old('requested_date_in') }}" aria-label="Expected return date" required>
-                                    <input type="time" id="return_time" name="requested_time_in" value="{{ old('requested_time_in') }}" aria-label="Expected return time" required>
+                                    <input type="time" id="return_time" name="requested_time_in" value="{{ old('requested_time_in') }}" aria-label="Expected return time" max="21:00" required>
                                 </div>
                             </div>
                         </div>
 
                         <div class="slip-submit">
-                            <button type="submit" class="btn-primary">Submit pass slip</button>
+                            <small>Note: The curfew is at 9:00 PM, please plan accordingly.</small>
+                            <button type="submit" class="btn-primary">Submit Pass Slip</button>
                         </div>
                     </form>
                 </div>

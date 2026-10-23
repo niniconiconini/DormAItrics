@@ -17,12 +17,26 @@ class PassSlipController extends Controller
         return Resident::where('user_id', Auth::id())->first();
     }
 
+    private function timeRules(string $label): array
+    {
+    return [
+        'bail',
+        'required',
+        'date_format:H:i',
+        function ($attribute, $value, $fail) use ($label) {
+            if ($value > '21:00') {
+                $fail("$label cannot be later than 9:00 PM (curfew).");
+            }
+        },
+    ];
+}
+
     public function index(): View
     {
         $resident = $this->currentResident();
         $passSlips = PassSlip::where('resident_id', $resident->id ?? 0)
             ->latest('id')
-            ->paginate(7)
+            ->paginate(5)
             ->fragment('previous');
 
         $user = Auth::user();
@@ -72,6 +86,6 @@ class PassSlipController extends Controller
 
         $passSlip->update(['status' => 'Cancelled']);
 
-        return redirect()->route('pass-slips')->with('success', 'Pass slip request cancelled.');
+        return back()->with('success', 'Pass slip request cancelled.');
     }
 }

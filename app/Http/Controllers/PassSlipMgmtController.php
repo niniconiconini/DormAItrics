@@ -10,19 +10,27 @@ use Illuminate\View\View;
 
 class PassSlipMgmtController extends Controller
 {
-    public function index(): View
-    {
-        /** @var Collection<int, PassSlip> $passSlips */
-        $passSlips = PassSlip::with(['user', 'approver'])->latest()->get();
+    public function index(): View|RedirectResponse
+{
+    $forApproval = PassSlip::with('user')
+        ->forApproval()
+        ->oldest('id')
+        ->paginate(5, ['*'], 'approval_page')
+        ->withQueryString()
+        ->fragment('for-approval');
 
-        // slips still waiting for a decision, oldest first
-        $forApproval = $passSlips
-            ->filter(fn ($slip) => $slip->displayStatus() === 'For approval')
-            ->sortBy('created_at')
-            ->values();
-
-        return view('slips-mgmt', compact('passSlips', 'forApproval'));
+    if ($forApproval->isEmpty() && $forApproval->currentPage() > 1) {
+        return redirect($forApproval->url($forApproval->lastPage()));
     }
+
+    $passSlips = PassSlip::with(['user', 'approver'])
+        ->latest('id')
+        ->paginate(5, ['*'], 'all_page')
+        ->withQueryString()
+        ->fragment('all-slips');
+
+    return view('slips-mgmt', compact('passSlips', 'forApproval'));
+}
 
     public function approve(PassSlip $passSlip): RedirectResponse
     {
@@ -32,6 +40,14 @@ class PassSlipMgmtController extends Controller
     public function deny(PassSlip $passSlip): RedirectResponse
     {
         return $this->decide($passSlip, 'Rejected', 'Pass slip denied.');
+    }
+
+    // wipes every pass slip record from the database
+    public function destroyAll(): RedirectResponse
+    {
+    PassSlip::query()->delete();
+
+    return redirect()->route('slips-mgmt')->with('success', 'All pass slips have been deleted.');
     }
 
     // saves the decision and who made it
@@ -46,6 +62,6 @@ class PassSlipMgmtController extends Controller
             'approved_by_user_id' => Auth::id(),
         ]);
 
-        return redirect()->route('slips-mgmt')->with('success', $message);
+        return back()->with('success', $message);
     }
 }
