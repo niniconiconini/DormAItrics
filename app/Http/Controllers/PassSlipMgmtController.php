@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\PassSlip;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -11,26 +10,26 @@ use Illuminate\View\View;
 class PassSlipMgmtController extends Controller
 {
     public function index(): View|RedirectResponse
-{
-    $forApproval = PassSlip::with('user')
-        ->forApproval()
-        ->oldest('id')
-        ->paginate(5, ['*'], 'approval_page')
-        ->withQueryString()
-        ->fragment('for-approval');
+    {
+        $forApproval = PassSlip::with('user')
+            ->forApproval()
+            ->oldest('id')
+            ->paginate(5, ['*'], 'approval_page')
+            ->withQueryString()
+            ->fragment('for-approval');
 
-    if ($forApproval->isEmpty() && $forApproval->currentPage() > 1) {
-        return redirect($forApproval->url($forApproval->lastPage()));
+        if ($forApproval->isEmpty() && $forApproval->currentPage() > 1) {
+            return redirect($forApproval->url($forApproval->lastPage()));
+        }
+
+        $passSlips = PassSlip::with(['user', 'approver'])
+            ->latest('id')
+            ->paginate(5, ['*'], 'all_page')
+            ->withQueryString()
+            ->fragment('all-slips');
+
+        return view('slips-mgmt', compact('passSlips', 'forApproval'));
     }
-
-    $passSlips = PassSlip::with(['user', 'approver'])
-        ->latest('id')
-        ->paginate(5, ['*'], 'all_page')
-        ->withQueryString()
-        ->fragment('all-slips');
-
-    return view('slips-mgmt', compact('passSlips', 'forApproval'));
-}
 
     public function approve(PassSlip $passSlip): RedirectResponse
     {
@@ -45,9 +44,9 @@ class PassSlipMgmtController extends Controller
     // wipes every pass slip record from the database
     public function destroyAll(): RedirectResponse
     {
-    PassSlip::query()->delete();
+        PassSlip::query()->delete();
 
-    return redirect()->route('slips-mgmt')->with('success', 'All pass slips have been deleted.');
+        return redirect()->route('slips-mgmt')->with('success', 'All pass slips have been deleted.');
     }
 
     // saves the decision and who made it

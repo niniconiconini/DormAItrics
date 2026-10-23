@@ -94,10 +94,10 @@ class PassSlip extends Model
     {
         return $this->fullName($this->approver);
     }
+
     public function scopeForApproval(Builder $query): void
     {
         $query->where('status', 'Pending')
             ->whereRaw('TIMESTAMP(requested_date_in, requested_time_in) > ?', [now()->toDateTimeString()]);
     }
 }
-

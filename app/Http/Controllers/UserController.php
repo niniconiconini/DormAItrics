@@ -30,7 +30,8 @@ class UserController extends Controller
         return view('residents', ['admins' => $admins, 'residents' => $residents]);
     }
 
-    public function update(Request $request, User $user): RedirectResponse {
+    public function update(Request $request, User $user): RedirectResponse
+    {
         $validated = $request->validate([
             'lastname' => 'required|string|max:255',
             'firstname' => 'required|string|max:255',
@@ -55,16 +56,16 @@ class UserController extends Controller
             'address' => $request->address,
             'email' => $request->email,
             'user_type' => $request->user_type,
-            'status' => $request->status
+            'status' => $request->status,
         ]);
 
-        if($request->filled('password')) {
+        if ($request->filled('password')) {
             $user->update([
                 'password' => $request->password,
             ]);
         }
 
-        if($user->resident) {
+        if ($user->resident) {
             $validated = $request->validate([
                 'resident_type' => 'nullable|in:Student,Employee',
                 'accommodation_type' => 'nullable|in:Resident,Transient',
@@ -73,7 +74,7 @@ class UserController extends Controller
                 'check_in_date' => 'nullable|date',
                 'check_out_date' => 'nullable|date|after_or_equal:check_in_date',
             ]);
-            
+
             $user->resident->update([
                 'accommodation_type' => $request->accommodation_type,
                 'resident_type' => $request->resident_type,
@@ -94,7 +95,7 @@ class UserController extends Controller
             'phone_number' => $user->phone_number,
             'address' => $user->address,
             'email' => $user->email,
-            'password_updated' => $request->filled('password'), 
+            'password_updated' => $request->filled('password'),
             'user_type' => $user->user_type,
             'status' => $user->status,
         ];

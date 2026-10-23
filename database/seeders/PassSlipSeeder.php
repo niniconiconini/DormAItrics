@@ -232,7 +232,6 @@ class PassSlipSeeder extends Seeder
             'status' => 'Approved',
         ]);
 
-
         PassSlip::firstOrCreate([
             'resident_id' => 1,
             'purpose' => 'Lunch',

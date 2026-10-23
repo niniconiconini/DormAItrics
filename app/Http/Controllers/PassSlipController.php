@@ -19,17 +19,17 @@ class PassSlipController extends Controller
 
     private function timeRules(string $label): array
     {
-    return [
-        'bail',
-        'required',
-        'date_format:H:i',
-        function ($attribute, $value, $fail) use ($label) {
-            if ($value > '21:00') {
-                $fail("$label cannot be later than 9:00 PM (curfew).");
-            }
-        },
-    ];
-}
+        return [
+            'bail',
+            'required',
+            'date_format:H:i',
+            function ($attribute, $value, $fail) use ($label) {
+                if ($value > '21:00') {
+                    $fail("$label cannot be later than 9:00 PM (curfew).");
+                }
+            },
+        ];
+    }
 
     public function index(): View
     {

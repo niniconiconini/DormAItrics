@@ -21,8 +21,8 @@ class ResidentSeeder extends Seeder
             'payment_schedule' => 'Full Payment',
             'room_type' => '2 persons',
             'check_in_date' => '2026-09-10',
-            ]);
-            
+        ]);
+
         Resident::firstOrCreate([
             'user_id' => 4,
         ], [

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 
 #[Fillable([
     'user_id',
@@ -20,15 +21,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 ])]
 
 /**
- * @property \Illuminate\Support\Carbon|null $check_in_date
- * @property \Illuminate\Support\Carbon|null $check_out_date
+ * @property Carbon|null $check_in_date
+ * @property Carbon|null $check_out_date
  */
 class Resident extends Model
 {
-
     protected function casts(): array
     {
-        
+
         return [
             'check_in_date' => 'date',
             'check_out_date' => 'date',
