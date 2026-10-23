@@ -615,7 +615,9 @@ color: var(--primary-color);
 
 .slip-submit {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
     margin-top: 1.5rem;
 }
 
@@ -722,7 +724,26 @@ color: var(--primary-color);
 .pager .disabled {
     opacity: 0.4;
 }
- 
+/* Delete all pass slips */
+.btn-danger {
+    background: #c0392b;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #962d22;
+    color: white;
+}
+
+.delete-modal p {
+    text-align: center;
+    line-height: 1.6;
+}
+
+.delete-modal .slip-submit {
+    justify-content: center;
+}
+
 @media (max-width: 700px) {
     .slip-grid,
     .pair {

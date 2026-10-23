@@ -15,7 +15,7 @@
         @endif
 
         {{-- ===== TOP HALF: FOR APPROVAL ===== --}}
-        <section class="dorm-section">
+        <section class="dorm-section" id="for-approval">
             <h2>For Approval</h2>
 
             <div class="list-view">
@@ -28,12 +28,12 @@
 
                         {{-- check = approve, X = deny (both ask for confirmation) --}}
                         <div class="slip-actions">
-                            <form action="{{ route('slips-mgmt.approve', $slip) }}" method="POST" onsubmit="return confirm('Are you sure you want to accept this pass slip?')">
+                            <form action="{{ route('slips-mgmt.approve', $slip) }}" method="POST" onsubmit="return confirm('Are you sure you want to Approve this pass slip?')">
                                 @csrf
                                 @method('PATCH')
                                 <button type="submit" class="approve" title="Accept" aria-label="Accept">&#10003;</button>
                             </form>
-                            <form action="{{ route('slips-mgmt.deny', $slip) }}" method="POST" onsubmit="return confirm('Are you sure you want to deny this pass slip?')">
+                            <form action="{{ route('slips-mgmt.deny', $slip) }}" method="POST" onsubmit="return confirm('Are you sure you want to Deny this pass slip?')">
                                 @csrf
                                 @method('PATCH')
                                 <button type="submit" title="Deny" aria-label="Deny">&#10005;</button>
@@ -44,13 +44,45 @@
                     <p>No pass slips are waiting for approval.</p>
                 @endforelse
             </div>
+
+            {{-- page numbers (only shown when there is more than one page) --}}
+            @if ($forApproval->hasPages())
+                <nav class="pager" aria-label="Pagination">
+                    @if ($forApproval->onFirstPage())
+                        <span class="disabled">&laquo; Previous</span>
+                    @else
+                        <a href="{{ $forApproval->previousPageUrl() }}">&laquo; Previous</a>
+                    @endif
+
+                    @foreach ($forApproval->getUrlRange(1, $forApproval->lastPage()) as $page => $url)
+                        @if ($page == $forApproval->currentPage())
+                            <span class="active" aria-current="page">{{ $page }}</span>
+                        @else
+                            <a href="{{ $url }}">{{ $page }}</a>
+                        @endif
+                    @endforeach
+
+                    @if ($forApproval->hasMorePages())
+                        <a href="{{ $forApproval->nextPageUrl() }}">Next &raquo;</a>
+                    @else
+                        <span class="disabled">Next &raquo;</span>
+                    @endif
+                </nav>
+            @endif
         </section>
 
         <hr>
 
         {{-- ===== BOTTOM HALF: ALL PASS SLIPS ===== --}}
-        <section class="dorm-section">
+        <section class="dorm-section" id="all-slips">
             <h2>All Pass Slips</h2>
+
+            {{-- wipes every pass slip (opens the two-step confirmation below) --}}
+            @if ($passSlips->total() > 0)
+                <div class="flex-view">
+                    <button type="button" class="btn-primary btn-danger" id="openDelete">Delete All Pass Slips</button>
+                </div>
+            @endif
 
             <div class="list-view">
                 @forelse ($passSlips as $slip)
@@ -70,7 +102,87 @@
                     <p>No pass slips have been filed yet.</p>
                 @endforelse
             </div>
+
+            {{-- page numbers (only shown when there is more than one page) --}}
+            @if ($passSlips->hasPages())
+                <nav class="pager" aria-label="Pagination">
+                    @if ($passSlips->onFirstPage())
+                        <span class="disabled">&laquo; Previous</span>
+                    @else
+                        <a href="{{ $passSlips->previousPageUrl() }}">&laquo; Previous</a>
+                    @endif
+
+                    @foreach ($passSlips->getUrlRange(1, $passSlips->lastPage()) as $page => $url)
+                        @if ($page == $passSlips->currentPage())
+                            <span class="active" aria-current="page">{{ $page }}</span>
+                        @else
+                            <a href="{{ $url }}">{{ $page }}</a>
+                        @endif
+                    @endforeach
+
+                    @if ($passSlips->hasMorePages())
+                        <a href="{{ $passSlips->nextPageUrl() }}">Next &raquo;</a>
+                    @else
+                        <span class="disabled">Next &raquo;</span>
+                    @endif
+                </nav>
+            @endif
         </section>
+
+        {{-- ===== DELETE ALL PASS SLIPS: two-step confirmation ===== --}}
+        <div id="deleteModal" hidden>
+            <div class="modal">
+                <div class="room-modal delete-modal">
+
+                    {{-- step 1 --}}
+                    <div id="deleteStep1">
+                        <h2 class="modal-title">Delete All Pass Slips</h2>
+                        <p>This will permanently delete every pass slip from every dormer, including pending, approved, denied, cancelled and expired ones. This cannot be undone.</p>
+                        <div class="slip-submit">
+                            <button type="button" class="btn-primary closeDelete">Cancel</button>
+                            <button type="button" class="btn-primary btn-danger" id="toStep2">Continue</button>
+                        </div>
+                    </div>
+
+                    {{-- step 2: final confirmation --}}
+                    <form id="deleteStep2" action="{{ route('slips-mgmt.destroy-all') }}" method="POST" hidden>
+                        @csrf
+                        @method('DELETE')
+                        <h2 class="modal-title">Are you absolutely sure?</h2>
+                        <p>This is your last chance. Every pass slip record will be erased from the database and cannot be recovered.</p>
+                        <div class="slip-submit">
+                            <button type="button" class="btn-primary closeDelete">No, keep them</button>
+                            <button type="submit" class="btn-primary btn-danger">Yes, delete everything</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const deleteModal = document.getElementById('deleteModal');
+            const deleteStep1 = document.getElementById('deleteStep1');
+            const deleteStep2 = document.getElementById('deleteStep2');
+
+            function closeDeleteModal() {
+                deleteModal.hidden = true;
+            }
+
+            document.getElementById('openDelete')?.addEventListener('click', () => {
+                deleteStep1.hidden = false;
+                deleteStep2.hidden = true;
+                deleteModal.hidden = false;
+            });
+
+            document.getElementById('toStep2').addEventListener('click', () => {
+                deleteStep1.hidden = true;
+                deleteStep2.hidden = false;
+            });
+
+            document.querySelectorAll('.closeDelete').forEach(btn => btn.addEventListener('click', closeDeleteModal));
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDeleteModal(); });
+        </script>
 
     </section>
 </x-layout>

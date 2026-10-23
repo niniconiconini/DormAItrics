@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
@@ -93,4 +94,10 @@ class PassSlip extends Model
     {
         return $this->fullName($this->approver);
     }
+    public function scopeForApproval(Builder $query): void
+    {
+        $query->where('status', 'Pending')
+            ->whereRaw('TIMESTAMP(requested_date_in, requested_time_in) > ?', [now()->toDateTimeString()]);
+    }
 }
+
