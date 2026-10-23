@@ -23,10 +23,11 @@ class UserSeeder extends Seeder
                 'middle_name' => 'de Marie',
                 'nickname' => 'Sister Nicole',
                 'birthdate' => '1990-01-10',
-                'user_type' => 'Admin',
                 'phone_number' => null,
                 'address' => 'SPUM',
                 'password' => Hash::make('spum123'),
+                'user_type' => 'Admin',
+                'status' => 'Active',
             ]
         );
 
@@ -40,10 +41,11 @@ class UserSeeder extends Seeder
                 'middle_name' => null,
                 'nickname' => 'Ms. Aneen',
                 'birthdate' => '1990-05-16',
-                'user_type' => 'Manager',
                 'phone_number' => null,
                 'address' => 'SPUM',
                 'password' => Hash::make('spum123'),
+                'user_type' => 'Manager',
+                'status' => 'Active',
             ]
         );
 
@@ -57,10 +59,11 @@ class UserSeeder extends Seeder
                 'middle_name' => 'Resurreccion',
                 'nickname' => 'Nini',
                 'birthdate' => '2005-03-19',
-                'user_type' => 'Resident',
                 'phone_number' => '09561568158',
                 'address' => 'The Manila Residences Tower II, Taft Avenue, Malate, Manila',
                 'password' => Hash::make('spum123'),
+                'user_type' => 'Resident',
+                'status' => 'Active',
             ]
         );
 
@@ -74,10 +77,11 @@ class UserSeeder extends Seeder
                 'middle_name' => 'Dela Cruz',
                 'nickname' => 'Marc',
                 'birthdate' => '2005-07-07',
-                'user_type' => 'Resident',
                 'phone_number' => null,
                 'address' => 'Tondo',
                 'password' => Hash::make('spum123'),
+                'user_type' => 'Resident',
+                'status' => 'Active',
             ]
         );
 
@@ -91,10 +95,11 @@ class UserSeeder extends Seeder
                 'middle_name' => null,
                 'nickname' => 'Alleah',
                 'birthdate' => '2005-05-20',
-                'user_type' => 'Resident',
                 'phone_number' => null,
                 'address' => 'Ma. Orosa Street',
                 'password' => Hash::make('spum123'),
+                'user_type' => 'Resident',
+                'status' => 'Active',
             ]
         );
     }

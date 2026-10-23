@@ -16,13 +16,13 @@ class ResidentSeeder extends Seeder
             'user_id' => 3,
         ], [
             'room_id' => 1,
-            'resident_type' => 'Employee',
             'accommodation_type' => 'Resident',
+            'resident_type' => 'Employee',
             'payment_schedule' => 'Full Payment',
+            'room_type' => '2 persons',
             'check_in_date' => '2026-09-10',
-            'status' => 'Active',
-        ]);
-
+            ]);
+            
         Resident::firstOrCreate([
             'user_id' => 4,
         ], [
@@ -30,8 +30,8 @@ class ResidentSeeder extends Seeder
             'resident_type' => 'Student',
             'accommodation_type' => 'Resident',
             'payment_schedule' => 'Full Payment',
+            'room_type' => '3 persons',
             'check_in_date' => '2026-09-10',
-            'status' => 'Active',
         ]);
 
         Resident::firstOrCreate([
@@ -40,9 +40,10 @@ class ResidentSeeder extends Seeder
             'room_id' => 3,
             'resident_type' => 'Student',
             'accommodation_type' => 'Transient',
-            'payment_schedule' => 'Full Payment',
+            'payment_schedule' => 'Per Day',
+            'room_type' => '1 person',
             'check_in_date' => '2026-09-10',
-            'status' => 'Inactive',
+            'check_out_date' => '2026-09-10',
         ]);
     }
 }

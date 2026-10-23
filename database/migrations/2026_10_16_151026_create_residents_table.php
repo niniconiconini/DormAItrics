@@ -17,10 +17,10 @@ return new class extends Migration
             $table->foreignId('room_id')->nullable()->constrained('rooms');
             $table->enum('resident_type', ['Student', 'Employee']);
             $table->enum('accommodation_type', ['Resident', 'Transient']);
-            $table->enum('payment_schedule', ['Full Payment', '2 Payments', '3 Payments', '4 Payments', 'Per day']);
+            $table->enum('payment_schedule', ['Full Payment', '2 Payments', '3 Payments', '4 Payments', 'Per Day']);
+            $table->enum('room_type', ['8 persons', '4 persons', '3 persons', '2 persons', '1 person']);
             $table->date('check_in_date');
             $table->date('check_out_date')->nullable();
-            $table->enum('status', ['Active', 'Inactive', 'Pending']);
             $table->timestamps();
         });
     }

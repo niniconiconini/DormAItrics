@@ -51,7 +51,7 @@ Route::middleware(['auth', 'can:all-users'])->group(function () {
 //      ADMIN ONLY ACCESS
 Route::middleware(['auth', 'can:admins'])->group(function () {
     // dormer management
-    Route::resource('residents', UserController::class);
+    Route::resource('users', UserController::class);
 
     // room management
     Route::resource('rooms', RoomController::class);

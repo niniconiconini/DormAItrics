@@ -14,12 +14,27 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'resident_type',
     'accommodation_type',
     'payment_schedule',
+    'room_type',
     'check_in_date',
     'check_out_date',
-    'status',
 ])]
+
+/**
+ * @property \Illuminate\Support\Carbon|null $check_in_date
+ * @property \Illuminate\Support\Carbon|null $check_out_date
+ */
 class Resident extends Model
 {
+
+    protected function casts(): array
+    {
+        
+        return [
+            'check_in_date' => 'date',
+            'check_out_date' => 'date',
+        ];
+    }
+
     /**
      * @return BelongsTo<User, $this>
      */

@@ -18,12 +18,13 @@ return new class extends Migration
             $table->string('middle_name')->nullable();
             $table->string('nickname');
             $table->date('birthdate');
-            $table->enum('user_type', ['Admin', 'Manager', 'Resident']);
             $table->string('phone_number')->nullable();
             $table->string('address')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('user_type', ['Admin', 'Manager', 'Resident']);
+            $table->enum('status', ['Active', 'Inactive', 'Pending']);
             $table->string('profile_picture')->nullable();
             $table->rememberToken();
             $table->timestamps();
