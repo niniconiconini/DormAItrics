@@ -33,11 +33,11 @@
                             <div class="room-info"><p>(Malvar Street)</p></div>
                     </div>
                 </a>
-                <a href="{{ route('rooms.index', ['dorm' => 'Nini Dorm']) }}">
-                    <div class="card dorm-card {{ request('dorm') == 'Nini Dorm' ? 'active' : '' }}">
-                            <div class="room-image"><img src="/images/rooms/nd.jpg"></div>
-                            <div class="room-number"><p>Nini Dorm</p></div>
-                            <div class="room-info"><p>(Taft Avenue)</p></div>
+                <a href="{{ route('rooms.index', ['dorm' => 'Dorm 2']) }}">
+                    <div class="card dorm-card {{ request('dorm') == 'Dorm 2' ? 'active' : '' }}">
+                            <div class="room-image"><img src="/images/rooms/dt.jpg"></div>
+                            <div class="room-number"><p>Dorm 2</p></div>
+                            <div class="room-info"><p>(St. Paul University Manila)</p></div>
                     </div>
                 </a>
             </section>

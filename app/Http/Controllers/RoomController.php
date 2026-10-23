@@ -21,7 +21,7 @@ class RoomController extends Controller
 
         $rooms = $query->orderby('room_number')->get();
         $roomsByDorm = $rooms->groupBy(fn ($room) => $room->dorm_name);
-        $dormsOrder = collect(['Le Berceau', 'Maison Paul', 'Nini Dorm'])->mapWithKeys(function ($dorm) use ($roomsByDorm) {
+        $dormsOrder = collect(['Le Berceau', 'Maison Paul', 'Dorm 2'])->mapWithKeys(function ($dorm) use ($roomsByDorm) {
             return [$dorm => $roomsByDorm->get($dorm, collect())];
         })->filter(function ($rooms) {
             return $rooms->isNotEmpty();
@@ -55,7 +55,7 @@ class RoomController extends Controller
             $dormAbbr = match ($request->dorm_name) {
                 'Le Berceau' => 'lb',
                 'Maison Paul' => 'mp',
-                'Nini Dorm' => 'nd',
+                'Dorm 2' => 'dt',
                 default => throw new \InvalidArgumentException('Invalid dorm name'),
             };
             $imageName = $dormAbbr.$request->room_number.'.'.$request->file('room_image')->extension();
@@ -68,6 +68,7 @@ class RoomController extends Controller
         $allowedCapacities = match ($request->dorm_name) {
             'Le Berceau' => [2, 3, 4, 8],
             'Maison Paul' => [1, 2],
+            'Dorm 2' => [4],
             default => [],
         };
         if (! in_array($request->capacity, $allowedCapacities)) {
@@ -116,7 +117,7 @@ class RoomController extends Controller
             $dormAbbr = match ($request->dorm_name) {
                 'Le Berceau' => 'lb',
                 'Maison Paul' => 'mp',
-                'Nini Dorm' => 'nd',
+                'Dorm 2' => 'dt',
                 default => throw new \InvalidArgumentException('Invalid dorm name'),
             };
             $imageName = $dormAbbr.$request->room_number.'.'.$request->file('room_image')->extension();
@@ -129,6 +130,7 @@ class RoomController extends Controller
         $allowedCapacities = match ($request->dorm_name) {
             'Le Berceau' => [2, 3, 4, 8],
             'Maison Paul' => [1, 2],
+            'Dorm 2' => [4],
             default => [],
         };
         if (! in_array((int) $request->capacity, $allowedCapacities)) {

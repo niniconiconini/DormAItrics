@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('room_image');
             $table->string('room_number');
-            $table->enum('dorm_name', ['Le Berceau', 'Maison Paul', 'Nini Dorm']);
+            $table->enum('dorm_name', ['Le Berceau', 'Maison Paul', 'Dorm 2']);
             $table->unsignedTinyInteger('capacity');
             $table->unique(['dorm_name', 'room_number']);
             $table->timestamps();

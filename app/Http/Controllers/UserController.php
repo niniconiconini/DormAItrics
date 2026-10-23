@@ -11,8 +11,18 @@ class UserController extends Controller
     public function index(): View
     {
         $admins = User::whereIn('user_type', ['Admin', 'Manager'])->get();
-        // $residents = User::where('user_type', 'Resident')->get();
-        $residents = Resident::with(['user', 'room'])->get();
+
+        $residents = Resident::with(['user', 'room']);
+        if (request('view') === 'transient') {
+            $residents->where('accommodation_type', 'Transient');
+        } else {
+            $residents->where('accommodation_type', 'Resident');
+        }
+
+        if (request('resident_type')) {
+            $residents->where('resident_type', request('resident_type'));
+        }
+        $residents = $residents->get();
 
         return view('residents', ['admins' => $admins, 'residents' => $residents]);
     }

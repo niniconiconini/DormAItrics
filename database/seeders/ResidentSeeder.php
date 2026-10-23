@@ -39,7 +39,7 @@ class ResidentSeeder extends Seeder
         ], [
             'room_id' => 3,
             'resident_type' => 'Student',
-            'accommodation_type' => 'Resident',
+            'accommodation_type' => 'Transient',
             'payment_schedule' => 'Full Payment',
             'check_in_date' => '2026-09-10',
             'status' => 'Inactive',

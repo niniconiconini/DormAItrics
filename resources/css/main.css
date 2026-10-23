@@ -771,3 +771,34 @@ color: var(--primary-color);
 }
 
 /* ===== PASS SLIPS END ===== */
+
+/* ===== RESIDENTS START ===== */
+.residents-header {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.residents-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.residents-header h2 {
+    margin: 0;
+    padding-top: 0.2rem;
+}
+
+.residents-header .btn-primary {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.residents-header > .btn-primary {
+    position: absolute;
+    left: 0;
+}
+/* ===== RESIDENTS START ===== */
