@@ -24,7 +24,7 @@ class PassSlipMgmtController extends Controller
 
         $passSlips = PassSlip::with(['user', 'approver'])
             ->latest('id')
-            ->paginate(5, ['*'], 'all_page')
+            ->paginate(10, ['*'], 'all_page')
             ->withQueryString()
             ->fragment('all-slips');
 
