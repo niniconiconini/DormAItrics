@@ -23,8 +23,8 @@ class AnnouncementsController extends Controller
     {
         // validate
         $validate = $request->validate([
-            'title' => 'required|string|max:255',
-            'message' => 'required|string',
+            'title' => 'required|string|max:200',
+            'message' => 'required|string|max:750',
         ]);
 
         Announcement::create([
@@ -33,7 +33,37 @@ class AnnouncementsController extends Controller
             'message' => $validate['message'],
         ]);
 
-        return redirect('home')->with('success', 'Announcement posted!');
+        return redirect('')->with('success', 'Announcement posted!');
 
+    }
+    /* edit button */
+    public function update(Request $request, Announcement $announcement): RedirectResponse
+    {
+        $this->authorizeOwner($announcement);
+
+        $validate = $request->validate([
+            'title' => 'required|string|max:200',
+            'message' => 'required|string|max:750',
+        ]);
+
+        $announcement->update($validate);
+
+        return back()->with('success', 'Announcement updated!');
+    }
+
+    /* delete button */
+    public function destroy(Announcement $announcement): RedirectResponse
+    {
+        $this->authorizeOwner($announcement);
+
+        $announcement->delete();
+
+        return back()->with('success', 'Announcement deleted.');
+    }
+
+    // stops anyone except the author from changing an announcement
+    private function authorizeOwner(Announcement $announcement): void
+    {
+        abort_unless((int) $announcement->user_id === (int) Auth::id(), 403);
     }
 }

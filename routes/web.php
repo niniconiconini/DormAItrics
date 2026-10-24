@@ -27,10 +27,9 @@ Route::get('logout', function () {
 })->name('logout');
 
 //      ALL DMS USERS CAN ACCESS
-Route::middleware(['auth', 'can:all-users'])->group(function () {
+    Route::middleware(['auth', 'can:all-users'])->group(function () {
     // homepage
     Route::get('/', [AnnouncementsController::class, 'index'])->name('home');
-    Route::resource('announcements', AnnouncementsController::class);
 
     // reviews
     Route::view('reviews', 'reviews')->name('reviews');
@@ -49,12 +48,15 @@ Route::middleware(['auth', 'can:all-users'])->group(function () {
 });
 
 //      ADMIN ONLY ACCESS
-Route::middleware(['auth', 'can:admins'])->group(function () {
+    Route::middleware(['auth', 'can:admins'])->group(function () {
     // dormer management
     Route::resource('users', UserController::class);
 
     // room management
     Route::resource('rooms', RoomController::class);
+
+    // announcements
+    Route::resource('announcements', AnnouncementsController::class)->only(['store', 'update', 'destroy']);
 
     // pass slip management
     Route::get('slips-mgmt', [PassSlipMgmtController::class, 'index'])->name('slips-mgmt');
