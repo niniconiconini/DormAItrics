@@ -38,7 +38,7 @@
             </div>
 
             <div class="bottom-content">
-                <div class="column left-column"><a href="{{ route('profile') }}"><img src="{{ asset('images/user-profile.png') }}" alt="User" class="user-profile"></div>
+                <div class="column left-column"><a href="{{ route('profile') }}"><img src="{{ asset(auth()->user()->profile_picture) }}" alt="User" class="user-profile"></div>
                 <div class="column middle-column">Hi! {{ Auth::user()->nickname }}</a></div>
                 <div class="column right-column"><a href="{{ route('logout') }}"><img src="{{ asset('images/logout.png') }}" alt="logout" class="logout-icon"></a></div>
             </div>

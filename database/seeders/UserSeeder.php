@@ -28,6 +28,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('spum123'),
                 'user_type' => 'Admin',
                 'status' => 'Active',
+                'profile_picture' => '/images/users/user_1.png',
             ]
         );
 
@@ -46,6 +47,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('spum123'),
                 'user_type' => 'Manager',
                 'status' => 'Active',
+                'profile_picture' => '/images/users/user_2.png',
             ]
         );
 
@@ -64,6 +66,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('spum123'),
                 'user_type' => 'Resident',
                 'status' => 'Active',
+                'profile_picture' => '/images/users/user_3.png',
             ]
         );
 
@@ -81,13 +84,14 @@ class UserSeeder extends Seeder
                 'address' => 'Tondo',
                 'password' => Hash::make('spum123'),
                 'user_type' => 'Resident',
-                'status' => 'Active',
+                'status' => 'Inactive',
+                'profile_picture' => '/images/users/user_4.png',
             ]
         );
 
         User::firstOrCreate(
             [
-                'email' => 'resident3@spumanila.edu.ph',
+                'email' => 'transient1@spumanila.edu.ph',
             ],
             [
                 'last_name' => 'Andrada',
@@ -100,6 +104,26 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('spum123'),
                 'user_type' => 'Resident',
                 'status' => 'Active',
+                'profile_picture' => '/images/users/user_5.png',
+            ]
+        );
+
+        User::firstOrCreate(
+            [
+                'email' => 'transient2@spumanila.edu.ph',
+            ],
+            [
+                'last_name' => 'Domingo',
+                'first_name' => 'Juaqin Aiñigo',
+                'middle_name' => 'De Jesus',
+                'nickname' => 'Jaja',
+                'birthdate' => '2003-09-04',
+                'phone_number' => null,
+                'address' => 'Sta. Ana',
+                'password' => Hash::make('spum123'),
+                'user_type' => 'Resident',
+                'status' => 'Inactive',
+                'profile_picture' => '/images/users/user_6.png',
             ]
         );
     }

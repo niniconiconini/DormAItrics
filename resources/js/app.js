@@ -1,33 +1,42 @@
-const roomImage = document.getElementById('room_image');
-if (roomImage) {
-    roomImage.addEventListener('change', function (event) {
+const profilePicture = document.getElementById('profile_picture');
+const previewImage = document.getElementById('preview-image');
+const fileName = document.getElementById('file-name');
 
-        const file = event.target.files[0];
+if (profilePicture && previewImage) {
+
+    const originalImage = previewImage.src;
+    const originalFileText = fileName
+        ? fileName.textContent
+        : 'No file chosen';
+
+    profilePicture.addEventListener('change', function () {
+
+        const file = this.files[0];
 
         if (!file) return;
 
-        const image = document.getElementById('preview-image');
-        const text = document.getElementById('preview-text');
+        previewImage.src = URL.createObjectURL(file);
 
-        image.src = URL.createObjectURL(file);
-
-        image.style.display = 'block';
-        text.style.display = 'none';
-    });
-}
-
-const form = document.querySelector('.room-modal form');
-if (form) {
-
-    form.addEventListener('reset', () => {
-
-        const image = document.getElementById('preview-image');
-        const text = document.getElementById('preview-text');
-
-        if (image && text) {
-            image.src = '';
-            image.style.display = 'none';
-            text.style.display = 'block';
+        if (fileName) {
+            fileName.textContent = file.name;
         }
     });
+
+    const userForm = document.querySelector('.user-modal form');
+
+    if (userForm) {
+        userForm.addEventListener('reset', () => {
+
+            setTimeout(() => {
+
+                previewImage.src = originalImage;
+
+                if (fileName) {
+                    fileName.textContent = originalFileText;
+                }
+
+            }, 0);
+
+        });
+    }
 }

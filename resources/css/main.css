@@ -827,6 +827,15 @@ color: var(--primary-color);
     font-weight: 500;
 }
 
+.inactive-card {
+    opacity: 0.5;
+    filter: grayscale(100%);
+}
+
+.inactive-card:hover {
+    transform: none !important;
+}
+
 /* ===== USER MODAL ===== */
 .user-modal {
     background-color: var(--body-color) !important;
@@ -907,7 +916,7 @@ color: var(--primary-color);
     background-color: white;
 }
 
-.lastname, .middlename {
+.last_name, .middle_name {
     width: 25%;
 }
 
@@ -919,9 +928,18 @@ color: var(--primary-color);
     width: 100%;
 }
 
-.firstname, .email, .password, .user_type, .user-status, .accommodation_type, 
+.first_name, .email, .user_type, .user-status, .accommodation_type, 
 .resident_type, .payment_schedule, .room_type, .check_in_date, .check_out_date {
     width: 50%;
+}
+
+.password {
+    width: 40%;
+}
+
+.login-details, .user-status {
+    display: flex;
+    gap: 0.25rem;
 }
 
 /* SECTION HEADER */
@@ -943,6 +961,16 @@ color: var(--primary-color);
     justify-content: center;
 }
 
+.reset-password-btn {
+    width: auto;
+    display: flex;
+    align-items: end;
+}
+
+.reset-password-btn .btn-primary {
+    height: 100%;
+}
+
 /* RESPONSIVE */
 @media (max-width: 1000px) {
 
@@ -961,7 +989,7 @@ color: var(--primary-color);
         align-items: stretch;
     }
 
-    .sidebar, .lastname, .middlename, .firstname, .nickname, .birthdate, .phone_number,
+    .sidebar, .last_name, .middle_name, .first_name, .nickname, .birthdate, .phone_number,
     .address, .email, .password, .user_type, .user-status, .accommodation_type,
     .resident_type, .payment_schedule, .room_type, .check_in_date, .check_out_date {
         width: 100%;

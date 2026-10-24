@@ -6,15 +6,15 @@
             <div class="section-dormname">
                 <h2>Dormitory Administrators</h2>
                 @if (auth()->user()->user_type === 'Admin')
-                    <a href="{{ route('users.index') }}" class="btn-primary">+ Add Admin</a>
+                    <a href="{{ route('users.index', ['modal' => 'add-admin']) }}" class="btn-primary">+ Add Admin</a>
                 @endif
             </div>
             <hr>
             <section class="flex-view">
                 @forelse ($admins as $admin)
                     <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $admin->id, 'view' => request('view')]) }}">
-                        <div class="card dorm-card">
-                            <div class="room-image"><img src="{{ asset('images/user-profile.png') }}"></div>
+                        <div class="card dorm-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
+                            <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
                             <div class="room-number"><p>{{ $admin->nickname }}</p></div>
                         </div>
                     </a>
@@ -28,7 +28,7 @@
                 <a href="{{ route('users.index', ['view' => request('view') === 'transient' ? 'resident' : 'transient']) }}" class="btn-primary">{{ request('view') === 'transient' ? 'View Residents' : 'View Transients' }}</a>
                 <div class="residents-title">
                     <h2>{{ request('view') === 'transient' ? 'Transients' : 'Residents' }}</h2>
-                    <a href="{{ route('users.index') }}" class="btn-primary">+ Add {{ request('view') === 'transient' ? 'Transient' : 'Resident' }}</a>
+                    <a href="{{ route('users.index', ['modal' => 'add-resident', 'view' => request('view')]) }}" class="btn-primary">+ Add {{ request('view') === 'transient' ? 'Transient' : 'Resident' }}</a>
                 </div>
             </div>
             <hr>
@@ -40,11 +40,11 @@
             <section class="flex-view">
                 @forelse ($residents as $resident)
                     <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $resident->user->id, 'view' => request('view')]) }}">
-                        <div class="card dorm-card">
-                            <div class="room-image"><img src="{{ asset('images/user-profile.png') }}"></div>
+                        <div class="card dorm-card {{ $resident->user->status === 'Inactive' ? 'inactive-card' : '' }}">
+                            <div class="room-image"><img src="{{ asset($resident->user->profile_picture) }}"></div>
                             <div class="room-number"><p>{{ $resident->user->nickname }}</p></div>
-                            <div class="room-info"><p>Room: {{ $resident->room->room_number }}</p></div>
-                            <div class="room-info"><p>Dorm: {{ $resident->room->dorm_name }}</p></div>
+                            <div class="room-info"><p>Room: {{ $resident->room?->room_number ?? 'Unassigned' }}</p></div>
+                            <div class="room-info"><p>Dorm: {{ $resident->room?->dorm_name ?? 'Unassigned' }}</p></div>
                             <div class="room-info"><p>Resident Type: {{ $resident->resident_type }}</p></div>
                         </div>
                     </a>
@@ -54,7 +54,232 @@
             </section>
         </section>
 
-        {{-- =============================== EDIT ADMIN USER MODAL =============================== --}}
+        {{-- =============================== ADD ADMIN USER MODAL =============================== --}}
+        @if (request('modal') == 'add-admin')
+            <div class="modal">
+                <div class="card user-modal">
+                    <h2 class="modal-title">Add Admin</h2>
+                    <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        {{-- PERSONAL INFORMATION --}}
+                        <div class="user-top-section">
+                            <div class="sidebar">
+                                <div class="image-upload" style="align-items: center;">
+                                    <img id="preview-image" 
+                                        src="{{ asset('images/users/user-profile.png') }}">
+                                    <input
+                                        type="file"
+                                        name="profile_picture"
+                                        id="profile_picture"
+                                        accept="image/*">
+                                </div>
+                            </div>
+                            <div class="user-details">
+                                <div class="fullname">
+                                    <div class="form-group last_name">
+                                        <label for="last_name">Last Name:</label>
+                                        <input type="text" id="last_name" name="last_name" class="form-input" value="{{ old('last_name') }}">
+                                    </div>
+                                    <div class="form-group first_name">
+                                        <label for="first_name">First Name:</label>
+                                        <input type="text" id="first_name" name="first_name" class="form-input" value="{{ old('first_name') }}">
+                                    </div>
+                                    <div class="form-group middle_name">
+                                        <label for="middle_name">Middle Name:</label>
+                                        <input type="text" id="middle_name" name="middle_name" class="form-input" value="{{ old('middle_name') }}">
+                                    </div>
+                                </div>
+                                <div class="info">
+                                    <div class="form-group nickname">
+                                        <label for="nickname">Nickname:</label>
+                                        <input type="text" id="nickname" name="nickname" class="form-input" value="{{ old('nickname') }}">
+                                    </div>
+                                    <div class="form-group birthdate">
+                                        <label for="birthdate">Birthdate:</label>
+                                        <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ old('birthdate') }}">
+                                    </div>
+                                    <div class="form-group phone_number">
+                                        <label for="phone_number">Phone Number:</label>
+                                        <input type="tel" id="phone_number" name="phone_number" class="form-input" value="{{ old('phone_number') }}">
+                                    </div>
+                                </div>
+                                <div class="contact">
+                                    <div class="form-group address">
+                                        <label for="address">Address:</label>
+                                        <input type="text" id="address" name="address" class="form-input" value="{{ old('address') }}">
+                                    </div>
+                                </div>
+                                <div class="login-details">
+                                    <div class="form-group email">
+                                        <label for="email">Email Address:</label>
+                                        <input type="email" id="email" name="email" class="form-input" value="{{ old('email') }}">
+                                    </div>
+                                    <div class="form-group password">
+                                        <label for="password">Password:</label>
+                                        <input type="password" id="password" name="password" class="form-input" placeholder="Default Password: spum123">
+                                    </div>
+                                </div>
+                                <div class="account">
+                                    <div class="form-group user_type">
+                                        <label for="user_type">User Type:</label>
+                                        <select id="user_type" name="user_type" class="form-cb">
+                                            <option value="" selected disabled hidden>Select User Type</option>
+                                            <option value="Admin" {{ old('user_type') === 'Admin' ? 'selected' : ''}}>Admin</option>
+                                            <option value="Manager" {{ old('user_type') === 'Manager' ? 'selected' : '' }}>Manager</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="submit" class="btn-primary">Save Changes</button>
+                            <button type="reset" class="btn-primary">Clear</button>
+                            <a href="{{ route('users.index', ['view' => request('view')]) }}" class="btn-primary">Close</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @endif
+        
+        {{-- =============================== ADD RESIDENT/TRANSIENT USER MODAL =============================== --}}
+        @if (request('modal') == 'add-resident')
+            <div class="modal">
+                <div class="card user-modal">
+                    <h2 class="modal-title">Add Resident / Transient</h2>
+                    <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        {{-- PERSONAL INFORMATION --}}
+                        <div class="user-top-section">
+                            <div class="sidebar">
+                                <div class="image-upload" style="align-items: center;">
+                                    <img id="preview-image" 
+                                        src="{{ asset('images/users/user-profile.png') }}">
+                                    <input
+                                        type="file"
+                                        name="profile_picture"
+                                        id="profile_picture"
+                                        accept="image/*">
+                                </div>
+                            </div>
+                            <div class="user-details">
+                                <div class="fullname">
+                                    <div class="form-group last_name">
+                                        <label for="last_name">Last Name:</label>
+                                        <input type="text" id="last_name" name="last_name" class="form-input" value="{{ old('last_name') }}">
+                                    </div>
+                                    <div class="form-group first_name">
+                                        <label for="first_name">First Name:</label>
+                                        <input type="text" id="first_name" name="first_name" class="form-input" value="{{ old('first_name') }}">
+                                    </div>
+                                    <div class="form-group middle_name">
+                                        <label for="middle_name">Middle Name:</label>
+                                        <input type="text" id="middle_name" name="middle_name" class="form-input" value="{{ old('middle_name') }}">
+                                    </div>
+                                </div>
+                                <div class="info">
+                                    <div class="form-group nickname">
+                                        <label for="nickname">Nickname:</label>
+                                        <input type="text" id="nickname" name="nickname" class="form-input" value="{{ old('nickname') }}">
+                                    </div>
+                                    <div class="form-group birthdate">
+                                        <label for="birthdate">Birthdate:</label>
+                                        <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ old('birthdate') }}">
+                                    </div>
+                                    <div class="form-group phone_number">
+                                        <label for="phone_number">Phone Number:</label>
+                                        <input type="tel" id="phone_number" name="phone_number" class="form-input" value="{{ old('phone_number') }}">
+                                    </div>
+                                </div>
+                                <div class="contact">
+                                    <div class="form-group address">
+                                        <label for="address">Address:</label>
+                                        <input type="text" id="address" name="address" class="form-input" value="{{ old('address') }}">
+                                    </div>
+                                </div>
+                                <div class="login-details">
+                                    <div class="form-group email">
+                                        <label for="email">Email Address:</label>
+                                        <input type="email" id="email" name="email" class="form-input" value="{{ old('email') }}">
+                                    </div>
+                                    <div class="form-group password">
+                                        <label for="password">Password:</label>
+                                        <input type="password" id="password" name="password" class="form-input" placeholder="Default Password: spum123" value="{{ old('password') }}">
+                                    </div>
+                                </div>
+                                <div class="account">
+                                    <div class="form-group user_type">
+                                        <label for="user_type">User Type:</label>
+                                        <select id="user_type" name="user_type" class="form-cb">
+                                            <option value="Resident" {{ old('user_type') === 'Resident' ? 'selected' : '' }}>Resident</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+ 
+                        {{-- resident section --}}
+                        <hr style="margin: 0.5rem 0.5rem 1rem 0.5rem;">
+                        <h2 class="modal-title">Resident Information</h2>
+                        <div class="resident-type">
+                            <div class="form-group accommodation_type">
+                                <label for="accommodation_type">Accommodation Type:</label>
+                                <select name="accommodation_type" id="accommodation_type" class="form-cb">
+                                    <option value="Resident" {{ old('accommodation_type') === 'Resident' ? 'selected' : '' }}>Resident</option>
+                                    <option value="Transient" {{ old('accommodation_type') === 'Transient' ? 'selected' : '' }}>Transient</option>
+                                </select>
+                            </div>
+                            <div class="form-group resident_type">
+                                <label for="resident_type">Resident Type:</label>
+                                <select name="resident_type" id="resident_type" class="form-cb">
+                                    <option value="Student" {{ old('resident_type') === 'Student' ? 'selected' : '' }}>Student</option>
+                                    <option value="Employee" {{ old('resident_type') === 'Employee' ? 'selected' : '' }}>Employee</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="lodging-type">
+                            <div class="form-group payment_schedule">
+                                <label for="payment_schedule">Payment Schedule:</label>
+                                <select name="payment_schedule" id="payment_schedule" class="form-cb">
+                                    <option value="Full Payment" {{ old('payment_schedule') == 'Full Payment' ? 'selected' : '' }}>Full Payment</option>
+                                    <option value="4 Payments" {{ old('payment_schedule') == '4 Payments' ? 'selected' : '' }}>4 Payments</option>
+                                    <option value="3 Payments" {{ old('payment_schedule') == '3 Payments' ? 'selected' : '' }}>3 Payments</option>
+                                    <option value="2 Payments" {{ old('payment_schedule') == '2 Payments' ? 'selected' : '' }}>2 Payments</option>
+                                    <option value="Monthly" {{ old('payment_schedule') == 'Monthly' ? 'selected' : '' }}>Monthly</option>
+                                    <option value="Per Day" {{ old('payment_schedule') == 'Per Day' ? 'selected' : '' }}>Per Day</option>
+                                </select>
+                            </div>
+                            <div class="form-group room_type">
+                                <label for="room_type">Room Type:</label>
+                                <select name="room_type" id="room_type" class="form-cb">
+                                    <option value="8 persons" {{ old('room_type') === '8 persons' ? 'selected' : '' }}>8 persons</option>
+                                    <option value="4 persons" {{ old('room_type') === '4 persons' ? 'selected' : '' }}>4 persons</option>
+                                    <option value="3 persons" {{ old('room_type') === '3 persons' ? 'selected' : '' }}>3 persons</option>
+                                    <option value="2 persons" {{ old('room_type') === '2 persons' ? 'selected' : '' }}>2 persons</option>
+                                    <option value="1 person" {{ old('room_type') === '1 person' ? 'selected' : '' }}>1 person</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="checkin-checkout">
+                            <div class="form-group check_in_date">
+                                <label for="check_in_date">Check In:</label>
+                                <input type="date" id="check_in_date" name="check_in_date" class="form-input" value="{{ old('check_in_date') }}">
+                            </div>
+                            <div class="form-group check_out_date">
+                                <label for="check_out_date">Check Out:</label>
+                                <input type="date" id="check_out_date" name="check_out_date" class="form-input" value="{{ old('check_out_date') }}">
+                            </div>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="submit" class="btn-primary">Save Changes</button>
+                            <button type="reset" class="btn-primary">Clear</button>
+                            <a href="{{ route('users.index', ['view' => request('view')]) }}" class="btn-primary">Close</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @endif
+
+        {{-- =============================== EDIT USER MODAL =============================== --}}
         {{-- pull up info of selected user ADMIN --}}
         @php
             $selectedUser = null;
@@ -67,33 +292,46 @@
             <div class="modal">
                 <div class="card user-modal">
                     <h2 class="modal-title">Edit User: <span>{{ $selectedUser->nickname }}</span></h2>
-                    <form action="{{ route('users.update', $selectedUser) }}" method="POST">
+                    <form action="{{ route('users.update', $selectedUser) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         {{-- PERSONAL INFORMATION --}}
                         <div class="user-top-section">
                             <div class="sidebar">
-                                <img src="{{ asset('images/user-profile.png') }}">
+                                <div class="image-upload" style="align-items: center;">
+                                    <img id="preview-image" 
+                                        src="{{ $selectedUser->profile_picture
+                                            ? asset($selectedUser->profile_picture)
+                                            : asset('images/user-profile.png') }}">
+                                    <input
+                                        type="file"
+                                        name="profile_picture"
+                                        id="profile_picture"
+                                        accept="image/*"
+                                        hidden>
+                                    <label for="profile_picture" class="btn-primary">Choose File</label>
+                                    <span id="file-name">No file chosen</span><br>
+                                </div>
                                 @if($selectedUser->resident)
                                     <p>Resident ID: <br><span>{{ $selectedUser->resident->id }}</span></p><br>
-                                    <p>Room: <br><span>{{ $selectedUser->resident->room->dorm_name }} {{ $selectedUser->resident->room->room_number }}</span></p>
+                                    <p>Room: <br><span>{{ $selectedUser->resident->room?->dorm_name ?? 'Unassigned' }} {{ $selectedUser->resident->room?->room_number ?? '' }}</span></p>
                                 @else
                                     <p>User ID: <span>{{ $selectedUser->id }}</span></p>
                                 @endif
                             </div>
                             <div class="user-details">
                                 <div class="fullname">
-                                    <div class="form-group lastname">
-                                        <label for="lastname">Last Name:</label>
-                                        <input type="text" id="lastname" name="lastname" class="form-input" value="{{ $selectedUser->last_name }}">
+                                    <div class="form-group last_name">
+                                        <label for="last_name">Last Name:</label>
+                                        <input type="text" id="last_name" name="last_name" class="form-input" value="{{ $selectedUser->last_name }}">
                                     </div>
-                                    <div class="form-group firstname">
-                                        <label for="firstname">First Name:</label>
-                                        <input type="text" id="firstname" name="firstname" class="form-input" value="{{ $selectedUser->first_name }}">
+                                    <div class="form-group first_name">
+                                        <label for="first_name">First Name:</label>
+                                        <input type="text" id="first_name" name="first_name" class="form-input" value="{{ $selectedUser->first_name }}">
                                     </div>
-                                    <div class="form-group middlename">
-                                        <label for="middlename">Middle Name:</label>
-                                        <input type="text" id="middlename" name="middlename" class="form-input" value="{{ $selectedUser->middle_name }}">
+                                    <div class="form-group middle_name">
+                                        <label for="middle_name">Middle Name:</label>
+                                        <input type="text" id="middle_name" name="middle_name" class="form-input" value="{{ $selectedUser->middle_name }}">
                                     </div>
                                 </div>
                                 <div class="info">
@@ -125,6 +363,9 @@
                                         <label for="password">Password:</label>
                                         <input type="password" id="password" name="password" class="form-input" placeholder="Leave blank to keep current password">
                                     </div>
+                                    <div class="reset-password-btn">
+                                        <button type="submit" name="reset_password" value="1" class="btn-primary ">Reset</button>
+                                    </div>
                                 </div>
                                 <div class="account">
                                     <div class="form-group user_type">
@@ -151,7 +392,7 @@
                             <hr style="margin: 0.5rem 0.5rem 1rem 0.5rem;">
                             @php
                                 $paymentOptions = match($selectedUser->resident->accommodation_type) {
-                                    'Resident' => ['Full Payment', '2 Payments', '3 Payments', '4 Payments', 'Monthly'],
+                                    'Resident' => ['Full Payment', '4 Payments', '3 Payments', '2 Payments', 'Monthly'],
                                     'Transient' => ['Per Day'],
                                     default => [],
                                 };
@@ -189,7 +430,7 @@
                                         <option value="4 persons" {{ $selectedUser->resident->room_type === '4 persons' ? 'selected' : '' }}>4 persons</option>
                                         <option value="3 persons" {{ $selectedUser->resident->room_type === '3 persons' ? 'selected' : '' }}>3 persons</option>
                                         <option value="2 persons" {{ $selectedUser->resident->room_type === '2 persons' ? 'selected' : '' }}>2 persons</option>
-                                        <option value="1 persons" {{ $selectedUser->resident->room_type === '1 persons' ? 'selected' : '' }}>1 persons</option>
+                                        <option value="1 person" {{ $selectedUser->resident->room_type === '1 person' ? 'selected' : '' }}>1 person</option>
                                     </select>
                                 </div>
                             </div>
@@ -206,6 +447,7 @@
                         @endif
                         <div class="form-buttons">
                             <button type="submit" class="btn-primary">Save Changes</button>
+                            <button type="reset" class="btn-primary">Restore</button>
                             <a href="{{ route('users.index', ['view' => request('view')]) }}" class="btn-primary">Close</a>
                         </div>
                     </form>
@@ -217,7 +459,7 @@
         @if(session('success'))
             <div class="modal">
                 <div class="card user-modal receipt-modal">
-                    <h2 class="modal-title">USER UPDATE RECEIPT</h2>
+                    <h2 class="modal-title">USER RECEIPT</h2>
                     <p style="text-align:center;">{{ session('success') }}</p>
                     @if(session('receipt'))
                         <div class="receipt-box">
