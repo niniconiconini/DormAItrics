@@ -27,7 +27,7 @@ Route::get('logout', function (Request $request) {
 })->name('logout');
 
 //      ALL DMS USERS CAN ACCESS
-    Route::middleware(['auth', 'can:all-users'])->group(function () {
+Route::middleware(['auth', 'can:all-users'])->group(function () {
     // homepage
     Route::get('/', [AnnouncementsController::class, 'index'])->name('home');
 
@@ -48,7 +48,7 @@ Route::get('logout', function (Request $request) {
 });
 
 //      ADMIN ONLY ACCESS
-    Route::middleware(['auth', 'can:admins'])->group(function () {
+Route::middleware(['auth', 'can:admins'])->group(function () {
     // dormer management
     Route::resource('users', UserController::class);
 

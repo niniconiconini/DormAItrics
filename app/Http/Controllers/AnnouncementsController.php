@@ -36,6 +36,7 @@ class AnnouncementsController extends Controller
         return redirect('')->with('success', 'Announcement posted!');
 
     }
+
     /* edit button */
     public function update(Request $request, Announcement $announcement): RedirectResponse
     {

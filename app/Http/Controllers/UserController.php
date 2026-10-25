@@ -13,8 +13,9 @@ class UserController extends Controller
 {
     public function index(): View
     {
+        // get active users
         $admins = User::whereIn('user_type', ['Admin', 'Manager'])
-            ->orderByRaw("CASE WHEN status = 'Active' THEN 0 ELSE 1 END")
+            ->where('status', 'Active')
             ->get();
 
         $residents = Resident::with(['user', 'room']);
@@ -27,11 +28,23 @@ class UserController extends Controller
         if (request('resident_type')) {
             $residents->where('resident_type', request('resident_type'));
         }
-        $residents = $residents->get()->sortBy(function ($resident) {
-            return $resident->user->status === 'Active' ? 0 : 1;
+        $residents = $residents->get()->filter(function ($resident) {
+            return $resident->user->status === 'Active';
         });
 
-        return view('residents', ['admins' => $admins, 'residents' => $residents]);
+        // get inaactive users
+        $inactiveUsers = User::with('resident')
+            ->where('status', 'Inactive')
+            ->orderByRaw("CASE
+                            WHEN user_type = 'Admin' THEN 1
+                            WHEN user_type = 'Manager' THEN 2
+                            WHEN user_type = 'Resident' THEN 3
+                            ELSE 4
+                        END")->get();
+
+        return view('residents', ['admins' => $admins,
+            'residents' => $residents,
+            'inactiveUsers' => $inactiveUsers, ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -146,7 +159,11 @@ class UserController extends Controller
             unset($validated['password']);
         }
 
+        $oldStatus = $user->status;
+
         $user->update($validated);
+
+        $userActivated = $oldStatus === 'Inactive' && $user->status === 'Active';
 
         if ($request->filled('password')) {
             $user->update(['password' => $request->password]);
@@ -184,7 +201,7 @@ class UserController extends Controller
         }
 
         $receipt = [
-            'action' => 'User Updated',
+            'action' => $userActivated ? 'User Activated' : 'User Updated',
             'last_name' => $user->last_name,
             'first_name' => $user->first_name,
             'middle_name' => $user->middle_name,
@@ -208,9 +225,11 @@ class UserController extends Controller
             $receipt['check_out_date'] = $user->resident->check_out_date?->format('F d, Y');
         }
 
+        $successMessage = $userActivated ? 'User activated successfully.' : 'User updated successfully.';
+
         return redirect()
             ->route('users.index')
-            ->with('success', 'User updated successfully.')
+            ->with('success', $successMessage)
             ->with('receipt', $receipt);
     }
 }

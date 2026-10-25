@@ -52,6 +52,32 @@
                     <p>No residents found.</p>
                 @endforelse
             </section>
+            <section class="dorm-section"> {{-- inactive users --}}
+                @if($inactiveUsers->count())
+                    <details class="inactive-section"><summary class="inactive-summary"><h2>Inactive Users ({{ $inactiveUsers->count() }})</h2><hr></summary>
+                    <section class="flex-view">
+                        @foreach($inactiveUsers as $user)
+                            <a href="{{ route('users.index', [
+                                'modal' => 'edit-user',
+                                'user' => $user->id,
+                                'view' => request('view')
+                            ]) }}">
+                                <div class="card dorm-card inactive-card">
+                                    <div class="room-image"><img src="{{ asset($user->profile_picture) }}"></div>
+                                    <div class="room-number"><p>{{ $user->nickname }}</p></div>
+                                    @if(!$user->resident)
+                                        <div class="room-info"><p>{{ $user->user_type }}</p></div>
+                                    @endif
+                                    @if($user->resident)
+                                        <div class="room-info"><p>{{ $user->resident->accommodation_type }}</p></div>
+                                    @endif
+                                </div>
+                            </a>
+                        @endforeach
+                    </section>
+                    </details>
+                @endif
+            </section>
         </section>
 
         {{-- =============================== ADD ADMIN USER MODAL =============================== --}}
@@ -289,9 +315,15 @@
         @endphp
         {{-- pull up edit user modal --}}
         @if(request('modal') == 'edit-user' && $selectedUser)
+            @php
+                $isInactive = $selectedUser->status === 'Inactive';
+            @endphp
             <div class="modal">
                 <div class="card user-modal">
                     <h2 class="modal-title">Edit User: <span>{{ $selectedUser->nickname }}</span></h2>
+                    @if ($isInactive)
+                        <div class="inactive-banner">This account is inactive. Please reactivate to edit information.</div>
+                    @endif
                     <form action="{{ route('users.update', $selectedUser) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
@@ -308,8 +340,9 @@
                                         name="profile_picture"
                                         id="profile_picture"
                                         accept="image/*"
-                                        hidden>
-                                    <label for="profile_picture" class="btn-primary">Choose File</label>
+                                        hidden
+                                        @disabled($isInactive)>
+                                    <label for="profile_picture" class="btn-primary {{ $isInactive ? 'inactive-btn' : '' }}">Choose File</label>
                                     <span id="file-name">No file chosen</span><br>
                                 </div>
                                 @if($selectedUser->resident)
@@ -323,57 +356,57 @@
                                 <div class="fullname">
                                     <div class="form-group last_name">
                                         <label for="last_name">Last Name:</label>
-                                        <input type="text" id="last_name" name="last_name" class="form-input" value="{{ $selectedUser->last_name }}">
+                                        <input type="text" id="last_name" name="last_name" class="form-input" value="{{ $selectedUser->last_name }}" @disabled($isInactive)>
                                     </div>
                                     <div class="form-group first_name">
                                         <label for="first_name">First Name:</label>
-                                        <input type="text" id="first_name" name="first_name" class="form-input" value="{{ $selectedUser->first_name }}">
+                                        <input type="text" id="first_name" name="first_name" class="form-input" value="{{ $selectedUser->first_name }}" @disabled($isInactive)>
                                     </div>
                                     <div class="form-group middle_name">
                                         <label for="middle_name">Middle Name:</label>
-                                        <input type="text" id="middle_name" name="middle_name" class="form-input" value="{{ $selectedUser->middle_name }}">
+                                        <input type="text" id="middle_name" name="middle_name" class="form-input" value="{{ $selectedUser->middle_name }}" @disabled($isInactive)>
                                     </div>
                                 </div>
                                 <div class="info">
                                     <div class="form-group nickname">
                                         <label for="nickname">Nickname:</label>
-                                        <input type="text" id="nickname" name="nickname" class="form-input" value="{{ $selectedUser->nickname }}">
+                                        <input type="text" id="nickname" name="nickname" class="form-input" value="{{ $selectedUser->nickname }}" @disabled($isInactive)>
                                     </div>
                                     <div class="form-group birthdate">
                                         <label for="birthdate">Birthdate:</label>
-                                        <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ $selectedUser->birthdate?->format('Y-m-d') }}">
+                                        <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ $selectedUser->birthdate?->format('Y-m-d') }}" @disabled($isInactive)>
                                     </div>
                                     <div class="form-group phone_number">
                                         <label for="phone_number">Phone Number:</label>
-                                        <input type="tel" id="phone_number" name="phone_number" class="form-input" value="{{ $selectedUser->phone_number }}">
+                                        <input type="tel" id="phone_number" name="phone_number" class="form-input" value="{{ $selectedUser->phone_number }}" @disabled($isInactive)>
                                     </div>
                                 </div>
                                 <div class="contact">
                                     <div class="form-group address">
                                         <label for="address">Address:</label>
-                                        <input type="text" id="address" name="address" class="form-input" value="{{ $selectedUser->address }}">
+                                        <input type="text" id="address" name="address" class="form-input" value="{{ $selectedUser->address }}" @disabled($isInactive)>
                                     </div>
                                 </div>
                                 <div class="login-details">
                                     <div class="form-group email">
                                         <label for="email">Email Address:</label>
-                                        <input type="email" id="email" name="email" class="form-input" value="{{ $selectedUser->email }}">
+                                        <input type="email" id="email" name="email" class="form-input" value="{{ $selectedUser->email }}" @disabled($isInactive)>
                                     </div>
-                                    <div class="form-group password">
+                                    <div class="password-group">
                                         <label for="password">Password:</label>
-                                        <input type="password" id="password" name="password" class="form-input" placeholder="Leave blank to keep current password">
-                                    </div>
-                                    <div class="reset-password-btn">
-                                        <button type="submit" name="reset_password" value="1" class="btn-primary ">Reset</button>
+                                        <div class="password-row">
+                                            <input type="password" id="password" name="password" class="form-input" placeholder="Leave blank to keep current password" @disabled($isInactive)>
+                                            <button type="submit" name="reset_password" value="1" class="btn-primary  {{ $isInactive ? 'inactive-btn' : '' }}" @disabled($isInactive)>Reset</button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="account">
                                     <div class="form-group user_type">
                                         <label for="user_type">User Type:</label>
-                                        <select id="user_type" name="user_type" class="form-cb">
-                                            <option value="Admin" {{ $selectedUser->user_type === 'Admin' ? 'selected' : '' }}>Admin</option>
-                                            <option value="Manager" {{ $selectedUser->user_type === 'Manager' ? 'selected' : '' }}>Manager</option>
-                                            <option value="Resident" {{ $selectedUser->user_type === 'Resident' ? 'selected' : '' }}>Resident</option>
+                                        <select id="user_type" name="user_type" class="form-cb" @disabled($isInactive)>
+                                            <option value="Admin" {{ $selectedUser->user_type === 'Admin' ? 'selected' : '' }} @disabled($isInactive)>Admin</option>
+                                            <option value="Manager" {{ $selectedUser->user_type === 'Manager' ? 'selected' : '' }} @disabled($isInactive)>Manager</option>
+                                            <option value="Resident" {{ $selectedUser->user_type === 'Resident' ? 'selected' : '' }} @disabled($isInactive)>Resident</option>
                                         </select>
                                     </div>
                                     <div class="form-group user-status">
@@ -401,53 +434,53 @@
                             <div class="resident-type">
                                 <div class="form-group accommodation_type">
                                     <label for="accommodation_type">Accommodation Type:</label>
-                                    <select name="accommodation_type" id="accommodation_type" class="form-cb">
-                                        <option value="Resident" {{ $selectedUser->resident->accommodation_type === 'Resident' ? 'selected' : '' }}>Resident</option>
-                                        <option value="Transient" {{ $selectedUser->resident->accommodation_type === 'Transient' ? 'selected' : '' }}>Transient</option>
+                                    <select name="accommodation_type" id="accommodation_type" class="form-cb" @disabled($isInactive)>
+                                        <option value="Resident" {{ $selectedUser->resident->accommodation_type === 'Resident' ? 'selected' : '' }} @disabled($isInactive)>Resident</option>
+                                        <option value="Transient" {{ $selectedUser->resident->accommodation_type === 'Transient' ? 'selected' : '' }} @disabled($isInactive)>Transient</option>
                                     </select>
                                 </div>
                                 <div class="form-group resident_type">
                                     <label for="resident_type">Resident Type:</label>
-                                    <select name="resident_type" id="resident_type" class="form-cb">
-                                        <option value="Student" {{ $selectedUser->resident->resident_type === 'Student' ? 'selected' : '' }}>Student</option>
-                                        <option value="Employee" {{ $selectedUser->resident->resident_type === 'Employee' ? 'selected' : '' }}>Employee</option>
+                                    <select name="resident_type" id="resident_type" class="form-cb" @disabled($isInactive)>
+                                        <option value="Student" {{ $selectedUser->resident->resident_type === 'Student' ? 'selected' : '' }} @disabled($isInactive)>Student</option>
+                                        <option value="Employee" {{ $selectedUser->resident->resident_type === 'Employee' ? 'selected' : '' }} @disabled($isInactive)>Employee</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="lodging-type">
                                 <div class="form-group payment_schedule">
                                     <label for="payment_schedule">Payment Schedule:</label>
-                                    <select name="payment_schedule" id="payment_schedule" class="form-cb">
+                                    <select name="payment_schedule" id="payment_schedule" class="form-cb" @disabled($isInactive)>
                                         @foreach ($paymentOptions as $paymentOption)
-                                            <option value="{{ $paymentOption }}" @selected($selectedUser->resident->payment_schedule == $paymentOption)>{{ $paymentOption }}</option>
+                                            <option value="{{ $paymentOption }}" @selected($selectedUser->resident->payment_schedule == $paymentOption) @disabled($isInactive)>{{ $paymentOption }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group room_type">
                                     <label for="room_type">Room Type:</label>
-                                    <select name="room_type" id="room_type" class="form-cb">
-                                        <option value="8 persons" {{ $selectedUser->resident->room_type === '8 persons' ? 'selected' : '' }}>8 persons</option>
-                                        <option value="4 persons" {{ $selectedUser->resident->room_type === '4 persons' ? 'selected' : '' }}>4 persons</option>
-                                        <option value="3 persons" {{ $selectedUser->resident->room_type === '3 persons' ? 'selected' : '' }}>3 persons</option>
-                                        <option value="2 persons" {{ $selectedUser->resident->room_type === '2 persons' ? 'selected' : '' }}>2 persons</option>
-                                        <option value="1 person" {{ $selectedUser->resident->room_type === '1 person' ? 'selected' : '' }}>1 person</option>
+                                    <select name="room_type" id="room_type" class="form-cb" @disabled($isInactive)>
+                                        <option value="8 persons" {{ $selectedUser->resident->room_type === '8 persons' ? 'selected' : '' }} @disabled($isInactive)>8 persons</option>
+                                        <option value="4 persons" {{ $selectedUser->resident->room_type === '4 persons' ? 'selected' : '' }} @disabled($isInactive)>4 persons</option>
+                                        <option value="3 persons" {{ $selectedUser->resident->room_type === '3 persons' ? 'selected' : '' }} @disabled($isInactive)>3 persons</option>
+                                        <option value="2 persons" {{ $selectedUser->resident->room_type === '2 persons' ? 'selected' : '' }} @disabled($isInactive)>2 persons</option>
+                                        <option value="1 person" {{ $selectedUser->resident->room_type === '1 person' ? 'selected' : '' }} @disabled($isInactive)>1 person</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="checkin-checkout">
                                 <div class="form-group check_in_date">
                                     <label for="check_in_date">Check In:</label>
-                                    <input type="date" id="check_in_date" name="check_in_date" class="form-input" value="{{ $selectedUser->resident->check_in_date?->format('Y-m-d') }}">
+                                    <input type="date" id="check_in_date" name="check_in_date" class="form-input" value="{{ $selectedUser->resident->check_in_date?->format('Y-m-d') }}" @disabled($isInactive)>
                                 </div>
                                 <div class="form-group check_out_date">
                                     <label for="check_out_date">Check Out:</label>
-                                    <input type="date" id="check_out_date" name="check_out_date" class="form-input" value="{{ $selectedUser->resident->check_out_date?->format('Y-m-d') }}">
+                                    <input type="date" id="check_out_date" name="check_out_date" class="form-input" value="{{ $selectedUser->resident->check_out_date?->format('Y-m-d') }}" @disabled($isInactive)>
                                 </div>
                             </div>
                         @endif
                         <div class="form-buttons">
                             <button type="submit" class="btn-primary">Save Changes</button>
-                            <button type="reset" class="btn-primary">Restore</button>
+                            <button type="reset" class="btn-primary {{ $isInactive ? 'inactive-btn' : '' }}" @disabled($isInactive)>Restore</button>
                             <a href="{{ route('users.index', ['view' => request('view')]) }}" class="btn-primary">Close</a>
                         </div>
                     </form>
@@ -455,41 +488,63 @@
             </div>
         @endif
 
-        {{-- confirmation / error receipt --}}
+        {{-- confirmation --}}
         @if(session('success'))
             <div class="modal">
                 <div class="card user-modal receipt-modal">
-                    <h2 class="modal-title">USER RECEIPT</h2>
+                    <h2 class="modal-title">{{ session('receipt.action') }}</h2>
                     <p style="text-align:center;">{{ session('success') }}</p>
                     @if(session('receipt'))
                         <div class="receipt-box">
-                            <p><strong>Action: </strong>{{ session('receipt.action') }}</p>
                             <hr>
-                            <p><strong>Last Name: </strong>{{ session('receipt.last_name') }}</p>
-                            <p><strong>First Name: </strong>{{ session('receipt.first_name') }}</p>
-                            <p><strong>Middle Name: </strong>{{ session('receipt.middle_name') }}</p>
-                            <p><strong>Nickname: </strong>{{ session('receipt.nickname') }}</p>
-                            <p><strong>Birthdate: </strong>{{ session('receipt.birthdate') }}</p>
-                            <p><strong>Phone Number: </strong>{{ session('receipt.phone_number') }}</p>
-                            <p><strong>Address: </strong>{{ session('receipt.address') }}</p>
-                            <p><strong>Email: </strong>{{ session('receipt.email') }}</p>
-                            <p><strong>User Type: </strong>{{ session('receipt.user_type') }}</p>
-                            <p><strong>Status: </strong>{{ session('receipt.status') }}</p>
-                            <p><strong>Password Updated: </strong>{{ session('receipt.password_updated') ? 'Yes' : 'No' }}</p>
+                            <h3>User Information</h3>
+                        <div class="receipt-row"><strong>Last Name:</strong><span>{{ session('receipt.last_name') }}</span></div>
+                        <div class="receipt-row"><strong>First Name:</strong><span>{{ session('receipt.first_name') }}</span></div>
+                        <div class="receipt-row"> <strong>Middle Name:</strong> <span>{{ session('receipt.middle_name') }}</span> </div>
+                        <div class="receipt-row"> <strong>Nickname:</strong> <span>{{ session('receipt.nickname') }}</span> </div>
+                        <div class="receipt-row"> <strong>Birthdate:</strong> <span>{{ session('receipt.birthdate') }}</span> </div>
+                        <div class="receipt-row"> <strong>Phone Number:</strong> <span>{{ session('receipt.phone_number') }}</span> </div>
+                        <div class="receipt-row"> <strong>Address:</strong> <span>{{ session('receipt.address') }}</span> </div>
+                        <div class="receipt-row"> <strong>Email:</strong> <span>{{ session('receipt.email') }}</span> </div>
+                        <div class="receipt-row"> <strong>User Type:</strong> <span>{{ session('receipt.user_type') }}</span> </div>
+                        <div class="receipt-row"> <strong>Status:</strong> <span>{{ session('receipt.status') }}</span> </div>
+                        <div class="receipt-row"> <strong>Password Updated:</strong> <span>{{ session('receipt.password_updated') ? 'Yes' : 'No' }}</span> </div>
                             <hr>
                             @if(session('receipt.resident_type'))
                                 <h3>Resident Information</h3>
-                                <p><strong>Accommodation Type: </strong>{{ session('receipt.accommodation_type') }}</p>
-                                <p><strong>Resident Type: </strong>{{ session('receipt.resident_type') }}</p>
-                                <p><strong>Payment Schedule: </strong>{{ session('receipt.payment_schedule') }}</p>
-                                <p><strong>Room Type: </strong>{{ session('receipt.room_type') }}</p>
-                                <p><strong>Check In Date: </strong>{{ session('receipt.check_in_date') }}</p>
-                                <p><strong>Check Out Date: </strong>{{ session('receipt.check_out_date') ?? 'N/A' }}</p>
+                                <div class="receipt-row"><strong>Accommodation Type:</strong><span>{{ session('receipt.accommodation_type') }}</span></div>
+                                <div class="receipt-row"><strong>Resident Type:</strong><span>{{ session('receipt.resident_type') }}</span></div>
+                                <div class="receipt-row"><strong>Payment Schedule:</strong><span>{{ session('receipt.payment_schedule') }}</span></div>
+                                <div class="receipt-row"><strong>Room Type:</strong><span>{{ session('receipt.room_type') }}</span></div>
+                                <div class="receipt-row"><strong>Check In Date:</strong><span>{{ session('receipt.check_in_date') }}</span></div>
+                                <div class="receipt-row"><strong>Check Out Date:</strong><span>{{ session('receipt.check_out_date') ?? 'N/A' }}</span></div>
                             @endif
                         </div>
                     @endif
                     <div class="form-buttons">
                         <button class="btn-primary" onclick="this.closest('.modal').remove()">OK</button>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        {{-- error receipt --}}
+        @if($errors->any())
+            <div class="modal">
+                <div class="card user-modal receipt-modal">
+                    <h2 class="modal-title">ERROR RECEIPT</h2>
+                    <div class="receipt-box">
+                        @foreach($errors->all() as $error)
+                            <p>{{ $error }}</p>
+                        @endforeach
+                    </div>
+                    <div class="form-buttons">
+                        <button
+                            type="button"
+                            class="btn-primary"
+                            onclick="this.closest('.modal').remove()">
+                            OK
+                        </button>
                     </div>
                 </div>
             </div>
