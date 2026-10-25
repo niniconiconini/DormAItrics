@@ -1,13 +1,13 @@
 <?php
 
 use App\Http\Controllers\AnnouncementsController;
+use App\Http\Controllers\ConcernController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PassSlipController;
 use App\Http\Controllers\PassSlipMgmtController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ConcernController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;

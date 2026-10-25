@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Concern;
 use App\Models\ConcernReply;
 use App\Models\Resident;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -33,7 +33,7 @@ class ConcernController extends Controller
             'concerns' => $concerns,
             'canPost' => $resident !== null && ! Gate::allows('admins'),
         ]);
-    
+
     }
 
     public function store(Request $request): RedirectResponse
