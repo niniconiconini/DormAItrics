@@ -394,6 +394,106 @@ color: var(--primary-color);
 
 /* ===== ANNOUNCEMENT END ===== */
 
+/* ===== CONERNS START ===== */
+.concern-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #ccc;
+}
+
+.like-btn {
+    padding: 0.4rem 0.9rem;
+    border: 2px solid var(--sidebar-color);
+    border-radius: 0.5rem;
+    background: none;
+    color: var(--sidebar-color);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.like-btn:hover,
+.like-btn.liked {
+    background: var(--sidebar-color);
+    color: var(--body-color);
+}
+
+.concern-replies {
+    margin-top: 0.75rem;
+}
+
+.reply {
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.reply-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.reply-form input {
+    flex: 1;
+    height: 40px;
+    padding: 0 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+/* Concerns: reply edit and delete */
+.reply-body {
+    flex: 1;
+}
+
+.reply-actions {
+    margin-top: 0.25rem;
+}
+
+.link-btn {
+    padding: 0;
+    margin-right: 0.75rem;
+    border: none;
+    background: none;
+    color: var(--sidebar-color);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.link-btn:hover {
+    text-decoration: underline;
+}
+
+.reply-deleted {
+    font-style: italic;
+    color: #6b716b;
+}
+
+.reply-edit-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.reply-edit-form input {
+    flex: 1;
+    height: 36px;
+    padding: 0 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.reply-edit-form .btn-primary {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+/* ===== CONCERNS END ===== */
+
 /* ===== ROOMS START ===== */
 /* DORM NAVIGATION */
 .dorm-section {

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('resident_id')->constrained('residents');
             $table->string('subject');
             $table->text('message');
-            $table->enum('status', ['Pending', 'Resolved'])->default('Pending');
             $table->timestamps();
         });
     }

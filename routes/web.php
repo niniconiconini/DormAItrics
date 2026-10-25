@@ -7,6 +7,7 @@ use App\Http\Controllers\PassSlipMgmtController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ConcernController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -35,7 +36,12 @@ Route::get('logout', function () {
     Route::view('reviews', 'reviews')->name('reviews');
 
     // concerns
-    Route::view('concerns', 'concerns')->name('concerns');
+    Route::get('concerns', [ConcernController::class, 'index'])->name('concerns');
+    Route::post('concerns', [ConcernController::class, 'store'])->name('concerns.store');
+    Route::post('concerns/{concern}/like', [ConcernController::class, 'like'])->name('concerns.like');
+    Route::post('concerns/{concern}/replies', [ConcernController::class, 'reply'])->name('concerns.reply');
+    Route::put('concern-replies/{reply}', [ConcernController::class, 'updateReply'])->name('concern-replies.update');
+    Route::delete('concern-replies/{reply}', [ConcernController::class, 'destroyReply'])->name('concern-replies.destroy');
 
     // pass slips
     Route::get('pass-slip', [PassSlipController::class, 'index'])->name('pass-slips');
@@ -57,6 +63,9 @@ Route::get('logout', function () {
 
     // announcements
     Route::resource('announcements', AnnouncementsController::class)->only(['store', 'update', 'destroy']);
+
+    // concerns
+    Route::delete('concerns/{concern}', [ConcernController::class, 'destroy'])->name('concerns.destroy');
 
     // pass slip management
     Route::get('slips-mgmt', [PassSlipMgmtController::class, 'index'])->name('slips-mgmt');
