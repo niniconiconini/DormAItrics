@@ -16,9 +16,16 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
+            if (Auth::user()->status !== 'Active') {
+                Auth::logout();
+
+                return back()->withErrors(['email' => 'This account is inactive.',
+                ])->onlyInput('email');
+            }
+
             $request->session()->regenerate();
 
-            return redirect()->intended(route('home'));
+            return redirect()->route('home');
         }
 
         return back()->withErrors([
