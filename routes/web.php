@@ -44,7 +44,7 @@ Route::middleware(['auth', 'can:all-users'])->group(function () {
 
     // profile
     Route::view('profile', 'profile')->name('profile');
-
+    Route::put('profile/{user}', [UserController::class, 'update'])->name('profile.update');
 });
 
 //      ADMIN ONLY ACCESS

@@ -6,6 +6,7 @@ use App\Models\Resident;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -54,7 +55,7 @@ class UserController extends Controller
             'first_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
             'nickname' => 'required|string|max:255',
-            'birthdate' => 'required|date',
+            'birthdate' => 'nullable|date',
             'phone_number' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -140,12 +141,36 @@ class UserController extends Controller
 
     public function update(Request $request, User $user): RedirectResponse
     {
+        $userActivated = false;
+        $currentUser = Auth::user();
+        if ($currentUser->id !== $user->id && $currentUser->user_type !== 'Admin') {
+            abort(403);
+        }
+
+        if ($user->status === 'Inactive' && $request->status === 'Active') {
+            $request->merge([
+                'last_name' => $user->last_name,
+                'first_name' => $user->first_name,
+                'middle_name' => $user->middle_name,
+                'nickname' => $user->nickname,
+                'birthdate' => $user->birthdate?->format('Y-m-d'),
+                'phone_number' => $user->phone_number,
+                'address' => $user->address,
+                'email' => $user->email,
+                'password_updated' => $request->filled('password'),
+                'user_type' => $user->user_type,
+                'status' => 'Active',
+                'room_image' => $user->profile_picture,
+            ]);
+            $userActivated = true;
+        }
+
         $validated = $request->validate([
             'last_name' => 'required|string|max:255',
             'first_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
             'nickname' => 'required|string|max:255',
-            'birthdate' => 'required|date',
+            'birthdate' => 'nullable|date',
             'phone_number' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
@@ -159,11 +184,20 @@ class UserController extends Controller
             unset($validated['password']);
         }
 
-        $oldStatus = $user->status;
+        if ($currentUser->id === $user->id && $currentUser->user_type === 'Resident') {
+            $validated['user_type'] = $user->user_type;
+            $validated['status'] = $user->status;
+        }
 
-        $user->update($validated);
+        if ($currentUser->id === $user->id && $currentUser->user_type === 'Manager') {
+            $validated['user_type'] = $user->user_type;
 
-        $userActivated = $oldStatus === 'Inactive' && $user->status === 'Active';
+            if ($validated['status'] === 'Inactive') {
+                $validated['status'] = $user->status;
+            }
+        }
+
+        $user->update($validated); // create user
 
         if ($request->filled('password')) {
             $user->update(['password' => $request->password]);
@@ -183,7 +217,16 @@ class UserController extends Controller
                 'check_out_date' => 'nullable|date|after_or_equal:check_in_date',
             ]);
 
-            $user->resident->update($validated);
+            if ($currentUser->id === $user->id && $currentUser->user_type === 'Resident') {
+                $validated['resident_type'] = $user->resident->resident_type;
+                $validated['accommodation_type'] = $user->resident->accommodation_type;
+                $validated['payment_schedule'] = $user->resident->payment_schedule;
+                $validated['room_type'] = $user->resident->room_type;
+                $validated['check_in_date'] = $user->resident->check_in_date;
+                $validated['check_out_date'] = $user->resident->check_out_date;
+            }
+
+            $user->resident->update($validated); // create resident
         }
 
         if ($request->hasFile('profile_picture')) {
@@ -226,6 +269,14 @@ class UserController extends Controller
         }
 
         $successMessage = $userActivated ? 'User activated successfully.' : 'User updated successfully.';
+
+        // show confirmation after creating account
+        if ($currentUser->id === $user->id) {
+            return redirect()
+                ->route('profile')
+                ->with('success', $successMessage)
+                ->with('receipt', $receipt);
+        }
 
         return redirect()
             ->route('users.index')

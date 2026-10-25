@@ -12,12 +12,33 @@
             <hr>
             <section class="flex-view">
                 @forelse ($admins as $admin)
-                    <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $admin->id, 'view' => request('view')]) }}">
+                    @if (auth()->user()->user_type === 'Manager' && $admin->user_type === 'Admin')
+                        <div class="card dorm-card disabled-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
+                            <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
+                            <div class="room-number"><p>{{ $admin->nickname }}</p></div>
+                        </div>
+                    @elseif (auth()->user()->user_type === 'Manager' && auth()->id() === $admin->id)
+                        <a href="{{ route('profile') }}">
+                            <div class="card dorm-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
+                                <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
+                                <div class="room-number"><p>{{ $admin->nickname }}</p></div>
+                            </div>
+                        </a>
+                    @elseif (auth()->user()->user_type === 'Admin' && auth()->id() === $admin->id)
+                        <a href="{{ route('profile') }}">
+                            <div class="card dorm-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
+                                <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
+                                <div class="room-number"><p>{{ $admin->nickname }}</p></div>
+                            </div>
+                        </a>
+                    @else
+                        <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $admin->id, 'view' => request('view')]) }}">
                         <div class="card dorm-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
                             <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
                             <div class="room-number"><p>{{ $admin->nickname }}</p></div>
                         </div>
                     </a>
+                    @endif
                 @empty
                     <p>No administrators found.</p>
                 @endforelse
@@ -91,14 +112,11 @@
                         <div class="user-top-section">
                             <div class="sidebar">
                                 <div class="image-upload" style="align-items: center;">
-                                    <img id="preview-image" 
-                                        src="{{ asset('images/users/user-profile.png') }}">
-                                    <input
-                                        type="file"
-                                        name="profile_picture"
-                                        id="profile_picture"
-                                        accept="image/*">
-                                </div>
+                                <img id="preview-image" src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('images/user-profile.png') }}">
+                                <input type="file" name="profile_picture" id="profile_picture" accept="image/*" hidden>
+                                <label for="profile_picture" class="btn-primary">Choose File</label>
+                                <span id="file-name">No file chosen</span><br>
+                            </div>
                             </div>
                             <div class="user-details">
                                 <div class="fullname">
@@ -178,14 +196,11 @@
                         <div class="user-top-section">
                             <div class="sidebar">
                                 <div class="image-upload" style="align-items: center;">
-                                    <img id="preview-image" 
-                                        src="{{ asset('images/users/user-profile.png') }}">
-                                    <input
-                                        type="file"
-                                        name="profile_picture"
-                                        id="profile_picture"
-                                        accept="image/*">
-                                </div>
+                                <img id="preview-image" src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('images/user-profile.png') }}">
+                                <input type="file" name="profile_picture" id="profile_picture" accept="image/*" hidden>
+                                <label for="profile_picture" class="btn-primary">Choose File</label>
+                                <span id="file-name">No file chosen</span><br>
+                            </div>
                             </div>
                             <div class="user-details">
                                 <div class="fullname">
@@ -331,17 +346,8 @@
                         <div class="user-top-section">
                             <div class="sidebar">
                                 <div class="image-upload" style="align-items: center;">
-                                    <img id="preview-image" 
-                                        src="{{ $selectedUser->profile_picture
-                                            ? asset($selectedUser->profile_picture)
-                                            : asset('images/user-profile.png') }}">
-                                    <input
-                                        type="file"
-                                        name="profile_picture"
-                                        id="profile_picture"
-                                        accept="image/*"
-                                        hidden
-                                        @disabled($isInactive)>
+                                    <img id="preview-image" src="{{ $selectedUser->profile_picture ? asset($selectedUser->profile_picture) : asset('images/user-profile.png') }}">
+                                    <input type="file" name="profile_picture" id="profile_picture" accept="image/*" hidden @disabled($isInactive)>
                                     <label for="profile_picture" class="btn-primary {{ $isInactive ? 'inactive-btn' : '' }}">Choose File</label>
                                     <span id="file-name">No file chosen</span><br>
                                 </div>
