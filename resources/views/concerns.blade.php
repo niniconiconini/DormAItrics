@@ -20,7 +20,7 @@
             <section class="post-box">
             <div class="input-message">
                 <div class="author post-author">
-                    <img src="{{ asset('images/user-profile.png') }}" alt="">
+                    <img src="{{ asset('images/users/user-profile.png') }}" alt="">
                     <span>{{ auth()->user()->first_name . ' ' . auth()->user()->last_name }}</span>
                 </div>
                 <form method="POST" action="{{ route('concerns.store') }}">
@@ -55,7 +55,7 @@
             @forelse ($concerns as $concern)
                 <div class="card announcement-card" id="concern-{{ $concern->id }}">
                     <div class="author post-author">
-                        <img src="{{ asset('images/user-profile.png') }}" alt="">
+                        <img src="{{ asset('images/users/user-profile.png') }}" alt="">
                         <div>
                             <span>{{ $concern->reporterName() }}</span><br>
                             <small class="post-time">{{ $concern->created_at->format('M j, Y \a\t g:i A') }}</small>
