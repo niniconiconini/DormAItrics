@@ -73,6 +73,11 @@ class User extends Authenticatable
         return $this->hasMany(Announcement::class);
     }
 
+    public function userName(): string
+    {
+        return trim($this->nickname.' '.$this->last_name);
+    }
+
     /**
      * Get the user's initials based on their first and last name
      */

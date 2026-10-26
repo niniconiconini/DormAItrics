@@ -60,6 +60,8 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
 
     // room management
     Route::resource('rooms', RoomController::class);
+    Route::post('/rooms/{room}/assign', [RoomController::class, 'assign'])->name('rooms.assign');
+    Route::get('/rooms/residents/{resident}/remove', [RoomController::class, 'removeResident'])->name('rooms.removeResident');
 
     // announcements
     Route::resource('announcements', AnnouncementsController::class)->only(['store', 'update', 'destroy']);

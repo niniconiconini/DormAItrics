@@ -199,6 +199,10 @@ class UserController extends Controller
 
         $user->update($validated); // create user
 
+        if ($user->status === 'Inactive' && $user->resident) {
+            $user->resident->update(['room_id' => null]);
+        }
+
         if ($request->filled('password')) {
             $user->update(['password' => $request->password]);
         }

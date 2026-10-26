@@ -58,7 +58,8 @@
                             <div class="room-image"><img src="{{ asset($room->room_image) }}"></div>
                             <div class="room-number"><p>Room Number: {{ $room->room_number }}</p></div>
                             <div class="room-info"><p>Building: {{ $room->dorm_name }}</p></div>
-                            <div class="room-info"><p>Capacity: {{ $room->capacity }}</p></div>
+                            <div class="room-info"><p>Capacity: {{ $room->residents_count }} / {{ $room->capacity }}</p></div>
+                            <div class="room-info"><p>Status: {{ $room->residents_count >= $room->capacity ? 'Full' : 'Available'}}</p></div>
                         </div>
                     </a>
                     @empty
@@ -141,7 +142,7 @@
         @php
             $selectedRoom = null;
             if (request('room')) {
-                $selectedRoom = \App\Models\Room::find(request('room'));
+                $selectedRoom = \App\Models\Room::with('residents.user')->find(request('room'));
             }
         @endphp
     
@@ -196,8 +197,7 @@
                     <div class="form-buttons">
                         <button class="btn-primary" type="reset" form="update-form">Reset Changes</button>
                         <button class="btn-primary" type="submit" form="update-form">Update Room</button>
-                        <form action="{{ route('rooms.destroy', $selectedRoom->id) }}" 
-                            method="POST" style="display:inline;" class="delete-form">
+                        <form action="{{ route('rooms.destroy', $selectedRoom->id) }}" method="POST" style="display:inline;" class="delete-form">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn-primary form-delete" 
@@ -206,6 +206,50 @@
                             >Delete Room</button>
                         </form>
                         <a href="{{ route('rooms.index')}}" class="btn-primary">Close</a>
+                    </div>
+                    <div class="room-occupants">
+                        <br>
+                        @if ($errors->has('resident'))
+                            <div class="error-box"><p>{{ $errors->first('resident') }}</p></div>
+                        @endif
+                        {{-- <details class="inactive-section"><summary class="inactive-summary"><hr><h2>Occupants ({{ $room->residents_count }} / {{ $room->capacity }})</h2></summary> --}}
+                        <summary class="inactive-summary"><hr><h2>Occupants ({{ $selectedRoom->residents_count ?? $selectedRoom->residents->count() }} / {{ $selectedRoom->capacity }})</h2><br></summary>
+                            @forelse ($selectedRoom->residents as $resident)
+                                <div class="occupant-row">
+                                    <span>{{ $resident->user->userName() }}</span>
+                                    <a href="{{ route('rooms.removeResident', $resident->id) }}">[ Remove Resident ]</a>
+                                </div>
+                            @empty
+                                <p>There are no occupants in this room.</p>
+                            @endforelse
+                            <br>
+                            @if ($selectedRoom->residents->count() < $selectedRoom->capacity)
+                                <form action="{{ route('rooms.assign', $selectedRoom->id) }}" method="POST">
+                                @csrf
+                                    <select name="resident_id">
+                                        <option value="" hidden></option>
+                                        @foreach ($availableResidents as $resident)
+                                            @php
+                                                $firstOccupant = $selectedRoom->residents->first();
+                                                $allowed = $resident->room_type === $selectedRoom->capacity . ' persons';
+                                                if($firstOccupant) {
+                                                    $allowed && 
+                                                    $resident->user->gender === $firstOccupant->user->gender &&
+                                                    $resident->accommodation_type === $firstOccupant->accommodation_type &&
+                                                    $resident->resident_type === $firstOccupant->resident_type;
+                                                }
+                                            @endphp
+                                            @if($allowed)
+                                                <option value="{{ $resident->id }}">{{ $resident->user->userName() }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    <button type="submit" class="btn-primary">Assign</button>
+                                </form>
+                            @else
+                                <p style="text-align: center;">Room is already full. Please remove some resident to add a new one.</p>
+                            @endif
+                        </details>
                     </div>
                 </div>
             </div>    
