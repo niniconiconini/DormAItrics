@@ -56,6 +56,7 @@ class UserController extends Controller
             'middle_name' => 'nullable|string|max:255',
             'nickname' => 'required|string|max:255',
             'birthdate' => 'nullable|date',
+            'gender' => 'required|in:Female,Male',
             'phone_number' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -116,6 +117,7 @@ class UserController extends Controller
             'middle_name' => $user->middle_name,
             'nickname' => $user->nickname,
             'birthdate' => $user->birthdate?->format('F d, Y'),
+            'gender' => $user->gender,
             'phone_number' => $user->phone_number,
             'address' => $user->address,
             'email' => $user->email,
@@ -154,6 +156,7 @@ class UserController extends Controller
                 'middle_name' => $user->middle_name,
                 'nickname' => $user->nickname,
                 'birthdate' => $user->birthdate?->format('Y-m-d'),
+                'gender' => $user->gender,
                 'phone_number' => $user->phone_number,
                 'address' => $user->address,
                 'email' => $user->email,
@@ -170,6 +173,7 @@ class UserController extends Controller
             'first_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
             'nickname' => 'required|string|max:255',
+            'gender' => 'required|in:Female,Male',
             'birthdate' => 'nullable|date',
             'phone_number' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
@@ -199,8 +203,12 @@ class UserController extends Controller
 
         $user->update($validated); // create user
 
+        // reset info when turning user inactive
         if ($user->status === 'Inactive' && $user->resident) {
-            $user->resident->update(['room_id' => null]);
+            $user->resident->update([
+                'room_id' => null,
+                'check_out_date' => null,
+            ]);
         }
 
         if ($request->filled('password')) {
@@ -254,6 +262,7 @@ class UserController extends Controller
             'middle_name' => $user->middle_name,
             'nickname' => $user->nickname,
             'birthdate' => $user->birthdate?->format('F d, Y'),
+            'gender' => $user->gender,
             'phone_number' => $user->phone_number,
             'address' => $user->address,
             'email' => $user->email,

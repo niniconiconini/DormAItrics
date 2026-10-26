@@ -37,6 +37,7 @@ use Illuminate\Support\Str;
     'middle_name',
     'nickname',
     'birthdate',
+    'gender',
     'user_type',
     'address',
     'phone_number',

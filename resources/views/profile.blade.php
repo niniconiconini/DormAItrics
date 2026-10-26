@@ -62,15 +62,23 @@
                                     <label for="birthdate">Birthdate:</label>
                                     <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ $user->birthdate?->format('Y-m-d') }}">
                                 </div>
-                                <div class="form-group phone_number">
-                                    <label for="phone_number">Phone Number:</label>
-                                    <input type="tel" id="phone_number" name="phone_number" class="form-input" value="{{ $user->phone_number }}">
-                                </div>
+                                <div class="form-group birthdate">
+                                        <label for="gender">Gender:</label>
+                                        <select id="gender" name="gender" class="form-cb">
+                                            <option value="" selected disabled hidden></option>
+                                            <option value="Female" {{ $user->gender === 'Female' ? 'selected' : ''}}>Female</option>
+                                            <option value="Male" {{ $user->gender === 'Male' ? 'selected' : '' }}>Male</option>
+                                        </select>
+                                    </div>
                             </div>
                             <div class="contact">
                                 <div class="form-group address">
                                     <label for="address">Address:</label>
                                     <input type="text" id="address" name="address" class="form-input" value="{{ $user->address }}">
+                                </div>
+                                <div class="form-group phone_number">
+                                    <label for="phone_number">Phone Number:</label>
+                                    <input type="tel" id="phone_number" name="phone_number" class="form-input" value="{{ $user->phone_number }}">
                                 </div>
                             </div>
                             <div class="login-details">
@@ -82,6 +90,7 @@
                                     <label for="password">Password:</label>
                                     <div class="password-row">
                                         <input type="password" id="password" name="password" class="form-input" placeholder="Leave blank to keep current password">
+                                        <button type="submit" name="reset_password" value="1" class="btn-primary">Reset</button>
                                     </div>
                                 </div>
                             </div>

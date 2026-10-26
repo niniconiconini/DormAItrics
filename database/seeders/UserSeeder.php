@@ -201,7 +201,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'Parker',
                 'first_name' => 'Peter',
                 'middle_name' => 'Benjamin',
-                'nickname' => 'Spider-man',
+                'nickname' => 'Spider-Man',
                 'birthdate' => '2001-09-10',
                 'gender' => 'Male',
                 'phone_number' => null,

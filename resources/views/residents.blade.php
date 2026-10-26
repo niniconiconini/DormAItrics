@@ -12,30 +12,30 @@
             <hr>
             <section class="flex-view">
                 @forelse ($admins as $admin)
-                    @if (auth()->user()->user_type === 'Manager' && $admin->user_type === 'Admin')
+                    @if (auth()->user()->user_type === 'Manager' && $admin->id !== auth()->id())
                         <div class="card dorm-card disabled-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
                             <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
-                            <div class="room-number"><p>{{ $admin->nickname }}</p></div>
+                            <div class="room-number"><p>{{ $admin->userName() }}</p></div>
                         </div>
                     @elseif (auth()->user()->user_type === 'Manager' && auth()->id() === $admin->id)
                         <a href="{{ route('profile') }}">
                             <div class="card dorm-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
                                 <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
-                                <div class="room-number"><p>{{ $admin->nickname }}</p></div>
+                                <div class="room-number"><p>{{ $admin->userName() }}</p></div>
                             </div>
                         </a>
                     @elseif (auth()->user()->user_type === 'Admin' && auth()->id() === $admin->id)
                         <a href="{{ route('profile') }}">
                             <div class="card dorm-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
                                 <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
-                                <div class="room-number"><p>{{ $admin->nickname }}</p></div>
+                                <div class="room-number"><p>{{ $admin->userName() }}</p></div>
                             </div>
                         </a>
                     @else
                         <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $admin->id, 'view' => request('view')]) }}">
                         <div class="card dorm-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
                             <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
-                            <div class="room-number"><p>{{ $admin->nickname }}</p></div>
+                            <div class="room-number"><p>{{ $admin->userName() }}</p></div>
                         </div>
                     </a>
                     @endif
@@ -63,39 +63,35 @@
                     <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $resident->user->id, 'view' => request('view')]) }}">
                         <div class="card dorm-card {{ $resident->user->status === 'Inactive' ? 'inactive-card' : '' }}">
                             <div class="room-image"><img src="{{ asset($resident->user->profile_picture) }}"></div>
-                            <div class="room-number"><p>{{ $resident->user->nickname }}</p></div>
+                            <div class="room-number"><p>{{ $resident->user->userName() }}</p></div>
                             <div class="room-info"><p>Room: {{ $resident->room?->room_number ?? 'Unassigned' }}</p></div>
                             <div class="room-info"><p>Dorm: {{ $resident->room?->dorm_name ?? 'Unassigned' }}</p></div>
                             <div class="room-info"><p>Resident Type: {{ $resident->resident_type }}</p></div>
                         </div>
                     </a>
                 @empty
-                    <p>No residents found.</p>
+                    <p>No {{ request('view') === 'transient' ? 'Transients' : 'Residents' }} found.</p>
                 @endforelse
             </section>
             <section class="dorm-section"> {{-- inactive users --}}
                 @if($inactiveUsers->count())
                     <details class="inactive-section"><summary class="inactive-summary"><h2>Inactive Users ({{ $inactiveUsers->count() }})</h2><hr></summary>
-                    <section class="flex-view">
-                        @foreach($inactiveUsers as $user)
-                            <a href="{{ route('users.index', [
-                                'modal' => 'edit-user',
-                                'user' => $user->id,
-                                'view' => request('view')
-                            ]) }}">
-                                <div class="card dorm-card inactive-card">
-                                    <div class="room-image"><img src="{{ asset($user->profile_picture) }}"></div>
-                                    <div class="room-number"><p>{{ $user->nickname }}</p></div>
-                                    @if(!$user->resident)
-                                        <div class="room-info"><p>{{ $user->user_type }}</p></div>
-                                    @endif
-                                    @if($user->resident)
-                                        <div class="room-info"><p>{{ $user->resident->accommodation_type }}</p></div>
-                                    @endif
-                                </div>
-                            </a>
-                        @endforeach
-                    </section>
+                        <section class="flex-view">
+                            @foreach($inactiveUsers as $user)
+                                <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $user->id, 'view' => request('view')]) }}">
+                                    <div class="card dorm-card inactive-card">
+                                        <div class="room-image"><img src="{{ asset($user->profile_picture) }}"></div>
+                                        <div class="room-number"><p>{{ $user->userName() }}</p></div>
+                                        @if(!$user->resident)
+                                            <div class="room-info"><p>{{ $user->user_type }}</p></div>
+                                        @endif
+                                        @if($user->resident)
+                                            <div class="room-info"><p>{{ $user->resident->accommodation_type }}</p></div>
+                                        @endif
+                                    </div>
+                                </a>
+                            @endforeach
+                        </section>
                     </details>
                 @endif
             </section>
@@ -112,11 +108,11 @@
                         <div class="user-top-section">
                             <div class="sidebar">
                                 <div class="image-upload" style="align-items: center;">
-                                <img id="preview-image" src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('images/user-profile.png') }}">
-                                <input type="file" name="profile_picture" id="profile_picture" accept="image/*" hidden>
-                                <label for="profile_picture" class="btn-primary">Choose File</label>
-                                <span id="file-name">No file chosen</span><br>
-                            </div>
+                                    <img id="preview-image" src="{{ $admin->profile_picture ? asset($admin->profile_picture) : asset('images/user-profile.png') }}">
+                                    <input type="file" name="profile_picture" id="profile_picture" accept="image/*" hidden>
+                                    <label for="profile_picture" class="btn-primary">Choose File</label>
+                                    <span id="file-name">No file chosen</span><br>
+                                </div>
                             </div>
                             <div class="user-details">
                                 <div class="fullname">
@@ -142,9 +138,13 @@
                                         <label for="birthdate">Birthdate:</label>
                                         <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ old('birthdate') }}">
                                     </div>
-                                    <div class="form-group phone_number">
-                                        <label for="phone_number">Phone Number:</label>
-                                        <input type="tel" id="phone_number" name="phone_number" class="form-input" value="{{ old('phone_number') }}">
+                                    <div class="form-group birthdate">
+                                        <label for="gender">Gender:</label>
+                                        <select id="gender" name="gender" class="form-cb">
+                                            <option value="" selected disabled hidden></option>
+                                            <option value="Female" {{ old('gender') === 'Female' ? 'selected' : ''}}>Female</option>
+                                            <option value="Male" {{ old('gender') === 'Male' ? 'selected' : '' }}>Male</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="contact">
@@ -152,15 +152,21 @@
                                         <label for="address">Address:</label>
                                         <input type="text" id="address" name="address" class="form-input" value="{{ old('address') }}">
                                     </div>
+                                    <div class="form-group phone_number">
+                                        <label for="phone_number">Phone Number:</label>
+                                        <input type="tel" id="phone_number" name="phone_number" class="form-input" value="{{ old('phone_number') }}">
+                                    </div>
                                 </div>
                                 <div class="login-details">
                                     <div class="form-group email">
                                         <label for="email">Email Address:</label>
                                         <input type="email" id="email" name="email" class="form-input" value="{{ old('email') }}">
                                     </div>
-                                    <div class="form-group password">
+                                    <div class="password-group">
                                         <label for="password">Password:</label>
-                                        <input type="password" id="password" name="password" class="form-input" placeholder="Default Password: spum123">
+                                        <div class="password-row">
+                                            <input type="password" id="password" name="password" class="form-input" placeholder="Leave blank to keep current password">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="account">
@@ -196,7 +202,7 @@
                         <div class="user-top-section">
                             <div class="sidebar">
                                 <div class="image-upload" style="align-items: center;">
-                                <img id="preview-image" src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('images/user-profile.png') }}">
+                                <img id="preview-image" src="{{ $resident->user->profile_picture ? asset($resident->user->profile_picture) : asset('images/user-profile.png') }}">
                                 <input type="file" name="profile_picture" id="profile_picture" accept="image/*" hidden>
                                 <label for="profile_picture" class="btn-primary">Choose File</label>
                                 <span id="file-name">No file chosen</span><br>
@@ -226,9 +232,13 @@
                                         <label for="birthdate">Birthdate:</label>
                                         <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ old('birthdate') }}">
                                     </div>
-                                    <div class="form-group phone_number">
-                                        <label for="phone_number">Phone Number:</label>
-                                        <input type="tel" id="phone_number" name="phone_number" class="form-input" value="{{ old('phone_number') }}">
+                                    <div class="form-group birthdate">
+                                        <label for="gender">Gender:</label>
+                                        <select id="gender" name="gender" class="form-cb">
+                                            <option value="" selected disabled hidden></option>
+                                            <option value="Female" {{ old('gender') === 'Female' ? 'selected' : ''}}>Female</option>
+                                            <option value="Male" {{ old('gender') === 'Male' ? 'selected' : '' }}>Male</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="contact">
@@ -236,23 +246,30 @@
                                         <label for="address">Address:</label>
                                         <input type="text" id="address" name="address" class="form-input" value="{{ old('address') }}">
                                     </div>
+                                    <div class="form-group phone_number">
+                                        <label for="phone_number">Phone Number:</label>
+                                        <input type="tel" id="phone_number" name="phone_number" class="form-input" value="{{ old('phone_number') }}">
+                                    </div>
                                 </div>
                                 <div class="login-details">
                                     <div class="form-group email">
                                         <label for="email">Email Address:</label>
                                         <input type="email" id="email" name="email" class="form-input" value="{{ old('email') }}">
                                     </div>
-                                    <div class="form-group password">
+                                    <div class="password-group">
                                         <label for="password">Password:</label>
-                                        <input type="password" id="password" name="password" class="form-input" placeholder="Default Password: spum123" value="{{ old('password') }}">
+                                        <div class="password-row">
+                                            <input type="password" id="password" name="password" class="form-input" placeholder="Leave blank to keep current password">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="account">
                                     <div class="form-group user_type">
                                         <label for="user_type">User Type:</label>
-                                        <select id="user_type" name="user_type" class="form-cb">
+                                        <select type="hidden" id="user_type" name="user_type" class="form-cb" disabled>
                                             <option value="Resident" {{ old('user_type') === 'Resident' ? 'selected' : '' }}>Resident</option>
                                         </select>
+                                        <input type="hidden" name="user_type" value="Resident">
                                     </div>
                                 </div>
                             </div>
@@ -265,6 +282,7 @@
                             <div class="form-group accommodation_type">
                                 <label for="accommodation_type">Accommodation Type:</label>
                                 <select name="accommodation_type" id="accommodation_type" class="form-cb">
+                                    <option value="" selected disabled hidden></option>
                                     <option value="Resident" {{ old('accommodation_type') === 'Resident' ? 'selected' : '' }}>Resident</option>
                                     <option value="Transient" {{ old('accommodation_type') === 'Transient' ? 'selected' : '' }}>Transient</option>
                                 </select>
@@ -272,6 +290,7 @@
                             <div class="form-group resident_type">
                                 <label for="resident_type">Resident Type:</label>
                                 <select name="resident_type" id="resident_type" class="form-cb">
+                                    <option value="" selected disabled hidden></option>
                                     <option value="Student" {{ old('resident_type') === 'Student' ? 'selected' : '' }}>Student</option>
                                     <option value="Employee" {{ old('resident_type') === 'Employee' ? 'selected' : '' }}>Employee</option>
                                 </select>
@@ -281,6 +300,7 @@
                             <div class="form-group payment_schedule">
                                 <label for="payment_schedule">Payment Schedule:</label>
                                 <select name="payment_schedule" id="payment_schedule" class="form-cb">
+                                    <option value="" selected disabled hidden></option>
                                     <option value="Full Payment" {{ old('payment_schedule') == 'Full Payment' ? 'selected' : '' }}>Full Payment</option>
                                     <option value="4 Payments" {{ old('payment_schedule') == '4 Payments' ? 'selected' : '' }}>4 Payments</option>
                                     <option value="3 Payments" {{ old('payment_schedule') == '3 Payments' ? 'selected' : '' }}>3 Payments</option>
@@ -292,6 +312,7 @@
                             <div class="form-group room_type">
                                 <label for="room_type">Room Type:</label>
                                 <select name="room_type" id="room_type" class="form-cb">
+                                    <option value="" selected disabled hidden></option>
                                     <option value="8 persons" {{ old('room_type') === '8 persons' ? 'selected' : '' }}>8 persons</option>
                                     <option value="4 persons" {{ old('room_type') === '4 persons' ? 'selected' : '' }}>4 persons</option>
                                     <option value="3 persons" {{ old('room_type') === '3 persons' ? 'selected' : '' }}>3 persons</option>
@@ -335,7 +356,7 @@
             @endphp
             <div class="modal">
                 <div class="card user-modal">
-                    <h2 class="modal-title">Edit User: <span>{{ $selectedUser->nickname }}</span></h2>
+                    <h2 class="modal-title">Edit User: <span>{{ $selectedUser->userName() }}</span></h2>
                     @if ($isInactive)
                         <div class="inactive-banner">This account is inactive. Please reactivate to edit information.</div>
                     @endif
@@ -382,15 +403,23 @@
                                         <label for="birthdate">Birthdate:</label>
                                         <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ $selectedUser->birthdate?->format('Y-m-d') }}" @disabled($isInactive)>
                                     </div>
-                                    <div class="form-group phone_number">
-                                        <label for="phone_number">Phone Number:</label>
-                                        <input type="tel" id="phone_number" name="phone_number" class="form-input" value="{{ $selectedUser->phone_number }}" @disabled($isInactive)>
+                                    <div class="form-group birthdate">
+                                        <label for="gender">Gender:</label>
+                                        <select id="gender" name="gender" class="form-cb">
+                                            <option value="" selected disabled hidden>Select Gender</option>
+                                            <option value="Female" {{ $selectedUser->gender === 'Female' ? 'selected' : ''}}>Female</option>
+                                            <option value="Male" {{ $selectedUser->gender === 'Male' ? 'selected' : '' }}>Male</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="contact">
                                     <div class="form-group address">
                                         <label for="address">Address:</label>
                                         <input type="text" id="address" name="address" class="form-input" value="{{ $selectedUser->address }}" @disabled($isInactive)>
+                                    </div>
+                                    <div class="form-group phone_number">
+                                        <label for="phone_number">Phone Number:</label>
+                                        <input type="tel" id="phone_number" name="phone_number" class="form-input" value="{{ $selectedUser->phone_number }}" @disabled($isInactive)>
                                     </div>
                                 </div>
                                 <div class="login-details">
@@ -409,11 +438,16 @@
                                 <div class="account">
                                     <div class="form-group user_type">
                                         <label for="user_type">User Type:</label>
-                                        <select id="user_type" name="user_type" class="form-cb" @disabled($isInactive)>
-                                            <option value="Admin" {{ $selectedUser->user_type === 'Admin' ? 'selected' : '' }} @disabled($isInactive)>Admin</option>
-                                            <option value="Manager" {{ $selectedUser->user_type === 'Manager' ? 'selected' : '' }} @disabled($isInactive)>Manager</option>
-                                            <option value="Resident" {{ $selectedUser->user_type === 'Resident' ? 'selected' : '' }} @disabled($isInactive)>Resident</option>
-                                        </select>
+                                        @if ($selectedUser->resident)
+                                            <select id="user_type" name="user_type" class="form-cb" @disabled($isInactive)>
+                                                <option value="Resident" {{ $selectedUser->user_type === 'Resident' ? 'selected' : '' }} @disabled($isInactive)>Resident</option>
+                                            </select>
+                                        @else
+                                            <select id="user_type" name="user_type" class="form-cb" @disabled($isInactive)>
+                                                <option value="Admin" {{ $selectedUser->user_type === 'Admin' ? 'selected' : '' }} @disabled($isInactive)>Admin</option>
+                                                <option value="Manager" {{ $selectedUser->user_type === 'Manager' ? 'selected' : '' }} @disabled($isInactive)>Manager</option>
+                                            </select>
+                                        @endif
                                     </div>
                                     <div class="form-group user-status">
                                         <label for="user-status">User Status:</label>
@@ -504,17 +538,17 @@
                         <div class="receipt-box">
                             <hr>
                             <h3>User Information</h3>
-                        <div class="receipt-row"><strong>Last Name:</strong><span>{{ session('receipt.last_name') }}</span></div>
-                        <div class="receipt-row"><strong>First Name:</strong><span>{{ session('receipt.first_name') }}</span></div>
-                        <div class="receipt-row"> <strong>Middle Name:</strong> <span>{{ session('receipt.middle_name') }}</span> </div>
-                        <div class="receipt-row"> <strong>Nickname:</strong> <span>{{ session('receipt.nickname') }}</span> </div>
-                        <div class="receipt-row"> <strong>Birthdate:</strong> <span>{{ session('receipt.birthdate') }}</span> </div>
-                        <div class="receipt-row"> <strong>Phone Number:</strong> <span>{{ session('receipt.phone_number') }}</span> </div>
-                        <div class="receipt-row"> <strong>Address:</strong> <span>{{ session('receipt.address') }}</span> </div>
-                        <div class="receipt-row"> <strong>Email:</strong> <span>{{ session('receipt.email') }}</span> </div>
-                        <div class="receipt-row"> <strong>User Type:</strong> <span>{{ session('receipt.user_type') }}</span> </div>
-                        <div class="receipt-row"> <strong>Status:</strong> <span>{{ session('receipt.status') }}</span> </div>
-                        <div class="receipt-row"> <strong>Password Updated:</strong> <span>{{ session('receipt.password_updated') ? 'Yes' : 'No' }}</span> </div>
+                            <div class="receipt-row"><strong>Last Name:</strong><span>{{ session('receipt.last_name') }}</span></div>
+                            <div class="receipt-row"><strong>First Name:</strong><span>{{ session('receipt.first_name') }}</span></div>
+                            <div class="receipt-row"> <strong>Middle Name:</strong> <span>{{ session('receipt.middle_name') }}</span> </div>
+                            <div class="receipt-row"> <strong>Nickname:</strong> <span>{{ session('receipt.nickname') }}</span> </div>
+                            <div class="receipt-row"> <strong>Birthdate:</strong> <span>{{ session('receipt.birthdate') }}</span> </div>
+                            <div class="receipt-row"> <strong>Phone Number:</strong> <span>{{ session('receipt.phone_number') }}</span> </div>
+                            <div class="receipt-row"> <strong>Address:</strong> <span>{{ session('receipt.address') }}</span> </div>
+                            <div class="receipt-row"> <strong>Email:</strong> <span>{{ session('receipt.email') }}</span> </div>
+                            <div class="receipt-row"> <strong>User Type:</strong> <span>{{ session('receipt.user_type') }}</span> </div>
+                            <div class="receipt-row"> <strong>Status:</strong> <span>{{ session('receipt.status') }}</span> </div>
+                            <div class="receipt-row"> <strong>Password Updated:</strong> <span>{{ session('receipt.password_updated') ? 'Yes' : 'No' }}</span> </div>
                             <hr>
                             @if(session('receipt.resident_type'))
                                 <h3>Resident Information</h3>

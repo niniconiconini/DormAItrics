@@ -97,21 +97,26 @@ class RoomController extends Controller
     // =============================== ASSIGN TO ROOM ===============================
     public function assign(Request $request, Room $room): RedirectResponse
     {
+        // 
+        if (!$request->filled('resident_id')) {
+            return back()->with(['error' => 'Please select a resident first.']);
+        }
+
         // check if room is full
         if ($room->residents()->count() >= $room->capacity) {
-            return back()->withErrors(['resident' => 'Room is already full.']);
+            return back()->withErrors(['error' => 'Room is already full.']);
         }
 
         $resident = Resident::with('user')->findOrFail($request->resident_id);
 
         // check if resident is already assigned in another room
         if ($resident->room_id !== null) {
-            return back()->withErrors(['resident' => 'Resident is already assigned to another room.']);
+            return back()->withErrors(['error' => 'Resident is already assigned to another room.']);
         }
 
         // check if resident's preffered room type matches the room's capacity
         if ($resident->room_type !== $room->capacity.' persons') {
-            return back()->withErrors(['resident' => 'Room type preference does not match.']);
+            return back()->withErrors(['error' => 'Room type preference does not match.']);
         }
 
         // set gender, accommodation type, and resident type to room by assigning first resident
@@ -119,31 +124,31 @@ class RoomController extends Controller
         if ($firstOccupant) {
             // gender
             if ($resident->user->gender !== $firstOccupant->user->gender) {
-                return back()->withErrors(['resident' => 'Gender does not match existing occupant.']);
+                return back()->withErrors(['error' => 'Gender does not match existing occupant.']);
             }
 
             // resident / transient
             if ($resident->accommodation_type !== $firstOccupant->accommodation_type) {
-                return back()->withErrors(['resident' => 'Accommodation type does not match.']);
+                return back()->withErrors(['error' => 'Accommodation type does not match.']);
             }
 
             // student / employee
             if ($resident->resident_type !== $firstOccupant->resident_type) {
-                return back()->withErrors(['resident' => 'Resident type does not match.']);
+                return back()->withErrors(['error' => 'Resident type does not match.']);
             }
         }
 
         $resident->update(['room_id' => $room->id]);
 
-        return back();
+        return redirect()->route('rooms.index', ['modal' => 'edit', 'room' => $room->id, 'occupants' => 'open',]);
     }
 
     // =============================== REMOVE FROM ROOM ===============================
-    public function removeResident(Resident $resident): RedirectResponse
-    {
+    public function removeResident(Resident $resident): RedirectResponse {
+        $roomID = $resident->room_id;    
         $resident->update(['room_id' => null]);
 
-        return back();
+        return redirect()->route('rooms.index', ['modal' => 'edit', 'room' => $roomID, 'occupants' => 'open',]);
     }
 
     // =============================== EDIT ROOM ===============================
