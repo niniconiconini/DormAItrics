@@ -17,6 +17,9 @@ class PassSlipController extends Controller
         return Resident::where('user_id', Auth::id())->first();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function timeRules(string $label): array
     {
         return [

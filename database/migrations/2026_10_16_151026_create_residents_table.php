@@ -20,7 +20,7 @@ return new class extends Migration
             $table->enum('payment_schedule', ['Full Payment', '2 Payments', '3 Payments', '4 Payments', 'Per Day']);
             $table->enum('room_type', ['8 persons', '4 persons', '3 persons', '2 persons', '1 person']);
             $table->date('check_in_date');
-            $table->date('check_out_date')->nullable();
+            $table->date('check_out_date');
             $table->timestamps();
         });
     }

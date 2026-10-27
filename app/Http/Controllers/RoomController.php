@@ -97,8 +97,8 @@ class RoomController extends Controller
     // =============================== ASSIGN TO ROOM ===============================
     public function assign(Request $request, Room $room): RedirectResponse
     {
-        // 
-        if (!$request->filled('resident_id')) {
+        //
+        if (! $request->filled('resident_id')) {
             return back()->with(['error' => 'Please select a resident first.']);
         }
 
@@ -107,6 +107,7 @@ class RoomController extends Controller
             return back()->withErrors(['error' => 'Room is already full.']);
         }
 
+        /** @var Resident $resident */
         $resident = Resident::with('user')->findOrFail($request->resident_id);
 
         // check if resident is already assigned in another room
@@ -140,15 +141,16 @@ class RoomController extends Controller
 
         $resident->update(['room_id' => $room->id]);
 
-        return redirect()->route('rooms.index', ['modal' => 'edit', 'room' => $room->id, 'occupants' => 'open',]);
+        return redirect()->route('rooms.index', ['modal' => 'edit', 'room' => $room->id, 'occupants' => 'open']);
     }
 
     // =============================== REMOVE FROM ROOM ===============================
-    public function removeResident(Resident $resident): RedirectResponse {
-        $roomID = $resident->room_id;    
+    public function removeResident(Resident $resident): RedirectResponse
+    {
+        $roomID = $resident->room_id;
         $resident->update(['room_id' => null]);
 
-        return redirect()->route('rooms.index', ['modal' => 'edit', 'room' => $roomID, 'occupants' => 'open',]);
+        return redirect()->route('rooms.index', ['modal' => 'edit', 'room' => $roomID, 'occupants' => 'open']);
     }
 
     // =============================== EDIT ROOM ===============================

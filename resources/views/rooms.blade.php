@@ -22,21 +22,21 @@
                 <a href="{{ route('rooms.index', ['dorm' => 'Le Berceau']) }}">
                     <div class="card dorm-card {{ request('dorm') == 'Le Berceau' ? 'active' : '' }}">
                             <div class="room-image"><img src="/images/rooms/lb.jpg"></div>
-                            <div class="room-number"><p>Le Berceau</p></div>
+                            <div class="room-number"><p>Le Berceau Rooms</p></div>
                             <div class="room-info"><p>(SPU Manila Campus)</p></div>
                     </div>
                 </a>
                 <a href="{{ route('rooms.index', ['dorm' => 'Maison Paul']) }}">
                     <div class="card dorm-card {{ request('dorm') == 'Maison Paul' ? 'active' : '' }}">
                             <div class="room-image"><img src="/images/rooms/mp.jpg"></div>
-                            <div class="room-number"><p>Maison Paul</p></div>
+                            <div class="room-number"><p>Maison Paul Rooms</p></div>
                             <div class="room-info"><p>(Malvar Street)</p></div>
                     </div>
                 </a>
                 <a href="{{ route('rooms.index', ['dorm' => 'Dorm 2']) }}">
                     <div class="card dorm-card {{ request('dorm') == 'Dorm 2' ? 'active' : '' }}">
                             <div class="room-image"><img src="/images/rooms/dt.jpg"></div>
-                            <div class="room-number"><p>Dorm 2</p></div>
+                            <div class="room-number"><p>Dorm 2 Rooms</p></div>
                             <div class="room-info"><p>(St. Paul University Manila)</p></div>
                     </div>
                 </a>
@@ -176,8 +176,10 @@
                                     <span id="preview-text" style="display:none;"></span>
                                 </div>
                                 <input type="file" name="room_image" id="room_image" accept="image/*" hidden>
-                                <label for="room_image" class="btn-primary">Choose File</label>
-                                <span id="file-name">No file chosen</span><br>
+                                <div class="image-upload-controls">
+                                    <label for="room_image" class="btn-primary">Choose File</label>
+                                    <span id="file-name">No file chosen</span><br>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">

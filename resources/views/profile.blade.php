@@ -6,7 +6,7 @@
         $isManager = $user->user_type === 'Manager';
         $isResident = $user->user_type === 'Resident';
     @endphp
-    <header class="page-title">PROFILE MANAGEMENT</header>
+    <header class="page-title"  style="margin-bottom: 0;">PROFILE MANAGEMENT</header>
     <section class="profile-management">
         <div class="card user-modal">
             <h2 class="modal-title">Hello {{ $user->nickname }}!</h2>
@@ -19,7 +19,7 @@
                             <div class="image-upload" style="align-items: center;">
                                 <img id="preview-image" src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('images/user-profile.png') }}">
                                 <input type="file" name="profile_picture" id="profile_picture" accept="image/*" hidden>
-                                <label for="profile_picture" class="btn-primary">Choose File</label>
+                                <label for="profile_picture" class="btn-primary">Update Profile</label>
                                 <span id="file-name">No file chosen</span><br>
                             </div>
                             @if($user->resident)
@@ -32,14 +32,14 @@
                         <div class="user-details">
                             <div class="fullname">
                                 <div class="form-group last_name">
-                                    <label for="last_name">Last Name:</label>
+                                    <label for="last_name">Last Name*:</label>
                                     <input type="text" id="last_name" name="last_name" class="form-input" value="{{ $user->last_name }}" @disabled(!$isAdmin && !$isManager)>
                                     @if(!$isAdmin && !$isManager)
                                         <input type="hidden" name="last_name" value="{{ $user->last_name }}">
                                     @endif
                                 </div>
                                 <div class="form-group first_name">
-                                    <label for="first_name">First Name:</label>
+                                    <label for="first_name">First Name*:</label>
                                     <input type="text" id="first_name" name="first_name" class="form-input" value="{{ $user->first_name }}" @disabled(!$isAdmin && !$isManager)>
                                     @if(!$isAdmin && !$isManager)
                                         <input type="hidden" name="first_name" value="{{ $user->first_name }}">
@@ -55,7 +55,7 @@
                             </div>
                             <div class="info">
                                 <div class="form-group nickname">
-                                    <label for="nickname">Nickname:</label>
+                                    <label for="nickname">Nickname*:</label>
                                     <input type="text" id="nickname" name="nickname" class="form-input" value="{{ $user->nickname }}" >
                                 </div>
                                 <div class="form-group birthdate">
@@ -63,8 +63,8 @@
                                     <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ $user->birthdate?->format('Y-m-d') }}">
                                 </div>
                                 <div class="form-group birthdate">
-                                        <label for="gender">Gender:</label>
-                                        <select id="gender" name="gender" class="form-cb">
+                                        <label for="gender">Gender*:</label>
+                                        <select id="gender" name="gender" class="form-cb" @disabled(!$isAdmin && !$isManager)>
                                             <option value="" selected disabled hidden></option>
                                             <option value="Female" {{ $user->gender === 'Female' ? 'selected' : ''}}>Female</option>
                                             <option value="Male" {{ $user->gender === 'Male' ? 'selected' : '' }}>Male</option>
@@ -83,11 +83,11 @@
                             </div>
                             <div class="login-details">
                                 <div class="form-group email">
-                                    <label for="email">Email Address:</label>
+                                    <label for="email">Email Address*:</label>
                                     <input type="email" id="email" name="email" class="form-input" value="{{ $user->email }}">
                                 </div>
                                 <div class="password-group">
-                                    <label for="password">Password:</label>
+                                    <label for="password">Password*:</label>
                                     <div class="password-row">
                                         <input type="password" id="password" name="password" class="form-input" placeholder="Leave blank to keep current password">
                                         <button type="submit" name="reset_password" value="1" class="btn-primary">Reset</button>
@@ -96,7 +96,7 @@
                             </div>
                             <div class="account">
                                 <div class="form-group user_type">
-                                    <label for="user_type">User Type:</label>
+                                    <label for="user_type">User Type*:</label>
                                     <select id="user_type" name="user_type" class="form-cb" @disabled(!$isAdmin)>
                                         <option value="Admin" {{ $user->user_type === 'Admin' ? 'selected' : '' }}>Admin</option>
                                         <option value="Manager" {{ $user->user_type === 'Manager' ? 'selected' : '' }}>Manager</option>
@@ -107,7 +107,7 @@
                                     @endif
                                 </div>
                                 <div class="form-group user-status">
-                                    <label for="user-status">User Status:</label>
+                                    <label for="user-status">User Status*:</label>
                                     <select id="user-status" name="status" class="form-cb" @disabled(!$isAdmin)>
                                         <option value="Active" {{ $user->status === 'Active' ? 'selected' : '' }}>Active</option>
                                         <option value="Inactive" {{ $user->status === 'Inactive' ? 'selected' : '' }}>Inactive</option>
@@ -131,16 +131,18 @@
                             };
                         @endphp
                         <h2 class="modal-title">Resident Information</h2>
+                        <p style="text-align: center;">(if there are any changes regarding your information, please contact the Dorm Manager and Dorm Administrator)</p>
+                        <br>
                         <div class="resident-type">
                             <div class="form-group accommodation_type">
-                                <label for="accommodation_type">Accommodation Type:</label>
+                                <label for="accommodation_type">Accommodation Type*:</label>
                                 <select name="accommodation_type" id="accommodation_type" class="form-cb" @disabled(!$isAdmin && !$isManager)>
                                     <option value="Resident" {{ $user->resident->accommodation_type === 'Resident' ? 'selected' : '' }} @disabled(!$isAdmin && !$isManager)>Resident</option>
                                     <option value="Transient" {{ $user->resident->accommodation_type === 'Transient' ? 'selected' : '' }} @disabled(!$isAdmin && !$isManager)>Transient</option>
                                 </select>
                             </div>
                             <div class="form-group resident_type">
-                                <label for="resident_type">Resident Type:</label>
+                                <label for="resident_type">Resident Type*:</label>
                                 <select name="resident_type" id="resident_type" class="form-cb" @disabled(!$isAdmin && !$isManager)>
                                     <option value="Student" {{ $user->resident->resident_type === 'Student' ? 'selected' : '' }} @disabled(!$isAdmin && !$isManager)>Student</option>
                                     <option value="Employee" {{ $user->resident->resident_type === 'Employee' ? 'selected' : '' }} @disabled(!$isAdmin && !$isManager)>Employee</option>
@@ -149,7 +151,7 @@
                         </div>
                         <div class="lodging-type">
                             <div class="form-group payment_schedule">
-                                <label for="payment_schedule">Payment Schedule:</label>
+                                <label for="payment_schedule">Payment Schedule*:</label>
                                 <select name="payment_schedule" id="payment_schedule" class="form-cb" @disabled(!$isAdmin && !$isManager)>
                                     @foreach ($paymentOptions as $paymentOption)
                                         <option value="{{ $paymentOption }}" @selected($user->resident->payment_schedule == $paymentOption) @disabled(!$isAdmin && !$isManager)>{{ $paymentOption }}</option>
@@ -157,7 +159,7 @@
                                 </select>
                             </div>
                             <div class="form-group room_type">
-                                <label for="room_type">Room Type:</label>
+                                <label for="room_type">Room Type*:</label>
                                 <select name="room_type" id="room_type" class="form-cb" @disabled(!$isAdmin && !$isManager)>
                                     <option value="8 persons" {{ $user->resident->room_type === '8 persons' ? 'selected' : '' }} @disabled(!$isAdmin && !$isManager)>8 persons</option>
                                     <option value="4 persons" {{ $user->resident->room_type === '4 persons' ? 'selected' : '' }} @disabled(!$isAdmin && !$isManager)>4 persons</option>
@@ -169,11 +171,11 @@
                         </div>
                         <div class="checkin-checkout">
                             <div class="form-group check_in_date">
-                                <label for="check_in_date">Check In:</label>
+                                <label for="check_in_date">Check In*:</label>
                                 <input type="date" id="check_in_date" name="check_in_date" class="form-input" value="{{ $user->resident->check_in_date?->format('Y-m-d') }}" @disabled(!$isAdmin && !$isManager)>
                             </div>
                             <div class="form-group check_out_date">
-                                <label for="check_out_date">Check Out:</label>
+                                <label for="check_out_date">Check Out*:</label>
                                 <input type="date" id="check_out_date" name="check_out_date" class="form-input" value="{{ $user->resident->check_out_date?->format('Y-m-d') }}" @disabled(!$isAdmin && !$isManager)>
                             </div>
                         </div>

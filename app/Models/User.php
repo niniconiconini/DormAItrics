@@ -20,7 +20,7 @@ use Illuminate\Support\Str;
  * @property string $first_name
  * @property string|null $middle_name
  * @property string $nickname
- * @property Carbon $birthdate
+ * @property Carbon|null $birthdate
  * @property string $user_type
  * @property string|null $address
  * @property string|null $phone_number

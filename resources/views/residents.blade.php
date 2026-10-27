@@ -117,11 +117,11 @@
                             <div class="user-details">
                                 <div class="fullname">
                                     <div class="form-group last_name">
-                                        <label for="last_name">Last Name:</label>
+                                        <label for="last_name">Last Name*:</label>
                                         <input type="text" id="last_name" name="last_name" class="form-input" value="{{ old('last_name') }}">
                                     </div>
                                     <div class="form-group first_name">
-                                        <label for="first_name">First Name:</label>
+                                        <label for="first_name">First Name*:</label>
                                         <input type="text" id="first_name" name="first_name" class="form-input" value="{{ old('first_name') }}">
                                     </div>
                                     <div class="form-group middle_name">
@@ -131,7 +131,7 @@
                                 </div>
                                 <div class="info">
                                     <div class="form-group nickname">
-                                        <label for="nickname">Nickname:</label>
+                                        <label for="nickname">Nickname*:</label>
                                         <input type="text" id="nickname" name="nickname" class="form-input" value="{{ old('nickname') }}">
                                     </div>
                                     <div class="form-group birthdate">
@@ -139,7 +139,7 @@
                                         <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ old('birthdate') }}">
                                     </div>
                                     <div class="form-group birthdate">
-                                        <label for="gender">Gender:</label>
+                                        <label for="gender">Gender*:</label>
                                         <select id="gender" name="gender" class="form-cb">
                                             <option value="" selected disabled hidden></option>
                                             <option value="Female" {{ old('gender') === 'Female' ? 'selected' : ''}}>Female</option>
@@ -159,11 +159,11 @@
                                 </div>
                                 <div class="login-details">
                                     <div class="form-group email">
-                                        <label for="email">Email Address:</label>
+                                        <label for="email">Email Address*:</label>
                                         <input type="email" id="email" name="email" class="form-input" value="{{ old('email') }}">
                                     </div>
                                     <div class="password-group">
-                                        <label for="password">Password:</label>
+                                        <label for="password">Password*:</label>
                                         <div class="password-row">
                                             <input type="password" id="password" name="password" class="form-input" placeholder="Leave blank to keep current password">
                                         </div>
@@ -171,7 +171,7 @@
                                 </div>
                                 <div class="account">
                                     <div class="form-group user_type">
-                                        <label for="user_type">User Type:</label>
+                                        <label for="user_type">User Type*:</label>
                                         <select id="user_type" name="user_type" class="form-cb">
                                             <option value="" selected disabled hidden>Select User Type</option>
                                             <option value="Admin" {{ old('user_type') === 'Admin' ? 'selected' : ''}}>Admin</option>
@@ -211,11 +211,11 @@
                             <div class="user-details">
                                 <div class="fullname">
                                     <div class="form-group last_name">
-                                        <label for="last_name">Last Name:</label>
+                                        <label for="last_name">Last Name*:</label>
                                         <input type="text" id="last_name" name="last_name" class="form-input" value="{{ old('last_name') }}">
                                     </div>
                                     <div class="form-group first_name">
-                                        <label for="first_name">First Name:</label>
+                                        <label for="first_name">First Name*:</label>
                                         <input type="text" id="first_name" name="first_name" class="form-input" value="{{ old('first_name') }}">
                                     </div>
                                     <div class="form-group middle_name">
@@ -225,7 +225,7 @@
                                 </div>
                                 <div class="info">
                                     <div class="form-group nickname">
-                                        <label for="nickname">Nickname:</label>
+                                        <label for="nickname">Nickname*:</label>
                                         <input type="text" id="nickname" name="nickname" class="form-input" value="{{ old('nickname') }}">
                                     </div>
                                     <div class="form-group birthdate">
@@ -233,7 +233,7 @@
                                         <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ old('birthdate') }}">
                                     </div>
                                     <div class="form-group birthdate">
-                                        <label for="gender">Gender:</label>
+                                        <label for="gender">Gender*:</label>
                                         <select id="gender" name="gender" class="form-cb">
                                             <option value="" selected disabled hidden></option>
                                             <option value="Female" {{ old('gender') === 'Female' ? 'selected' : ''}}>Female</option>
@@ -253,11 +253,11 @@
                                 </div>
                                 <div class="login-details">
                                     <div class="form-group email">
-                                        <label for="email">Email Address:</label>
+                                        <label for="email">Email Address*:</label>
                                         <input type="email" id="email" name="email" class="form-input" value="{{ old('email') }}">
                                     </div>
                                     <div class="password-group">
-                                        <label for="password">Password:</label>
+                                        <label for="password">Password*:</label>
                                         <div class="password-row">
                                             <input type="password" id="password" name="password" class="form-input" placeholder="Leave blank to keep current password">
                                         </div>
@@ -265,7 +265,7 @@
                                 </div>
                                 <div class="account">
                                     <div class="form-group user_type">
-                                        <label for="user_type">User Type:</label>
+                                        <label for="user_type">User Type*:</label>
                                         <select type="hidden" id="user_type" name="user_type" class="form-cb" disabled>
                                             <option value="Resident" {{ old('user_type') === 'Resident' ? 'selected' : '' }}>Resident</option>
                                         </select>
@@ -280,7 +280,7 @@
                         <h2 class="modal-title">Resident Information</h2>
                         <div class="resident-type">
                             <div class="form-group accommodation_type">
-                                <label for="accommodation_type">Accommodation Type:</label>
+                                <label for="accommodation_type">Accommodation Type*:</label>
                                 <select name="accommodation_type" id="accommodation_type" class="form-cb">
                                     <option value="" selected disabled hidden></option>
                                     <option value="Resident" {{ old('accommodation_type') === 'Resident' ? 'selected' : '' }}>Resident</option>
@@ -288,7 +288,7 @@
                                 </select>
                             </div>
                             <div class="form-group resident_type">
-                                <label for="resident_type">Resident Type:</label>
+                                <label for="resident_type">Resident Type*:</label>
                                 <select name="resident_type" id="resident_type" class="form-cb">
                                     <option value="" selected disabled hidden></option>
                                     <option value="Student" {{ old('resident_type') === 'Student' ? 'selected' : '' }}>Student</option>
@@ -298,7 +298,7 @@
                         </div>
                         <div class="lodging-type">
                             <div class="form-group payment_schedule">
-                                <label for="payment_schedule">Payment Schedule:</label>
+                                <label for="payment_schedule">Payment Schedule*:</label>
                                 <select name="payment_schedule" id="payment_schedule" class="form-cb">
                                     <option value="" selected disabled hidden></option>
                                     <option value="Full Payment" {{ old('payment_schedule') == 'Full Payment' ? 'selected' : '' }}>Full Payment</option>
@@ -310,7 +310,7 @@
                                 </select>
                             </div>
                             <div class="form-group room_type">
-                                <label for="room_type">Room Type:</label>
+                                <label for="room_type">Room Type*:</label>
                                 <select name="room_type" id="room_type" class="form-cb">
                                     <option value="" selected disabled hidden></option>
                                     <option value="8 persons" {{ old('room_type') === '8 persons' ? 'selected' : '' }}>8 persons</option>
@@ -323,7 +323,7 @@
                         </div>
                         <div class="checkin-checkout">
                             <div class="form-group check_in_date">
-                                <label for="check_in_date">Check In:</label>
+                                <label for="check_in_date">Check In*:</label>
                                 <input type="date" id="check_in_date" name="check_in_date" class="form-input" value="{{ old('check_in_date') }}">
                             </div>
                             <div class="form-group check_out_date">
@@ -382,11 +382,11 @@
                             <div class="user-details">
                                 <div class="fullname">
                                     <div class="form-group last_name">
-                                        <label for="last_name">Last Name:</label>
+                                        <label for="last_name">Last Name*:</label>
                                         <input type="text" id="last_name" name="last_name" class="form-input" value="{{ $selectedUser->last_name }}" @disabled($isInactive)>
                                     </div>
                                     <div class="form-group first_name">
-                                        <label for="first_name">First Name:</label>
+                                        <label for="first_name">First Name*:</label>
                                         <input type="text" id="first_name" name="first_name" class="form-input" value="{{ $selectedUser->first_name }}" @disabled($isInactive)>
                                     </div>
                                     <div class="form-group middle_name">
@@ -396,7 +396,7 @@
                                 </div>
                                 <div class="info">
                                     <div class="form-group nickname">
-                                        <label for="nickname">Nickname:</label>
+                                        <label for="nickname">Nickname*:</label>
                                         <input type="text" id="nickname" name="nickname" class="form-input" value="{{ $selectedUser->nickname }}" @disabled($isInactive)>
                                     </div>
                                     <div class="form-group birthdate">
@@ -404,8 +404,8 @@
                                         <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ $selectedUser->birthdate?->format('Y-m-d') }}" @disabled($isInactive)>
                                     </div>
                                     <div class="form-group birthdate">
-                                        <label for="gender">Gender:</label>
-                                        <select id="gender" name="gender" class="form-cb">
+                                        <label for="gender">Gender*:</label>
+                                        <select id="gender" name="gender" class="form-cb" @disabled($isInactive)>
                                             <option value="" selected disabled hidden>Select Gender</option>
                                             <option value="Female" {{ $selectedUser->gender === 'Female' ? 'selected' : ''}}>Female</option>
                                             <option value="Male" {{ $selectedUser->gender === 'Male' ? 'selected' : '' }}>Male</option>
@@ -424,11 +424,11 @@
                                 </div>
                                 <div class="login-details">
                                     <div class="form-group email">
-                                        <label for="email">Email Address:</label>
+                                        <label for="email">Email Address*:</label>
                                         <input type="email" id="email" name="email" class="form-input" value="{{ $selectedUser->email }}" @disabled($isInactive)>
                                     </div>
                                     <div class="password-group">
-                                        <label for="password">Password:</label>
+                                        <label for="password">Password*:</label>
                                         <div class="password-row">
                                             <input type="password" id="password" name="password" class="form-input" placeholder="Leave blank to keep current password" @disabled($isInactive)>
                                             <button type="submit" name="reset_password" value="1" class="btn-primary  {{ $isInactive ? 'inactive-btn' : '' }}" @disabled($isInactive)>Reset</button>
@@ -437,7 +437,7 @@
                                 </div>
                                 <div class="account">
                                     <div class="form-group user_type">
-                                        <label for="user_type">User Type:</label>
+                                        <label for="user_type">User Type*:</label>
                                         @if ($selectedUser->resident)
                                             <select id="user_type" name="user_type" class="form-cb" @disabled($isInactive)>
                                                 <option value="Resident" {{ $selectedUser->user_type === 'Resident' ? 'selected' : '' }} @disabled($isInactive)>Resident</option>
@@ -450,7 +450,7 @@
                                         @endif
                                     </div>
                                     <div class="form-group user-status">
-                                        <label for="user-status">User Status:</label>
+                                        <label for="user-status">User Status*:</label>
                                         <select id="user-status" name="status" class="form-cb">
                                             <option value="Active" {{ $selectedUser->status === 'Active' ? 'selected' : '' }}>Active</option>
                                             <option value="Inactive" {{ $selectedUser->status === 'Inactive' ? 'selected' : '' }}>Inactive</option>
@@ -473,14 +473,14 @@
                             <h2 class="modal-title">Resident Information</h2>
                             <div class="resident-type">
                                 <div class="form-group accommodation_type">
-                                    <label for="accommodation_type">Accommodation Type:</label>
+                                    <label for="accommodation_type">Accommodation Type*:</label>
                                     <select name="accommodation_type" id="accommodation_type" class="form-cb" @disabled($isInactive)>
                                         <option value="Resident" {{ $selectedUser->resident->accommodation_type === 'Resident' ? 'selected' : '' }} @disabled($isInactive)>Resident</option>
                                         <option value="Transient" {{ $selectedUser->resident->accommodation_type === 'Transient' ? 'selected' : '' }} @disabled($isInactive)>Transient</option>
                                     </select>
                                 </div>
                                 <div class="form-group resident_type">
-                                    <label for="resident_type">Resident Type:</label>
+                                    <label for="resident_type">Resident Type*:</label>
                                     <select name="resident_type" id="resident_type" class="form-cb" @disabled($isInactive)>
                                         <option value="Student" {{ $selectedUser->resident->resident_type === 'Student' ? 'selected' : '' }} @disabled($isInactive)>Student</option>
                                         <option value="Employee" {{ $selectedUser->resident->resident_type === 'Employee' ? 'selected' : '' }} @disabled($isInactive)>Employee</option>
@@ -489,7 +489,7 @@
                             </div>
                             <div class="lodging-type">
                                 <div class="form-group payment_schedule">
-                                    <label for="payment_schedule">Payment Schedule:</label>
+                                    <label for="payment_schedule">Payment Schedule*:</label>
                                     <select name="payment_schedule" id="payment_schedule" class="form-cb" @disabled($isInactive)>
                                         @foreach ($paymentOptions as $paymentOption)
                                             <option value="{{ $paymentOption }}" @selected($selectedUser->resident->payment_schedule == $paymentOption) @disabled($isInactive)>{{ $paymentOption }}</option>
@@ -497,7 +497,7 @@
                                     </select>
                                 </div>
                                 <div class="form-group room_type">
-                                    <label for="room_type">Room Type:</label>
+                                    <label for="room_type">Room Type*:</label>
                                     <select name="room_type" id="room_type" class="form-cb" @disabled($isInactive)>
                                         <option value="8 persons" {{ $selectedUser->resident->room_type === '8 persons' ? 'selected' : '' }} @disabled($isInactive)>8 persons</option>
                                         <option value="4 persons" {{ $selectedUser->resident->room_type === '4 persons' ? 'selected' : '' }} @disabled($isInactive)>4 persons</option>
@@ -509,11 +509,11 @@
                             </div>
                             <div class="checkin-checkout">
                                 <div class="form-group check_in_date">
-                                    <label for="check_in_date">Check In:</label>
+                                    <label for="check_in_date">Check In*:</label>
                                     <input type="date" id="check_in_date" name="check_in_date" class="form-input" value="{{ $selectedUser->resident->check_in_date?->format('Y-m-d') }}" @disabled($isInactive)>
                                 </div>
                                 <div class="form-group check_out_date">
-                                    <label for="check_out_date">Check Out:</label>
+                                    <label for="check_out_date">Check Out*:</label>
                                     <input type="date" id="check_out_date" name="check_out_date" class="form-input" value="{{ $selectedUser->resident->check_out_date?->format('Y-m-d') }}" @disabled($isInactive)>
                                 </div>
                             </div>

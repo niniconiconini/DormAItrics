@@ -116,7 +116,7 @@ class UserController extends Controller
             'first_name' => $user->first_name,
             'middle_name' => $user->middle_name,
             'nickname' => $user->nickname,
-            'birthdate' => $user->birthdate?->format('F d, Y'),
+            'birthdate' => $user->birthdate->format('F d, Y'),
             'gender' => $user->gender,
             'phone_number' => $user->phone_number,
             'address' => $user->address,
@@ -131,8 +131,8 @@ class UserController extends Controller
             $receipt['resident_type'] = $user->resident->resident_type;
             $receipt['payment_schedule'] = $user->resident->payment_schedule;
             $receipt['room_type'] = $user->resident->room_type;
-            $receipt['check_in_date'] = $user->resident->check_in_date?->format('F d, Y');
-            $receipt['check_out_date'] = $user->resident->check_out_date?->format('F d, Y');
+            $receipt['check_in_date'] = $user->resident->check_in_date->format('F d, Y');
+            $receipt['check_out_date'] = $user->resident->check_out_date->format('F d, Y');
         }
 
         return redirect()
@@ -149,13 +149,14 @@ class UserController extends Controller
             abort(403);
         }
 
+        // get inactive user info and restore once reactivated
         if ($user->status === 'Inactive' && $request->status === 'Active') {
             $request->merge([
                 'last_name' => $user->last_name,
                 'first_name' => $user->first_name,
                 'middle_name' => $user->middle_name,
                 'nickname' => $user->nickname,
-                'birthdate' => $user->birthdate?->format('Y-m-d'),
+                'birthdate' => $user->birthdate->format('Y-m-d'),
                 'gender' => $user->gender,
                 'phone_number' => $user->phone_number,
                 'address' => $user->address,
@@ -168,6 +169,7 @@ class UserController extends Controller
             $userActivated = true;
         }
 
+        // make sure user inputs are valid
         $validated = $request->validate([
             'last_name' => 'required|string|max:255',
             'first_name' => 'required|string|max:255',
@@ -184,16 +186,19 @@ class UserController extends Controller
             'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
+        // leave password input blank to keep old user password
         if (! $request->filled('password')) {
             unset($validated['password']);
         }
 
+        // block residents from being able to change user type to be other than resident or deactivate their account
         if ($currentUser->id === $user->id && $currentUser->user_type === 'Resident') {
             $validated['user_type'] = $user->user_type;
             $validated['status'] = $user->status;
         }
 
-        if ($currentUser->id === $user->id && $currentUser->user_type === 'Manager') {
+        // prevents admins manager from changing THEIR OWN user type and status
+        if ($currentUser->id === $user->id && in_array($currentUser->user_type, ['Admin', 'Manager'])) {
             $validated['user_type'] = $user->user_type;
 
             if ($validated['status'] === 'Inactive') {
@@ -203,7 +208,7 @@ class UserController extends Controller
 
         $user->update($validated); // create user
 
-        // reset info when turning user inactive
+        // reset resident info when turning user inactive
         if ($user->status === 'Inactive' && $user->resident) {
             $user->resident->update([
                 'room_id' => null,
@@ -211,15 +216,19 @@ class UserController extends Controller
             ]);
         }
 
+        // update password if input is filled
         if ($request->filled('password')) {
             $user->update(['password' => $request->password]);
         }
 
+        // change password to default when reset button has been pressed
         if ($request->has('reset_password')) {
             $user->update(['password' => 'spum123']);
         }
 
+        // update resident
         if ($user->resident) {
+            // validate inpputs
             $validated = $request->validate([
                 'resident_type' => 'nullable|in:Student,Employee',
                 'accommodation_type' => 'nullable|in:Resident,Transient',
@@ -229,6 +238,7 @@ class UserController extends Controller
                 'check_out_date' => 'nullable|date|after_or_equal:check_in_date',
             ]);
 
+            // lock changing resident info for residents
             if ($currentUser->id === $user->id && $currentUser->user_type === 'Resident') {
                 $validated['resident_type'] = $user->resident->resident_type;
                 $validated['accommodation_type'] = $user->resident->accommodation_type;
@@ -238,7 +248,18 @@ class UserController extends Controller
                 $validated['check_out_date'] = $user->resident->check_out_date;
             }
 
-            $user->resident->update($validated); // create resident
+            // remove resident from room if any of these are changed
+            $resident = $user->resident;
+            $residentInfoChanged =
+                $resident->room_type !== ($request->room_type ?? $resident->room_type) ||
+                $resident->resident_type !== ($request->resident_type ?? $resident->resident_type) ||
+                $resident->accommodation_type !== ($request->accommodation_type ?? $resident->accommodation_type) ||
+                $user->gender !== ($request->gender ?? $user->gender);
+            if ($residentInfoChanged) {
+                $resident->update(['room_id' => null]);
+            }
+
+            $user->resident->update($validated); // create resident / update resident
         }
 
         if ($request->hasFile('profile_picture')) {
@@ -261,7 +282,7 @@ class UserController extends Controller
             'first_name' => $user->first_name,
             'middle_name' => $user->middle_name,
             'nickname' => $user->nickname,
-            'birthdate' => $user->birthdate?->format('F d, Y'),
+            'birthdate' => $user->birthdate->format('F d, Y'),
             'gender' => $user->gender,
             'phone_number' => $user->phone_number,
             'address' => $user->address,
@@ -277,8 +298,8 @@ class UserController extends Controller
             $receipt['resident_type'] = $user->resident->resident_type;
             $receipt['payment_schedule'] = $user->resident->payment_schedule;
             $receipt['room_type'] = $user->resident->room_type;
-            $receipt['check_in_date'] = $user->resident->check_in_date?->format('F d, Y');
-            $receipt['check_out_date'] = $user->resident->check_out_date?->format('F d, Y');
+            $receipt['check_in_date'] = $user->resident->check_in_date->format('F d, Y');
+            $receipt['check_out_date'] = $user->resident->check_out_date->format('F d, Y');
         }
 
         $successMessage = $userActivated ? 'User activated successfully.' : 'User updated successfully.';

@@ -564,6 +564,12 @@ color: var(--primary-color);
 /* ROOM CARDS */
 .room-card {
     overflow: hidden;
+    transition: 0.2s ease;
+}
+
+.room-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-color);
 }
 
 .room-image img {
