@@ -84,7 +84,7 @@ class UserSeeder extends Seeder
                 'address' => 'Tondo',
                 'password' => Hash::make('spum123'),
                 'user_type' => 'Resident',
-                'status' => 'Inactive',
+                'status' => 'Active',
                 'profile_picture' => '/images/users/user_4.png',
             ]
         );
