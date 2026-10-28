@@ -95,6 +95,9 @@ class PassSlip extends Model
         return $this->fullName($this->approver);
     }
 
+    /**
+     * @param  Builder<PassSlip>  $query
+     */
     public function scopeForApproval(Builder $query): void
     {
         $query->where('status', 'Pending')

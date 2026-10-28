@@ -20,7 +20,7 @@ use Illuminate\Support\Str;
  * @property string $first_name
  * @property string|null $middle_name
  * @property string $nickname
- * @property Carbon $birthdate
+ * @property Carbon|null $birthdate
  * @property string $user_type
  * @property string|null $address
  * @property string|null $phone_number
@@ -37,6 +37,7 @@ use Illuminate\Support\Str;
     'middle_name',
     'nickname',
     'birthdate',
+    'gender',
     'user_type',
     'address',
     'phone_number',
@@ -71,6 +72,11 @@ class User extends Authenticatable
     public function announcements(): HasMany
     {
         return $this->hasMany(Announcement::class);
+    }
+
+    public function userName(): string
+    {
+        return trim($this->nickname.' '.$this->last_name);
     }
 
     /**

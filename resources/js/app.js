@@ -1,15 +1,24 @@
-const profilePicture = document.getElementById('profile_picture');
-const previewImage = document.getElementById('preview-image');
-const fileName = document.getElementById('file-name');
+const fileInput =
+    document.querySelector('#profile_picture, #room_image');
 
-if (profilePicture && previewImage) {
+const previewImage =
+    document.getElementById('preview-image');
+
+const previewText =
+    document.getElementById('preview-text');
+
+const fileName =
+    document.getElementById('file-name');
+
+if (fileInput && previewImage) {
 
     const originalImage = previewImage.src;
+
     const originalFileText = fileName
         ? fileName.textContent
         : 'No file chosen';
 
-    profilePicture.addEventListener('change', function () {
+    fileInput.addEventListener('change', function () {
 
         const file = this.files[0];
 
@@ -17,15 +26,26 @@ if (profilePicture && previewImage) {
 
         previewImage.src = URL.createObjectURL(file);
 
+        // show preview image
+        previewImage.style.display = 'block';
+
+        // hide placeholder text
+        if (previewText) {
+            previewText.style.display = 'none';
+        }
+
+        // update filename
         if (fileName) {
             fileName.textContent = file.name;
         }
     });
 
-    const userForm = document.querySelector('.user-modal form');
+    const form =
+        document.querySelector('.user-modal form')
+        || document.querySelector('.room-modal form');
 
-    if (userForm) {
-        userForm.addEventListener('reset', () => {
+    if (form) {
+        form.addEventListener('reset', () => {
 
             setTimeout(() => {
 
@@ -33,6 +53,15 @@ if (profilePicture && previewImage) {
 
                 if (fileName) {
                     fileName.textContent = originalFileText;
+                }
+
+                // if add-room preview started empty
+                if (!originalImage) {
+                    previewImage.style.display = 'none';
+
+                    if (previewText) {
+                        previewText.style.display = 'block';
+                    }
                 }
 
             }, 0);

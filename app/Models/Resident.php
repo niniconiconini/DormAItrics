@@ -21,8 +21,14 @@ use Illuminate\Support\Carbon;
 ])]
 
 /**
+ * @property int $user_id
+ * @property int|null $room_id
+ * @property string|null $room_type
+ * @property string|null $resident_type
+ * @property string|null $accommodation_type
  * @property Carbon|null $check_in_date
  * @property Carbon|null $check_out_date
+ * @property User $user
  */
 class Resident extends Model
 {

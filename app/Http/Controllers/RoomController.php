@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Resident;
 use App\Models\Room;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class RoomController extends Controller
     public function index(): View
     {
         // get rooms per dorm
-        $query = Room::query();
+        $query = Room::with(['residents.user'])->withCount('residents');
         if (request('dorm')) {
             $query->where('dorm_name', request('dorm'));
         }
@@ -27,7 +28,11 @@ class RoomController extends Controller
             return $rooms->isNotEmpty();
         });
 
-        return view('rooms', ['roomsByDorm' => $dormsOrder]);
+        $availableResidents = Resident::with('user')->whereNull('room_id')->whereHas('user', function ($query) {
+            $query->where('status', 'Active');
+        })->get();
+
+        return view('rooms', ['roomsByDorm' => $dormsOrder, 'availableResidents' => $availableResidents]);
     }
 
     // =============================== ADD ROOM ===============================
@@ -87,6 +92,65 @@ class RoomController extends Controller
                     'capacity' => $validated['capacity'],
                     'room_image' => $validated['room_image'],
                 ]]);
+    }
+
+    // =============================== ASSIGN TO ROOM ===============================
+    public function assign(Request $request, Room $room): RedirectResponse
+    {
+        //
+        if (! $request->filled('resident_id')) {
+            return back()->with(['error' => 'Please select a resident first.']);
+        }
+
+        // check if room is full
+        if ($room->residents()->count() >= $room->capacity) {
+            return back()->withErrors(['error' => 'Room is already full.']);
+        }
+
+        /** @var Resident $resident */
+        $resident = Resident::with('user')->findOrFail($request->resident_id);
+
+        // check if resident is already assigned in another room
+        if ($resident->room_id !== null) {
+            return back()->withErrors(['error' => 'Resident is already assigned to another room.']);
+        }
+
+        // check if resident's preffered room type matches the room's capacity
+        if ($resident->room_type !== $room->capacity.' persons') {
+            return back()->withErrors(['error' => 'Room type preference does not match.']);
+        }
+
+        // set gender, accommodation type, and resident type to room by assigning first resident
+        $firstOccupant = $room->residents()->with('user')->first();
+        if ($firstOccupant) {
+            // gender
+            if ($resident->user->gender !== $firstOccupant->user->gender) {
+                return back()->withErrors(['error' => 'Gender does not match existing occupant.']);
+            }
+
+            // resident / transient
+            if ($resident->accommodation_type !== $firstOccupant->accommodation_type) {
+                return back()->withErrors(['error' => 'Accommodation type does not match.']);
+            }
+
+            // student / employee
+            if ($resident->resident_type !== $firstOccupant->resident_type) {
+                return back()->withErrors(['error' => 'Resident type does not match.']);
+            }
+        }
+
+        $resident->update(['room_id' => $room->id]);
+
+        return redirect()->route('rooms.index', ['modal' => 'edit', 'room' => $room->id, 'occupants' => 'open']);
+    }
+
+    // =============================== REMOVE FROM ROOM ===============================
+    public function removeResident(Resident $resident): RedirectResponse
+    {
+        $roomID = $resident->room_id;
+        $resident->update(['room_id' => null]);
+
+        return redirect()->route('rooms.index', ['modal' => 'edit', 'room' => $roomID, 'occupants' => 'open']);
     }
 
     // =============================== EDIT ROOM ===============================

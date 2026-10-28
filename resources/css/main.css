@@ -53,9 +53,10 @@ body {
 
 .flex-view {
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     gap: 1.5rem;
     margin-bottom: 2rem;
+    margin-left: 2rem;
 }
 
 .grid-view {
@@ -173,7 +174,8 @@ hr {
 
 .form-group input[type="text"],
 .form-group input[type="number"],
-.form-group select {
+.form-group select,
+.assign-row select {
     width: 100%;
     height: 45px;
     border: 1px solid #ccc;
@@ -562,6 +564,12 @@ color: var(--primary-color);
 /* ROOM CARDS */
 .room-card {
     overflow: hidden;
+    transition: 0.2s ease;
+}
+
+.room-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-color);
 }
 
 .room-image img {
@@ -642,6 +650,21 @@ color: var(--primary-color);
     object-fit: cover;
 }
 
+.image-upload-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.image-upload-controls .btn-primary {
+    flex: 0 0 20%;
+}
+
+.image-upload-controls #file-name {
+    flex: 1;
+    font-weight: 500;
+}
+
 /* ACTIONS */
 .delete-form {
     margin: 0;
@@ -657,6 +680,18 @@ color: var(--primary-color);
     color: lch(23.77% 26.46 153.37) !important;
 }
 
+.assign-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+.list{
+    text-align: center;
+    padding-top: 1rem;
+}
 /* RECEIPTS */
 .receipt-modal {
     width: min(700px, 90vw) !important;
@@ -666,7 +701,7 @@ color: var(--primary-color);
 .receipt-box {
     width: 100%;
     margin: 1rem 0;
-    padding: 0;
+    padding: 0 3rem;
     color: var(--primary-color);
 }
 
@@ -692,7 +727,7 @@ color: var(--primary-color);
 }
 
 .receipt-row strong {
-    width: 180px;
+    width: 220px;
     flex-shrink: 0;
 }
 
@@ -998,8 +1033,27 @@ color: var(--primary-color);
     left: 0;
 }
 
+.residents .flex-view {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4rem;
+}
+
+.residents .dorm-card {
+    /* width: 350px; */
+    width: 100%;
+}
+
 .residents span {
     font-weight: 500;
+}
+
+.disabled-card {
+    pointer-events: none;
+}
+
+.disabled-card:hover {
+    transform: none;
 }
 
 .inactive-summary {
@@ -1237,4 +1291,15 @@ color: var(--primary-color);
         width: 100%;
     }
 }
+
+/* ===== PROFILE MANAGEMENT ===== */
+.profile-management .user-modal{
+    width: 100%;
+    margin: auto;
+    padding: 0 2rem;
+    border: none;
+    background-color: var(--body-color);
+    box-shadow: none;
+}
+
 /* ===== RESIDENTS END ===== */

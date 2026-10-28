@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ConcernReply extends Model
 {
     use SoftDeletes;
+
     /**
      * @return BelongsTo<Concern, $this>
      */

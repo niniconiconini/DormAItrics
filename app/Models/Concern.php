@@ -23,6 +23,7 @@ class Concern extends Model
     {
         return $this->belongsTo(Resident::class);
     }
+
     /**
      * the resident who posted the concern (concern -> resident -> user)
      *
@@ -37,6 +38,7 @@ class Concern extends Model
     {
         return collect([$this->user?->first_name, $this->user?->last_name])->filter()->implode(' ');
     }
+
     /**
      * the users who liked this concern
      *

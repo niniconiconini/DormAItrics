@@ -1,13 +1,13 @@
 <?php
 
 use App\Http\Controllers\AnnouncementsController;
+use App\Http\Controllers\ConcernController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PassSlipController;
 use App\Http\Controllers\PassSlipMgmtController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ConcernController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -50,7 +50,7 @@ Route::middleware(['auth', 'can:all-users'])->group(function () {
 
     // profile
     Route::view('profile', 'profile')->name('profile');
-
+    Route::put('profile/{user}', [UserController::class, 'update'])->name('profile.update');
 });
 
 //      ADMIN ONLY ACCESS
@@ -60,6 +60,8 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
 
     // room management
     Route::resource('rooms', RoomController::class);
+    Route::post('/rooms/{room}/assign', [RoomController::class, 'assign'])->name('rooms.assign');
+    Route::get('/rooms/residents/{resident}/remove', [RoomController::class, 'removeResident'])->name('rooms.removeResident');
 
     // announcements
     Route::resource('announcements', AnnouncementsController::class)->only(['store', 'update', 'destroy']);
