@@ -6,6 +6,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PassSlipController;
 use App\Http\Controllers\PassSlipMgmtController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -33,7 +34,8 @@ Route::middleware(['auth', 'can:all-users'])->group(function () {
     Route::get('/', [AnnouncementsController::class, 'index'])->name('home');
 
     // reviews
-    Route::view('reviews', 'reviews')->name('reviews');
+    Route::get('reviews', [ReviewController::class, 'index'])->name('reviews');
+    Route::post('reviews', [ReviewController::class, 'store'])->name('reviews.store');
 
     // concerns
     Route::get('concerns', [ConcernController::class, 'index'])->name('concerns');
@@ -65,6 +67,9 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
 
     // announcements
     Route::resource('announcements', AnnouncementsController::class)->only(['store', 'update', 'destroy']);
+
+    // reviews
+    Route::delete('reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 
     // concerns
     Route::delete('concerns/{concern}', [ConcernController::class, 'destroy'])->name('concerns.destroy');

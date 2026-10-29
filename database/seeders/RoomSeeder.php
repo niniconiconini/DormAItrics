@@ -13,7 +13,7 @@ class RoomSeeder extends Seeder
     public function run(): void
     {
         Room::firstOrCreate([
-            'room_image' => '/images/rooms/lb102.jpg',
+            'room_image' => '/images/rooms/lb102.png',
             'room_number' => '102',
             'dorm_name' => 'Le Berceau',
             'capacity' => 2,

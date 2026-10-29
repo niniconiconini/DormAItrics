@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('resident_id')->unique()->constrained('residents');
             $table->unsignedTinyInteger('review_rating');
+            $table->string('title', 100);
             $table->text('message')->nullable();
             $table->timestamps();
         });

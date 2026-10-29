@@ -404,6 +404,61 @@ color: var(--primary-color);
 
 /* ===== ANNOUNCEMENT END ===== */
 
+/* ===== REVIEWS START ===== */
+.review-summary {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.review-average {
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+.avg-stars {
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, var(--toggle-color) var(--fill), #ccc var(--fill));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.review-stars {
+    margin-bottom: 0.5rem;
+    color: var(--toggle-color);
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+}
+
+.star-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+}
+
+.rate-star {
+    padding: 0;
+    border: none;
+    background: none;
+    color: #ccc;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.rate-star.on {
+    color: var(--toggle-color);
+}
+
+.rating-word {
+    font-weight: 600;
+}
+
+/* ===== REVIEWS END ===== */
+
 /* ===== CONERNS START ===== */
 .concern-actions {
     display: flex;

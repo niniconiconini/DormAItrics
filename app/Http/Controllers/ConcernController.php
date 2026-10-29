@@ -19,7 +19,7 @@ class ConcernController extends Controller
         return Resident::where('user_id', Auth::id())->first();
     }
 
-    public function index(): View
+    public function index(): View|RedirectResponse
     {
         $resident = $this->currentResident();
 
@@ -27,13 +27,17 @@ class ConcernController extends Controller
             ->withCount('likedBy')
             ->withExists(['likedBy as liked_by_me' => fn ($query) => $query->where('users.id', Auth::id())])
             ->latest('id')
-            ->get();
+            ->paginate(5)
+            ->fragment('concerns-list');
+
+        if ($concerns->isEmpty() && $concerns->currentPage() > 1) {
+            return redirect($concerns->url($concerns->lastPage()));
+        }
 
         return view('concerns', [
             'concerns' => $concerns,
             'canPost' => $resident !== null && ! Gate::allows('admins'),
         ]);
-
     }
 
     public function store(Request $request): RedirectResponse

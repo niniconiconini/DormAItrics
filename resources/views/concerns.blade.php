@@ -51,7 +51,7 @@
         <hr>
         @endif
 
-        <section class="list-view">
+        <section id="concerns-list" class="list-view">
             @forelse ($concerns as $concern)
                 <div class="card announcement-card" id="concern-{{ $concern->id }}">
                     <div class="author post-author">
@@ -103,8 +103,33 @@
             @empty
                 <p>No concerns yet.</p>
             @endforelse
+
+            {{-- page numbers (only shown when there is more than one page) --}}
+            @if ($concerns->hasPages())
+                <nav class="pager" aria-label="Pagination">
+                    @if ($concerns->onFirstPage())
+                        <span class="disabled">&laquo; Previous</span>
+                    @else
+                        <a href="{{ $concerns->previousPageUrl() }}">&laquo; Previous</a>
+                    @endif
+
+                    @foreach ($concerns->getUrlRange(1, $concerns->lastPage()) as $page => $url)
+                        @if ($page == $concerns->currentPage())
+                            <span class="active" aria-current="page">{{ $page }}</span>
+                        @else
+                            <a href="{{ $url }}">{{ $page }}</a>
+                        @endif
+                    @endforeach
+
+                    @if ($concerns->hasMorePages())
+                        <a href="{{ $concerns->nextPageUrl() }}">Next &raquo;</a>
+                    @else
+                        <span class="disabled">Next &raquo;</span>
+                    @endif
+                </nav>
+            @endif
         </section>
-                </section>
+    </section>
 
         <script>
             const csrf = "{{ csrf_token() }}";

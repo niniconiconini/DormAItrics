@@ -15,6 +15,7 @@ class ReviewSeeder extends Seeder
         Review::firstOrCreate([
             'resident_id' => 1,
         ], [
+            'title' => 'Absolutely Magnificent Rooms!',
             'review_rating' => 5,
             'message' => 'The Dormitory is clean and well maintained.',
         ]);
