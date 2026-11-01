@@ -109,27 +109,43 @@
                 <p>No reviews to show.</p>
             @endforelse
 
-            {{-- page numbers (only shown when there is more than one page) --}}
+            {{-- page numbers: first pages, "...", last page (only shown when there is more than one page) --}}
             @if ($reviews->hasPages())
-                <nav class="pager" aria-label="Pagination">
+                @php
+                    $current = $reviews->currentPage();
+                    $last = $reviews->lastPage();
+
+                    if ($last <= 7) {
+                        $pages = range(1, $last);
+                    } elseif ($current <= 4) {
+                        $pages = [...range(1, 5), '...', $last];
+                    } elseif ($current >= $last - 3) {
+                        $pages = [1, '...', ...range($last - 4, $last)];
+                    } else {
+                        $pages = [1, '...', $current - 1, $current, $current + 1, '...', $last];
+                    }
+                @endphp
+                <nav class="pager" aria-label="Pagination" data-last="{{ $last }}" data-url="{{ $reviews->url(1) }}" data-page-name="{{ $reviews->getPageName() }}">
                     @if ($reviews->onFirstPage())
-                        <span class="disabled">&laquo; Previous</span>
+                        <span class="disabled" aria-label="Previous page">&#9664;&#xFE0E;</span>
                     @else
-                        <a href="{{ $reviews->previousPageUrl() }}">&laquo; Previous</a>
+                        <a href="{{ $reviews->previousPageUrl() }}" aria-label="Previous page">&#9664;&#xFE0E;</a>
                     @endif
 
-                    @foreach ($reviews->getUrlRange(1, $reviews->lastPage()) as $page => $url)
-                        @if ($page == $reviews->currentPage())
+                    @foreach ($pages as $page)
+                        @if ($page === '...')
+                            <button type="button" class="dots" aria-label="Jump to a page">&hellip;</button>
+                        @elseif ($page == $current)
                             <span class="active" aria-current="page">{{ $page }}</span>
                         @else
-                            <a href="{{ $url }}">{{ $page }}</a>
+                            <a href="{{ $reviews->url($page) }}">{{ $page }}</a>
                         @endif
                     @endforeach
 
                     @if ($reviews->hasMorePages())
-                        <a href="{{ $reviews->nextPageUrl() }}">Next &raquo;</a>
+                        <a href="{{ $reviews->nextPageUrl() }}" aria-label="Next page">&#9654;&#xFE0E;</a>
                     @else
-                        <span class="disabled">Next &raquo;</span>
+                        <span class="disabled" aria-label="Next page">&#9654;&#xFE0E;</span>
                     @endif
                 </nav>
             @endif
@@ -235,5 +251,42 @@
             })();
             </script>
         @endcan
+        <script>
+            // clicking "..." turns it into a box where you can type a page number
+            (() => {
+                document.querySelectorAll('.pager .dots').forEach(dots => {
+                    dots.addEventListener('click', () => {
+                        const nav = dots.closest('.pager');
+                        const last = Number(nav.dataset.last);
+
+                        const input = document.createElement('input');
+                        input.type = 'number';
+                        input.min = 1;
+                        input.max = last;
+                        input.setAttribute('aria-label', 'Go to page');
+
+                        const restore = () => input.replaceWith(dots);
+
+                        input.addEventListener('keydown', e => {
+                            if (e.key === 'Escape') restore();
+
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                const page = Math.min(Math.max(parseInt(input.value, 10), 1), last);
+                                if (!page) return restore();
+
+                                const url = new URL(nav.dataset.url);
+                                url.searchParams.set(nav.dataset.pageName, page);
+                                location.href = url.href;
+                            }
+                        });
+                        input.addEventListener('blur', restore);
+
+                        dots.replaceWith(input);
+                        input.focus();
+                    });
+                });
+            })();
+        </script>
     </section>
 </x-layout>

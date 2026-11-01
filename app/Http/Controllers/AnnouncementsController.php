@@ -11,14 +11,20 @@ use Illuminate\View\View;
 class AnnouncementsController extends Controller
 {
     /* get announcements from db and get user */
-    public function index(): View
+    public function index(): View|RedirectResponse
     {
-        $announcements = Announcement::with('user')->latest()->get();
+        $announcements = Announcement::with('user')
+            ->latest('id')
+            ->paginate(5)
+            ->fragment('list-view');
+
+        if ($announcements->isEmpty() && $announcements->currentPage() > 1) {
+            return redirect($announcements->url($announcements->lastPage()));
+        }
 
         return view('home', ['announcements' => $announcements]);
     }
 
-    /* Store a newly created resource in storage. */
     public function store(Request $request): RedirectResponse
     {
         // validate
