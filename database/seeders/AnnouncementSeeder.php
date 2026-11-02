@@ -18,7 +18,7 @@ class AnnouncementSeeder extends Seeder
             'message' => 'Welcome to the Dormitory of St. Paul University Manila.',
         ]);
 
-    // New Seeds
+        // New Seeds
         Announcement::firstOrCreate([
             'user_id' => 2,
             'title' => 'Monthly General Cleaning',

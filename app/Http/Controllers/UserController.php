@@ -6,6 +6,7 @@ use App\Models\Resident;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -72,7 +73,7 @@ class UserController extends Controller
                 'payment_schedule' => 'required|string',
                 'room_type' => 'required|string',
                 'check_in_date' => 'required|date',
-                'check_out_date' => 'nullable|date|after_or_equal:check_in_date',
+                'check_out_date' => 'required|date|after_or_equal:check_in_date',
             ]);
         }
 
@@ -131,8 +132,8 @@ class UserController extends Controller
             $receipt['resident_type'] = $user->resident->resident_type;
             $receipt['payment_schedule'] = $user->resident->payment_schedule;
             $receipt['room_type'] = $user->resident->room_type;
-            $receipt['check_in_date'] = $user->resident->check_in_date->format('F d, Y');
-            $receipt['check_out_date'] = $user->resident->check_out_date->format('F d, Y');
+            $receipt['check_in_date'] = Carbon::parse($user->resident->check_in_date)->format('F d, Y');
+            $receipt['check_out_date'] = Carbon::parse($user->resident->check_out_date)->format('F d, Y');
         }
 
         return redirect()
@@ -228,14 +229,14 @@ class UserController extends Controller
 
         // update resident
         if ($user->resident) {
-            // validate inpputs
+            // validate inputs
             $validated = $request->validate([
-                'resident_type' => 'nullable|in:Student,Employee',
-                'accommodation_type' => 'nullable|in:Resident,Transient',
-                'payment_schedule' => 'nullable|string',
-                'room_type' => 'nullable|string',
-                'check_in_date' => 'nullable|date',
-                'check_out_date' => 'nullable|date|after_or_equal:check_in_date',
+                'resident_type' => 'required|in:Student,Employee',
+                'accommodation_type' => 'required|in:Resident,Transient',
+                'payment_schedule' => 'required|string',
+                'room_type' => 'required|string',
+                'check_in_date' => 'required|date',
+                'check_out_date' => 'required|date|after_or_equal:check_in_date',
             ]);
 
             // lock changing resident info for residents
@@ -298,8 +299,8 @@ class UserController extends Controller
             $receipt['resident_type'] = $user->resident->resident_type;
             $receipt['payment_schedule'] = $user->resident->payment_schedule;
             $receipt['room_type'] = $user->resident->room_type;
-            $receipt['check_in_date'] = $user->resident->check_in_date->format('F d, Y');
-            $receipt['check_out_date'] = $user->resident->check_out_date->format('F d, Y');
+            $receipt['check_in_date'] = Carbon::parse($user->resident->check_in_date)->format('F d, Y');
+            $receipt['check_out_date'] = Carbon::parse($user->resident->check_out_date)->format('F d, Y');
         }
 
         $successMessage = $userActivated ? 'User activated successfully.' : 'User updated successfully.';

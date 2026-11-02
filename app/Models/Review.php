@@ -23,6 +23,7 @@ class Review extends Model
     {
         return $this->belongsTo(Resident::class);
     }
+
     /**
      * @return HasOneThrough<User, Resident, $this>
      */

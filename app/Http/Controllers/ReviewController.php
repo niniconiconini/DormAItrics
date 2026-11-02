@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Resident;
 use App\Models\Review;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
-use Illuminate\Database\UniqueConstraintViolationException;
 
 class ReviewController extends Controller
 {

@@ -11,7 +11,7 @@ class ConcernSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-{
+    {
         Concern::firstOrCreate([
             'resident_id' => 1,
             'subject' => 'Broken Light #1',
