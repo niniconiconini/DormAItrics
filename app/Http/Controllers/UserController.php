@@ -213,7 +213,6 @@ class UserController extends Controller
         if ($user->status === 'Inactive' && $user->resident) {
             $user->resident->update([
                 'room_id' => null,
-                'check_out_date' => null,
             ]);
         }
 

@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\ConcernController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PassSlipController;
 use App\Http\Controllers\PassSlipMgmtController;
-use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UserController;
@@ -14,9 +14,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 //      DMS AND PUBLIC CAN ACCESS
-Route::view('registration', 'user-regis')->name('Registration');
-Route::post('user-regis', RegisterController::class)->name('register');
-
 Route::view('login', 'user-login')->name('login')->middleware('throttle:5,1');
 Route::post('login', LoginController::class)->name('login.attempt');
 
@@ -84,9 +81,8 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
     Route::view('reports', 'reports')->name('reports');
 
     // analytics
-    Route::view('analytics', 'analytics')->name('analytics');
+    Route::resource('analytics', AnalyticsController::class);
 
     // biometrics
     Route::view('logbook', 'biometrics')->name('biometrics');
-
 });
