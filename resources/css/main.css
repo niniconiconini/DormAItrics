@@ -685,16 +685,12 @@ color: var(--primary-color);
     background-color: #ffffff52 !important;
     width: 100%;
     min-height: 200px;
-
     border: 1px solid #ccc;
     border-radius: 8px;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     overflow: hidden;
-
     color: #888;
     font-size: 0.9rem;
 }
@@ -717,7 +713,7 @@ color: var(--primary-color);
 
 .image-upload-controls #file-name {
     flex: 1;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 /* ACTIONS */

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('face_recognition', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('resident_id')->unique()->constrained('residents');
+            $table->foreignId('resident_id')->constrained('residents');
             $table->string('face_reference');
             $table->timestamps();
         });

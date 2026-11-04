@@ -366,15 +366,16 @@
                         {{-- PERSONAL INFORMATION --}}
                         <div class="user-top-section">
                             <div class="sidebar">
-                                <div class="image-upload" style="align-items: center;">
-                                    <img id="preview-image" src="{{ $selectedUser->profile_picture ? asset($selectedUser->profile_picture) : asset('images/user-profile.png') }}">
+                                <div class="image-upload" style="align-items: center; margin: 0;">
+                                    <img id="preview-image" src="{{ $selectedUser->profile_picture ? asset($selectedUser->profile_picture) : asset('images/user-profile.png') }}" style="margin: 0;">
                                     <input type="file" name="profile_picture" id="profile_picture" accept="image/*" hidden @disabled($isInactive)>
                                     <label for="profile_picture" class="btn-primary {{ $isInactive ? 'inactive-btn' : '' }}">Choose File</label>
-                                    <span id="file-name">No file chosen</span><br>
+                                    <p id="file-name" style="padding-bottom: 0.3rem; font-weight: 400;">No file chosen</p>
                                 </div>
                                 @if($selectedUser->resident)
-                                    <p>Resident ID: <br><span>{{ $selectedUser->resident->id }}</span></p><br>
+                                    <p>Resident ID: <br><span>{{ $selectedUser->resident->id }}</span></p>
                                     <p>Room: <br><span>{{ $selectedUser->resident->room?->dorm_name ?? 'Unassigned' }} {{ $selectedUser->resident->room?->room_number ?? '' }}</span></p>
+                                    <a href="/residents/{{ $selectedUser->resident->id }}/enroll-face" class="btn-primary">Enroll Face</a>
                                 @else
                                     <p>User ID: <span>{{ $selectedUser->id }}</span></p>
                                 @endif

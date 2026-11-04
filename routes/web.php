@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\ConcernController;
+use App\Http\Controllers\FaceRecognitionController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PassSlipController;
 use App\Http\Controllers\PassSlipMgmtController;
@@ -61,6 +62,7 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
     Route::resource('rooms', RoomController::class);
     Route::post('/rooms/{room}/assign', [RoomController::class, 'assign'])->name('rooms.assign');
     Route::get('/rooms/residents/{resident}/remove', [RoomController::class, 'removeResident'])->name('rooms.removeResident');
+    Route::get('/residents/{resident}/enroll-face', [FaceRecognitionController::class, 'enroll'])->name('enroll-face');
 
     // announcements
     Route::resource('announcements', AnnouncementsController::class)->only(['store', 'update', 'destroy']);
@@ -84,5 +86,5 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
     Route::resource('analytics', AnalyticsController::class);
 
     // biometrics
-    Route::view('logbook', 'biometrics')->name('biometrics');
+    Route::get('facial-recognition/scan', [FaceRecognitionController::class, 'scan'])->name('facial-recognition.scan');
 });

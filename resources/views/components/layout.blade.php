@@ -30,9 +30,9 @@
                         <li><a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') || request()->is('/users') ? 'active' : '' }}">Residents</a></li>
                         <li><a href="{{ route('rooms.index') }}" class="nav-link {{ request()->routeIs('rooms.*') || request()->is('/rooms') ? 'active' : '' }}">Room Management</a></li>
                         <li><a href="{{ route('slips-mgmt') }}" class="nav-link {{ request()->routeIs('slips-mgmt') || request()->is('/slips-mgmt') ? 'active' : '' }}">Pass Slip Management</a></li>
-                        <li><a href="{{ route('reports') }}" class="nav-link {{ request()->routeIs('reports') || request()->is('/reports') ? 'active' : '' }}">Reports</a></li>
+                        <li><a href="{{ route('reports') }}" class="nav-link {{ request()->routeIs('reports') || request()->is('/logbook') ? 'active' : '' }}">Reports</a></li>
                         <li><a href="{{ route('analytics.index') }}" class="nav-link {{ request()->routeIs('analytics.*') || request()->is('/analytics') ? 'active' : '' }}">Analytics</a></li>
-                        <li><a href="{{ route('biometrics') }}" class="nav-link {{ request()->routeIs('biometrics') || request()->is('/logbook') ? 'active' : '' }}">Biometrics</a></li>
+                        <li><a href="{{ route('facial-recognition.scan') }}" class="nav-link {{ request()->routeIs('facial-recognition.scan') || request()->is('/facial-recognition/scan') ? 'active' : '' }}">Facial Recognition</a></li>
                     </ul>
                 @endif
             </div>
