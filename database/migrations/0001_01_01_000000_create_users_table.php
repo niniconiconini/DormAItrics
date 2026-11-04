@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('user_type', ['Admin', 'Manager', 'Resident']);
-            $table->enum('status', ['Active', 'Inactive', 'Pending']);
+            $table->enum('status', ['Active', 'Inactive']);
             $table->string('profile_picture')->nullable();
             $table->rememberToken();
             $table->timestamps();

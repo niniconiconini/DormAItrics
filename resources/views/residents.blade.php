@@ -375,7 +375,9 @@
                                 @if($selectedUser->resident)
                                     <p>Resident ID: <br><span>{{ $selectedUser->resident->id }}</span></p>
                                     <p>Room: <br><span>{{ $selectedUser->resident->room?->dorm_name ?? 'Unassigned' }} {{ $selectedUser->resident->room?->room_number ?? '' }}</span></p>
-                                    <a href="/residents/{{ $selectedUser->resident->id }}/enroll-face" class="btn-primary">Enroll Face</a>
+                                    @if ($selectedUser->resident->resident_type == 'Student')
+                                        <a href="/residents/{{ $selectedUser->resident->id }}/enroll-face" class="btn-primary">Enroll Face</a>                                
+                                    @endif
                                 @else
                                     <p>User ID: <span>{{ $selectedUser->id }}</span></p>
                                 @endif

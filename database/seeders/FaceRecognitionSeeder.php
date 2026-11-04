@@ -1,4 +1,4 @@
-<?php
+<!-- ?php
 
 namespace Database\Seeders;
 
@@ -18,4 +18,4 @@ class FaceRecognitionSeeder extends Seeder
             'face_reference' => 'resident_1.jpg',
         ]);
     }
-}
+} -->

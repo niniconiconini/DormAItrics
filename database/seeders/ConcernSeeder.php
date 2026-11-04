@@ -1,4 +1,4 @@
-<?php
+<!-- ?php
 
 namespace Database\Seeders;
 
@@ -312,4 +312,4 @@ class ConcernSeeder extends Seeder
             'message' => 'Rubber welcome mat is curling up causing a trip hazard.',
         ]);
     }
-}
+} -->

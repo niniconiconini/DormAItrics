@@ -18,13 +18,13 @@ class DatabaseSeeder extends Seeder
             RoomSeeder::class,
             UserSeeder::class,
             ResidentSeeder::class,
-            AnnouncementSeeder::class,
-            ActivityLogSeeder::class,
-            ReviewSeeder::class,
-            ConcernSeeder::class,
-            FaceRecognitionSeeder::class,
-            ResidentLogSeeder::class,
-            PassSlipSeeder::class,
+            // AnnouncementSeeder::class,
+            // ActivityLogSeeder::class,
+            // ReviewSeeder::class,
+            // ConcernSeeder::class,
+            // FaceRecognitionSeeder::class,
+            // ResidentLogSeeder::class,
+            // PassSlipSeeder::class,
         ]);
     }
 }

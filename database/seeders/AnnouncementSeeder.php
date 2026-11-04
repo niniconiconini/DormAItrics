@@ -1,4 +1,4 @@
-<?php
+<!-- ?php
 
 namespace Database\Seeders;
 
@@ -307,4 +307,4 @@ class AnnouncementSeeder extends Seeder
             'message' => 'Please clear out all personal belongings and locker compartments before checking out for the break.',
         ]);
     }
-}
+} -->

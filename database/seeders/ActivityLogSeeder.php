@@ -1,4 +1,4 @@
-<?php
+<!-- ?php
 
 namespace Database\Seeders;
 
@@ -17,4 +17,4 @@ class ActivityLogSeeder extends Seeder
             'action_taken' => 'added a new dorm room',
         ]);
     }
-}
+} -->

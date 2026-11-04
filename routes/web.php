@@ -86,5 +86,8 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
     Route::resource('analytics', AnalyticsController::class);
 
     // biometrics
+    Route::view('facial-recognition', 'facial-recognition')->name('facial-recognition');
     Route::get('facial-recognition/scan', [FaceRecognitionController::class, 'scan'])->name('facial-recognition.scan');
+    Route::post('facial-recognition/confirm', [FaceRecognitionController::class, 'confirm'])->name('facial-recognition.confirm');
+    Route::post('facial-recognition/reject', [FaceRecognitionController::class, 'reject'])->name('facial-recognition.reject');
 });

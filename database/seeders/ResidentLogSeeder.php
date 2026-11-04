@@ -1,4 +1,4 @@
-<?php
+<!-- ?php
 
 namespace Database\Seeders;
 
@@ -19,4 +19,4 @@ class ResidentLogSeeder extends Seeder
             'returned_at' => '2026-10-01 08:00:00',
         ]);
     }
-}
+} -->

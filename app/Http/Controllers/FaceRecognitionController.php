@@ -2,21 +2,35 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FaceRecognition;
 use App\Models\PassSlip;
 use App\Models\Resident;
 use App\Models\ResidentLog;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class FaceRecognitionController extends Controller
 {
-    public function scan(): string
+    public function scan(): View
     {
         // recognizing
         $output = shell_exec('"'.dirname(base_path()).'\facial-recognition\venv\Scripts\python.exe" "'.dirname(base_path()).'\facial-recognition\recognizeinator.py'.'" 2>&1');
         $residentId = (int) trim((string) $output);
         if (! $residentId) {
-            return 'Face not recognized, please try again.';
+            return view('facial-recognition', ['message' => 'Face not recognized. Please try again.']);
         }
         $resident = Resident::find($residentId);
+
+        session(['recognized_resident_id' => $residentId]);
+
+        return view('facial-recognition', ['resident' => $resident, 'confirmIdentity' => true]);
+    }
+
+    public function confirm(): RedirectResponse
+    {
+        $residentId = session('recognized_resident_id');
+        /** @var Resident $resident */
+        $resident = Resident::find($residentId)->findOrFail($residentId);
 
         // checking if resident has an open log before logging return or checking for pass slip
         $openLog = ResidentLog::where('resident_id', $residentId)
@@ -27,38 +41,74 @@ class FaceRecognitionController extends Controller
             $openLog->update([
                 'returned_at' => now(),
             ]);
+            session()->forget('recognized_resident_id');
 
-            return 'Welcome back, '.$resident->user->nickname.'!';
+            return redirect()
+                ->route('facial-recognition')
+                ->with('message', 'Welcome back, '.$resident->user->nickname.'!');
         }
 
         // check if pass slip has been used already
         $usedPassSlip = ResidentLog::where('resident_id', $residentId)
             ->whereDate('departed_at', today())
             ->exists();
-
         if ($usedPassSlip) {
-            return 'You have already used your pass slip for today.';
+            return redirect()
+                ->route('facial-recognition')
+                ->with('message', 'Hey '.$resident->user->nickname.', you have already used your pass slip for today.');
         }
 
         // checking pass slip
+        /** @var Resident $resident */
         $activePassSlip = PassSlip::where('resident_id', $residentId)
             ->where('status', 'Approved')
             ->whereDate('requested_date_out', now()->toDateString())
+            ->findOrFail($residentId)
             ->first();
         if (! $activePassSlip) {
-            return 'You don\'t have an approved pass slip for today anymore. Fill up another one to go out again.';
+            return redirect()
+                ->route('facial-recognition')
+                ->with('message', 'Hi '.$resident->user->nickname.'! you don\'t have an approved pass slip for today anymore. Fill up another one to go out again.');
         }
+
+        // if all success
+        /** @var Resident $resident */
         ResidentLog::create([
             'resident_id' => $residentId,
             'departed_at' => now(),
-        ]);
+        ])->findOrFail($residentId);
+        session()->forget('recognized_resident_id');
 
-        return 'Pass slip verfied. Take care!';
+        return redirect()
+            ->route('facial-recognition')
+            ->with('message', 'Pass slip verified. Take care '.$resident->user->nickname.'!');
     }
 
-    public function enroll(Resident $resident): string
+    public function reject(): RedirectResponse
     {
-        // add face recognition reference to student
-        return 'Enrolling face for resident: '.$resident->user->nickname;
+        $attempts = session('scan_attempts', 0) + 1;
+        session(['scan_attempts' => $attempts]);
+        session()->forget('recognized_resident_id');
+        if ($attempts >= 3) {
+            return redirect()
+                ->route('facial-recognition')
+                ->with('message', 'Apologies, the scanner is currently having problems, please try manually.');
+        }
+
+        return redirect()->route('facial-recognition');
+    }
+
+    public function enroll(Resident $resident): RedirectResponse
+    {
+        // open python file
+        shell_exec('"'.dirname(base_path()).'\facial-recognition\venv\Scripts\python.exe" "'.dirname(base_path()).'\facial-recognition\referenceinator.py" '.$resident->id.' 2>&1');
+        FaceRecognition::where('resident_id', $resident->id)->delete();
+        for ($i = 1; $i <= 5; $i++) {
+            FaceRecognition::create(['resident_id' => $resident->id, 'face_reference' => $resident->id.'_'.$i.'.jpg']);
+        }
+
+        return redirect()
+            ->back()
+            ->with('message', 'Face enrollment completed for '.$resident->user->nickname);
     }
 }

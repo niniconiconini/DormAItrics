@@ -1,4 +1,4 @@
-<?php
+<!-- ?php
 
 namespace Database\Seeders;
 
@@ -221,4 +221,4 @@ class ReviewSeeder extends Seeder
             'message' => 'Had a wonderful and restful stay during my brief visit.',
         ]);
     }
-}
+} -->

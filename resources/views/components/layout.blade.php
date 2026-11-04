@@ -32,7 +32,7 @@
                         <li><a href="{{ route('slips-mgmt') }}" class="nav-link {{ request()->routeIs('slips-mgmt') || request()->is('/slips-mgmt') ? 'active' : '' }}">Pass Slip Management</a></li>
                         <li><a href="{{ route('reports') }}" class="nav-link {{ request()->routeIs('reports') || request()->is('/logbook') ? 'active' : '' }}">Reports</a></li>
                         <li><a href="{{ route('analytics.index') }}" class="nav-link {{ request()->routeIs('analytics.*') || request()->is('/analytics') ? 'active' : '' }}">Analytics</a></li>
-                        <li><a href="{{ route('facial-recognition.scan') }}" class="nav-link {{ request()->routeIs('facial-recognition.scan') || request()->is('/facial-recognition/scan') ? 'active' : '' }}">Facial Recognition</a></li>
+                        <li><a href="{{ route('facial-recognition') }}" class="nav-link {{ request()->routeIs('facial-recognition') || request()->is('/facial-recognition') ? 'active' : '' }}">Facial Recognition</a></li>
                     </ul>
                 @endif
             </div>
