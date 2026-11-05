@@ -54,7 +54,7 @@
             </div>
             <hr>
             <div class="section-dormname" style="margin-top: 0; margin-bottom: 1rem;">
-                <a href="{{ route('users.index', ['view' => request('view')]) }}" class="btn-primary">All Residents</a>
+                <a href="{{ route('users.index', ['view' => request('view')]) }}" class="btn-primary">All {{ request('view') === 'transient' ? 'Transients' : 'Residents' }}</a>
                 <a href="{{ route('users.index', ['view' => request('view'), 'resident_type' => 'Student']) }}" class="btn-primary">Students</a>
                 <a href="{{ route('users.index', ['view' => request('view'), 'resident_type' => 'Employee']) }}" class="btn-primary">Employees</a>
             </div>
@@ -135,7 +135,7 @@
                                         <input type="text" id="nickname" name="nickname" class="form-input" value="{{ old('nickname') }}">
                                     </div>
                                     <div class="form-group birthdate">
-                                        <label for="birthdate">Birthdate:</label>
+                                        <label for="birthdate">Birthdate*:</label>
                                         <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ old('birthdate') }}">
                                     </div>
                                     <div class="form-group birthdate">
@@ -229,7 +229,7 @@
                                         <input type="text" id="nickname" name="nickname" class="form-input" value="{{ old('nickname') }}">
                                     </div>
                                     <div class="form-group birthdate">
-                                        <label for="birthdate">Birthdate:</label>
+                                        <label for="birthdate">Birthdate*:</label>
                                         <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ old('birthdate') }}">
                                     </div>
                                     <div class="form-group birthdate">
@@ -403,7 +403,7 @@
                                         <input type="text" id="nickname" name="nickname" class="form-input" value="{{ $selectedUser->nickname }}" @disabled($isInactive)>
                                     </div>
                                     <div class="form-group birthdate">
-                                        <label for="birthdate">Birthdate:</label>
+                                        <label for="birthdate">Birthdate*:</label>
                                         <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ $selectedUser->birthdate?->format('Y-m-d') }}" @disabled($isInactive)>
                                     </div>
                                     <div class="form-group birthdate">

@@ -18,7 +18,7 @@
                     <li><a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') || request()->is('/') ? 'active' : '' }}">Announcements</a></li>
                     <li><a href="{{ route('reviews') }}" class="nav-link {{ request()->routeIs('reviews') || request()->is('/reviews') ? 'active' : '' }}">Reviews</a></li>
                     <li><a href="{{ route('concerns') }}" class="nav-link {{ request()->routeIs('concerns') || request()->is('/concerns') ? 'active' : '' }}">Concerns</a></li>
-                    @if (auth()->user()->isResident())
+                    @if (auth()->user()->isResident() && auth()->user()->resident->resident_type != 'Employee')
                         <li><a href="{{ route('pass-slips') }}" class="nav-link {{ request()->routeIs('pass-slips') || request()->is('/pass-slips') ? 'active' : '' }}">Pass Slips</a></li>
                     @endif
                 </ul>
@@ -30,7 +30,7 @@
                         <li><a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') || request()->is('/users') ? 'active' : '' }}">Residents</a></li>
                         <li><a href="{{ route('rooms.index') }}" class="nav-link {{ request()->routeIs('rooms.*') || request()->is('/rooms') ? 'active' : '' }}">Room Management</a></li>
                         <li><a href="{{ route('slips-mgmt') }}" class="nav-link {{ request()->routeIs('slips-mgmt') || request()->is('/slips-mgmt') ? 'active' : '' }}">Pass Slip Management</a></li>
-                        <li><a href="{{ route('reports') }}" class="nav-link {{ request()->routeIs('reports') || request()->is('/logbook') ? 'active' : '' }}">Reports</a></li>
+                        {{-- <li><a href="{{ route('reports') }}" class="nav-link {{ request()->routeIs('reports') || request()->is('/logbook') ? 'active' : '' }}">Reports</a></li> --}}
                         <li><a href="{{ route('analytics.index') }}" class="nav-link {{ request()->routeIs('analytics.*') || request()->is('/analytics') ? 'active' : '' }}">Analytics</a></li>
                         <li><a href="{{ route('facial-recognition') }}" class="nav-link {{ request()->routeIs('facial-recognition') || request()->is('/facial-recognition') ? 'active' : '' }}">Facial Recognition</a></li>
                     </ul>

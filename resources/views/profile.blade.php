@@ -59,7 +59,7 @@
                                     <input type="text" id="nickname" name="nickname" class="form-input" value="{{ $user->nickname }}" >
                                 </div>
                                 <div class="form-group birthdate">
-                                    <label for="birthdate">Birthdate:</label>
+                                    <label for="birthdate">Birthdate*:</label>
                                     <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ $user->birthdate?->format('Y-m-d') }}">
                                 </div>
                                 <div class="form-group birthdate">

@@ -48,6 +48,7 @@
             display: flex;
             flex-direction: column;
             margin: 5vh auto;
+            width: 30%;
         }
 
         #login-form .form-group {
@@ -110,7 +111,7 @@
         <div>
             <ul>
                 @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
+                <p style="text-align: center;">{{ $error }}</p>
                 @endforeach
             </ul>
         </div>
