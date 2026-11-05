@@ -137,7 +137,7 @@ class UserController extends Controller
         }
 
         return redirect()
-            ->route('users.index', ['view' => $request->accommodation_type === 'Transient'? 'transient' : 'resident'])
+            ->route('users.index', ['view' => $request->accommodation_type === 'Transient' ? 'transient' : 'resident'])
             ->with('success', 'User created successfully!')
             ->with('receipt', $receipt);
     }

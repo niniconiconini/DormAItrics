@@ -118,7 +118,8 @@ class FaceRecognitionController extends Controller
         return redirect()->route('facial-recognition');
     }
 
-    public function manual(Request $request): RedirectResponse {
+    public function manual(Request $request): RedirectResponse
+    {
         $resident = Resident::whereHas('user', function ($query) use ($request) {
             $query->where(
                 'email',
@@ -126,24 +127,24 @@ class FaceRecognitionController extends Controller
             );
         })->first();
 
-    if (! $resident) {
+        if (! $resident) {
+            return redirect()
+                ->route('facial-recognition')
+                ->with('message', 'No resident was found with that email address.')
+                ->with('manualEntry', true);
+        }
+
+        session()->forget('scan_attempts');
+
+        session([
+            'recognized_resident_id' => $resident->id,
+            'recognized_resident_name' => $resident->user->nickname,
+            'confirmIdentity' => true,
+        ]);
+
         return redirect()
-            ->route('facial-recognition')
-            ->with('message', 'No resident was found with that email address.')
-            ->with('manualEntry', true);
+            ->route('facial-recognition');
     }
-
-    session()->forget('scan_attempts');
-
-    session([
-        'recognized_resident_id' => $resident->id,
-        'recognized_resident_name' => $resident->user->nickname,
-        'confirmIdentity' => true,
-    ]);
-
-    return redirect()
-        ->route('facial-recognition');
-}
 
     public function enroll(Resident $resident): RedirectResponse
     {
