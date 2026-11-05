@@ -10,8 +10,8 @@
                 <form action="{{ route('facial-recognition.manual') }}" method="POST">
                 @csrf
                     <label for="manualEntry">Email:</label>
-                    <input type="text" id="manualEntry" name="manualEntry" required>
-                    <div class="form-buttons"><button type="submit" class="btn-primary">CONTINUE</button></div>
+                    <input type="email" id="manualEntry" name="manualEntry" required>
+                    <div class="form-buttons"><button type="submit" class="btn-primary">Find Me</button></div>
                 </form>
             @endif
         </div>

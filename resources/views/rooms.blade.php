@@ -78,13 +78,22 @@
                 $capacityOptions = match(request('dorm')) {
                     'Le Berceau' => [2,3,4,8],
                     'Maison Paul' => [1,2],
-                    'Nini Dorm' => [1,2],
+                    'Dorm 2' => [4],
                     default => [],
                 };
             @endphp
             {{-- open modal --}}
             <div class="modal">
                 <div class="card room-modal">
+                    @if ($errors->any())
+                        <div class="error-box">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <h2 class="modal-title">Add Room</h2>
                     <form action="{{ route('rooms.store') }}" method="POST" enctype="multipart/form-data" id="addroom-form">
                         @csrf
@@ -106,7 +115,7 @@
                         </div>
                         <div class="form-group">
                             <label for="Room Number">Room Number: </label>
-                            <input type="text" name="room_number">
+                            <input type="text" name="room_number" value="{{ old('room_number') }}">
                         </div>
                         <div class="form-group">
                             <label for="Dorm Name">Dorm Name: </label>
@@ -117,20 +126,10 @@
                             <select name="capacity">
                                 <option value="" selected disabled hidden></option>
                                 @foreach($capacityOptions as $capacity)
-                                    <option value="{{ $capacity }}">{{ $capacity }}</option>
+                                    <option value="{{ $capacity }}" @selected(old('capacity') == $capacity)>{{ $capacity }}</option>
                                 @endforeach
                             </select>
                         </div>
-
-                        @if ($errors->any())
-                            <div class="error-box">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
                     </form>
                     <div class="form-buttons">
                         <button class="btn-primary" type="reset" form="addroom-form">Reset Changes</button>
@@ -157,7 +156,7 @@
                 $capacityOptions = match($selectedRoom->dorm_name) {
                     'Le Berceau' => [2,3,4,8],
                     'Maison Paul' => [1,2],
-                    'Nini Dorm' => [1,2],
+                    'Dorm 2' => [4],
                     default => [],
                 };
             @endphp
@@ -184,7 +183,7 @@
                         </div>
                         <div class="form-group">
                             <label for="Room Number">Room Number: </label>
-                            <input type="text" name="room_number" value="{{ $selectedRoom->room_number }}">
+                            <input type="text" name="room_number" value="{{ old('room_number', $selectedRoom->room_number) }}">
                         </div>
                         <div class="form-group">
                             <label for="Dorm Name">Dorm Name: </label>
@@ -194,7 +193,7 @@
                             <label for="Capacity">Capacity: </label>
                             <select name="capacity">
                                 @foreach($capacityOptions as $capacity)
-                                    <option value="{{ $capacity }}" @selected( $selectedRoom->capacity == $capacity)>{{ $capacity }}</option>
+                                    <option value="{{ $capacity }}" {{ old('capacity', $selectedRoom->capacity) == $capacity ? 'selected' : '' }} @selected( $selectedRoom->capacity == $capacity)>{{ $capacity }}</option>
                                 @endforeach
                             </select>
                         </div>    

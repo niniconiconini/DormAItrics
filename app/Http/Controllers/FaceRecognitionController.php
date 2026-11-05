@@ -7,6 +7,7 @@ use App\Models\PassSlip;
 use App\Models\Resident;
 use App\Models\ResidentLog;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class FaceRecognitionController extends Controller
 {
@@ -76,7 +77,7 @@ class FaceRecognitionController extends Controller
         if (! $activePassSlip) {
             return redirect()
                 ->route('facial-recognition')
-                ->with('message', 'Hi '.$resident->user->nickname.'! you don\'t have an approved pass slip for today anymore. Fill up another one to go out.');
+                ->with('message', 'Hi '.$resident->user->nickname.'! you don\'t have an approved pass slip for today. Fill up one to go out.');
         }
 
         // if all success
@@ -117,11 +118,39 @@ class FaceRecognitionController extends Controller
         return redirect()->route('facial-recognition');
     }
 
+    public function manual(Request $request): RedirectResponse {
+        $resident = Resident::whereHas('user', function ($query) use ($request) {
+            $query->where(
+                'email',
+                $request->manualEntry
+            );
+        })->first();
+
+    if (! $resident) {
+        return redirect()
+            ->route('facial-recognition')
+            ->with('message', 'No resident was found with that email address.')
+            ->with('manualEntry', true);
+    }
+
+    session()->forget('scan_attempts');
+
+    session([
+        'recognized_resident_id' => $resident->id,
+        'recognized_resident_name' => $resident->user->nickname,
+        'confirmIdentity' => true,
+    ]);
+
+    return redirect()
+        ->route('facial-recognition');
+}
+
     public function enroll(Resident $resident): RedirectResponse
     {
         set_time_limit(300);
         // open python file
         shell_exec('"'.dirname(base_path()).'\facial-recognition\venv\Scripts\python.exe" "'.dirname(base_path()).'\facial-recognition\referenceinator.py" '.$resident->id.' 2>&1');
+        shell_exec('"'.dirname(base_path()).'\facial-recognition\venv\Scripts\python.exe" "'.dirname(base_path()).'\facial-recognition\build_encodings.py" 2>&1');
         FaceRecognition::where('resident_id', $resident->id)->delete();
         for ($i = 1; $i <= 5; $i++) {
             FaceRecognition::create(['resident_id' => $resident->id, 'face_reference' => $resident->id.'_'.$i.'.jpg']);
