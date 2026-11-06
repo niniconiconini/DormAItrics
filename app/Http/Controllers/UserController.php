@@ -146,7 +146,7 @@ class UserController extends Controller
     {
         $userActivated = false;
         $currentUser = Auth::user();
-        if ($currentUser->id !== $user->id && $currentUser->user_type !== 'Admin') {
+        if ($currentUser->user_type === 'Manager' && $currentUser->id !== $user->id && $user->user_type !== 'Resident') {
             abort(403);
         }
 

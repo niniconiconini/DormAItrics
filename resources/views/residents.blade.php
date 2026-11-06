@@ -442,7 +442,7 @@
                                     <div class="form-group user_type">
                                         <label for="user_type">User Type*:</label>
                                         @if ($selectedUser->resident)
-                                            <select type="hidden" id="user_type" name="user_type" class="form-cb" disabled @disabled($isInactive)>
+                                            <select type="hidden" id="user_type" name="user_type" class="form-cb" @disabled($isInactive)>
                                                 <option value="Resident" {{ $selectedUser->user_type === 'Resident' ? 'selected' : '' }} @disabled($isInactive)>Resident</option>
                                             </select>
                                             <input type="hidden" name="user_type" value="Resident">

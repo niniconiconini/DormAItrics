@@ -69,8 +69,9 @@
                                             <option value="Female" {{ $user->gender === 'Female' ? 'selected' : ''}}>Female</option>
                                             <option value="Male" {{ $user->gender === 'Male' ? 'selected' : '' }}>Male</option>
                                         </select>
+                                        <input type="hidden" name="gender" value="{{ $user->gender }}">
                                     </div>
-                            </div>
+                                </div>
                             <div class="contact">
                                 <div class="form-group address">
                                     <label for="address">Address:</label>
@@ -140,6 +141,7 @@
                                     <option value="Resident" {{ $user->resident->accommodation_type === 'Resident' ? 'selected' : '' }} @disabled(!$isAdmin && !$isManager)>Resident</option>
                                     <option value="Transient" {{ $user->resident->accommodation_type === 'Transient' ? 'selected' : '' }} @disabled(!$isAdmin && !$isManager)>Transient</option>
                                 </select>
+                                <input type="hidden" name="accommodation_type" value="{{ $user->resident->accommodation_type }}">
                             </div>
                             <div class="form-group resident_type">
                                 <label for="resident_type">Resident Type*:</label>
@@ -147,6 +149,7 @@
                                     <option value="Student" {{ $user->resident->resident_type === 'Student' ? 'selected' : '' }} @disabled(!$isAdmin && !$isManager)>Student</option>
                                     <option value="Employee" {{ $user->resident->resident_type === 'Employee' ? 'selected' : '' }} @disabled(!$isAdmin && !$isManager)>Employee</option>
                                 </select>
+                                <input type="hidden" name="resident_type" value="{{ $user->resident->resident_type }}">
                             </div>
                         </div>
                         <div class="lodging-type">
@@ -157,6 +160,7 @@
                                         <option value="{{ $paymentOption }}" @selected($user->resident->payment_schedule == $paymentOption) @disabled(!$isAdmin && !$isManager)>{{ $paymentOption }}</option>
                                     @endforeach
                                 </select>
+                                <input type="hidden" name="payment_schedule" value="{{ $user->resident->payment_schedule }}">
                             </div>
                             <div class="form-group room_type">
                                 <label for="room_type">Room Type*:</label>
@@ -167,6 +171,7 @@
                                     <option value="2 persons" {{ $user->resident->room_type === '2 persons' ? 'selected' : '' }} @disabled(!$isAdmin && !$isManager)>2 persons</option>
                                     <option value="1 person" {{ $user->resident->room_type === '1 person' ? 'selected' : '' }} @disabled(!$isAdmin && !$isManager)>1 person</option>
                                 </select>
+                                <input type="hidden" name="room_type" value="{{ $user->resident->room_type }}">
                             </div>
                         </div>
                         <div class="checkin-checkout">
@@ -174,10 +179,11 @@
                                 <label for="check_in_date">Check In*:</label>
                                 <input type="date" id="check_in_date" name="check_in_date" class="form-input" value="{{ $user->resident->check_in_date?->format('Y-m-d') }}" @disabled(!$isAdmin && !$isManager)>
                             </div>
+                                <input type="hidden" name="check_in_date" value="{{ $user->resident->check_in_date }}">
                             <div class="form-group check_out_date">
                                 <label for="check_out_date">Check Out*:</label>
                                 <input type="date" id="check_out_date" name="check_out_date" class="form-input" value="{{ $user->resident->check_out_date?->format('Y-m-d') }}" @disabled(!$isAdmin && !$isManager)>
-                            </div>
+                                <input type="hidden" name="check_out_date" value="{{ $user->resident->check_out_date }}"></div>
                         </div>
                     @endif
                     <div class="form-buttons">
