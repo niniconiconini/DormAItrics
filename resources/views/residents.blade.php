@@ -33,11 +33,11 @@
                         </a>
                     @else
                         <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $admin->id, 'view' => request('view')]) }}">
-                        <div class="card dorm-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
-                            <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
-                            <div class="room-number"><p>{{ $admin->userName() }}</p></div>
-                        </div>
-                    </a>
+                            <div class="card dorm-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
+                                <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
+                                <div class="room-number"><p>{{ $admin->userName() }}</p></div>
+                            </div>
+                        </a>
                     @endif
                 @empty
                     <p>No administrators found.</p>
@@ -453,8 +453,6 @@
                                             </select>
                                         @endif
                                     </div>
-                                </div>
-                                    </div>
                                     <div class="form-group user-status">
                                         <label for="user-status">User Status*:</label>
                                         <select id="user-status" name="status" class="form-cb">
@@ -464,8 +462,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
+                         </div>
                         {{-- resident section --}}
                         @if($selectedUser->user_type === 'Resident' && $selectedUser->resident)
                             <hr style="margin: 0.5rem 0.5rem 1rem 0.5rem;">
