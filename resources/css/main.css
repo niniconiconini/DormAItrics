@@ -1013,6 +1013,30 @@ color: var(--primary-color);
     text-align: center;
 }
 
+/* Copy pass slips*/
+.slip-side {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.slip-card .slip-copy {
+    padding: 0.2rem 0.7rem;
+    border: 2px solid var(--sidebar-color);
+    border-radius: 0.5rem;
+    background: none;
+    color: var(--sidebar-color);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.slip-card .slip-copy:hover {
+    background: var(--sidebar-color);
+    color: var(--body-color);
+}
+
 /* Delete all pass slips */
 
 .center-row {

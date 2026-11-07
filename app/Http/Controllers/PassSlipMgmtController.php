@@ -13,6 +13,7 @@ class PassSlipMgmtController extends Controller
     {
         $forApproval = PassSlip::with('user')
             ->forApproval()
+            ->whereNull('cleared_at')
             ->oldest('id')
             ->paginate(5, ['*'], 'approval_page')
             ->withQueryString()
@@ -23,6 +24,7 @@ class PassSlipMgmtController extends Controller
         }
 
         $passSlips = PassSlip::with(['user', 'approver'])
+            ->whereNull('cleared_at')
             ->latest('id')
             ->paginate(20, ['*'], 'all_page')
             ->withQueryString()
@@ -41,12 +43,20 @@ class PassSlipMgmtController extends Controller
         return $this->decide($passSlip, 'Rejected', 'Pass slip denied.');
     }
 
-    // wipes every pass slip record from the database
+    // Clears pass slips whose trip ended two months ago. The records stay in the database
     public function destroyAll(): RedirectResponse
     {
-        PassSlip::query()->delete();
+        $cleared = PassSlip::query()
+            ->whereNull('cleared_at')
+            ->whereRaw('TIMESTAMP(requested_date_in, requested_time_in) <= ?', [now()->subMonths(2)->toDateTimeString()])
+            ->toBase()
+            ->update(['cleared_at' => now()]);
 
-        return redirect()->route('slips-mgmt')->with('success', 'All pass slips have been deleted.');
+        if ($cleared === 0) {
+            return back()->with('error', 'There are no pass slips whose trip ended two months ago or earlier.');
+        }
+
+        return redirect()->route('slips-mgmt')->with('success', "Cleared {$cleared} pass slip(s) whose trip ended two months ago or earlier.");
     }
 
     // saves the decision and who made it

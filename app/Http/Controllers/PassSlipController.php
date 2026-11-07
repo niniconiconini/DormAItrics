@@ -38,6 +38,7 @@ class PassSlipController extends Controller
     {
         $resident = $this->currentResident();
         $passSlips = PassSlip::where('resident_id', $resident->id ?? 0)
+            ->whereNull('cleared_at')
             ->latest('id')
             ->paginate(8)
             ->fragment('previous');
