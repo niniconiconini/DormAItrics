@@ -39,7 +39,7 @@ class PassSlipController extends Controller
         $resident = $this->currentResident();
         $passSlips = PassSlip::where('resident_id', $resident->id ?? 0)
             ->latest('id')
-            ->paginate(5)
+            ->paginate(8)
             ->fragment('previous');
 
         $user = Auth::user();

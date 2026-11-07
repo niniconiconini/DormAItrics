@@ -62,14 +62,12 @@
                         class="message-box"
                         rows="1"
                         maxlength="100"
-                        required
                     >{{ old('title') }}</textarea>
                     <textarea
                         name="message"
                         placeholder="Tell us about your experience"
                         class="message-box"
                         maxlength="500"
-                        required
                     >{{ old('message') }}</textarea>
                     <div style="text-align: center; padding-top: 1vh; justify-content: center;">
                         <button type="submit" class="btn-primary">Submit Review</button>
@@ -102,8 +100,12 @@
                         @endcan
                     </div>
                     <div class="review-stars" aria-label="{{ $review->review_rating }} out of 5 stars">{{ str_repeat('★', (int) $review->review_rating) }}{{ str_repeat('☆', 5 - (int) $review->review_rating) }}</div>
-                    <div class="title">{{ $review->title }}</div>
-                    <div class="message">{{ $review->message }}</div>
+                    @if ($review->title)
+                        <div class="title">{{ $review->title }}</div>
+                    @endif
+                    @if ($review->message)
+                        <div class="message">{{ $review->message }}</div>
+                    @endif
                 </div>
             @empty
                 <p>No reviews to show.</p>
