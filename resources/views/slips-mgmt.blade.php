@@ -185,7 +185,7 @@
                         <p>This is your last chance. All pass slips whose trip ended TWO MONTHS AGO OR LATER will be cleared from the admin list and from every dormer's list, and cannot be shown there again.</p>
                         <div class="slip-submit">
                             <button type="button" class="btn-primary closeDelete">No, keep them</button>
-                            <button type="submit" class="btn-primary btn-danger">Yes, delete everything</button>
+                            <button type="submit" class="btn-primary btn-danger">Yes, delete them</button>
                         </div>
                     </form>
 

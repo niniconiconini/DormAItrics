@@ -17,22 +17,24 @@ class PassSlipController extends Controller
         return Resident::where('user_id', Auth::id())->first();
     }
 
-    // /**
-    //  * @return array<int, string|\Closure>
-    //  */
-    // private function timeRules(string $label): array
-    // {
-    //     return [
-    //         'bail',
-    //         'required',
-    //         'date_format:H:i',
-    //         function ($attribute, $value, $fail) use ($label) {
-    //             if ($value > '21:00') {
-    //                 $fail("$label cannot be later than 9:00 PM (curfew).");
-    //             }
-    //         },
-    //     ];
-    // }
+    /**
+     * @return array<int, string|\Closure>
+     */
+    private function timeRules(string $label): array
+    {
+        return [
+            'bail',
+            'required',
+            'date_format:H:i',
+            function ($attribute, $value, $fail) use ($label) {
+                if ($value > '21:00') {
+                    $fail("$label cannot be later than 9:00 PM (curfew).");
+                } elseif ((int) substr($value, 3, 2) % 10 !== 0) {
+                    $fail("$label must be in 10-minute steps (for example 4:00 or 4:10).");
+                }
+            },
+        ];
+    }
 
     public function index(): View
     {
@@ -56,17 +58,22 @@ class PassSlipController extends Controller
 
         $validated = $request->validate([
             'requested_date_out' => 'required|date|after_or_equal:today',
-            'requested_time_out' => 'required|date_format:H:i',
+            'requested_time_out' => $this->timeRules('Time out'),
             'purpose' => 'required|string|max:255',
             'requested_date_in' => 'required|date|after_or_equal:requested_date_out',
-            'requested_time_in' => 'required|date_format:H:i',
+            'requested_time_in' => $this->timeRules('Expected return time'),
         ]);
 
         $out = Carbon::parse($validated['requested_date_out'].' '.$validated['requested_time_out']);
+            if ($out->isPast()) {
+            return back()->withErrors([
+                'requested_time_out' => 'Time out cannot be in the past.',
+            ])->withInput();
+        }
         $in = Carbon::parse($validated['requested_date_in'].' '.$validated['requested_time_in']);
         if ($in->lessThanOrEqualTo($out)) {
             return back()->withErrors([
-                'requested_time_in' => 'Expected return must be after your time out.',
+                'requested_time_in' => 'Expected return time must be after your time out.',
             ])->withInput();
         }
 
