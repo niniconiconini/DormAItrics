@@ -135,10 +135,42 @@
                                         <input type="text" id="nickname" name="nickname" class="form-input" value="{{ old('nickname') }}">
                                     </div>
                                     <div class="form-group birthdate">
-                                        <label for="birthdate">Birthdate*:</label>
-                                        <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ old('birthdate') }}">
+                                        <label for="add-admin-birthdate">Birthdate*:</label>
+
+                                        <div class="birthday-picker" data-birthday-picker>
+                                            <input type="date" id="add-admin-birthdate" name="birthdate" class="form-input"
+                                                value="{{ old('birthdate') }}" data-role="input">
+
+                                            <button type="button" aria-label="Open birthday calendar" aria-expanded="false" data-role="toggle">
+                                                <span aria-hidden="true">▦</span>
+                                            </button>
+
+                                            <div class="birthday-calendar" data-role="calendar" hidden>
+                                                <div class="birthday-calendar-header">
+                                                    <button type="button" aria-label="Previous month" data-role="previous-month">‹</button>
+                                                    <button type="button" class="birthday-month-button" aria-expanded="false" data-role="month-button">Month</button>
+                                                    <button type="button" class="birthday-year-button" aria-expanded="false" data-role="year-button">Year</button>
+                                                    <button type="button" aria-label="Next month" data-role="next-month">›</button>
+                                                </div>
+
+                                                <div class="birthday-month-picker" data-role="month-picker" hidden>
+                                                    <div class="birthday-month-grid" data-role="month-grid"></div>
+                                                </div>
+
+                                                <div class="birthday-year-picker" data-role="year-picker" hidden>
+                                                    <div class="birthday-year-header">
+                                                        <button type="button" aria-label="Previous years" data-role="previous-year-range">‹</button>
+                                                        <span data-role="year-range"></span>
+                                                        <button type="button" aria-label="Next years" data-role="next-year-range">›</button>
+                                                    </div>
+                                                    <div class="birthday-year-grid" data-role="year-grid"></div>
+                                                </div>
+
+                                                <div class="birthday-calendar-grid" data-role="day-grid"></div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="form-group birthdate">
+                                    <div class="form-group gender">
                                         <label for="gender">Gender*:</label>
                                         <select id="gender" name="gender" class="form-cb">
                                             <option value="" selected disabled hidden></option>
@@ -229,10 +261,42 @@
                                         <input type="text" id="nickname" name="nickname" class="form-input" value="{{ old('nickname') }}">
                                     </div>
                                     <div class="form-group birthdate">
-                                        <label for="birthdate">Birthdate*:</label>
-                                        <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ old('birthdate') }}">
+                                        <label for="add-resident-birthdate">Birthdate*:</label>
+
+                                        <div class="birthday-picker" data-birthday-picker>
+                                            <input type="date" id="add-resident-birthdate" name="birthdate" class="form-input"
+                                                value="{{ old('birthdate') }}" data-role="input">
+
+                                            <button type="button" aria-label="Open birthday calendar" aria-expanded="false" data-role="toggle">
+                                                <span aria-hidden="true">▦</span>
+                                            </button>
+
+                                            <div class="birthday-calendar" data-role="calendar" hidden>
+                                                <div class="birthday-calendar-header">
+                                                    <button type="button" aria-label="Previous month" data-role="previous-month">‹</button>
+                                                    <button type="button" class="birthday-month-button" aria-expanded="false" data-role="month-button">Month</button>
+                                                    <button type="button" class="birthday-year-button" aria-expanded="false" data-role="year-button">Year</button>
+                                                    <button type="button" aria-label="Next month" data-role="next-month">›</button>
+                                                </div>
+
+                                                <div class="birthday-month-picker" data-role="month-picker" hidden>
+                                                    <div class="birthday-month-grid" data-role="month-grid"></div>
+                                                </div>
+
+                                                <div class="birthday-year-picker" data-role="year-picker" hidden>
+                                                    <div class="birthday-year-header">
+                                                        <button type="button" aria-label="Previous years" data-role="previous-year-range">‹</button>
+                                                        <span data-role="year-range"></span>
+                                                        <button type="button" aria-label="Next years" data-role="next-year-range">›</button>
+                                                    </div>
+                                                    <div class="birthday-year-grid" data-role="year-grid"></div>
+                                                </div>
+
+                                                <div class="birthday-calendar-grid" data-role="day-grid"></div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="form-group birthdate">
+                                    <div class="form-group gender">
                                         <label for="gender">Gender*:</label>
                                         <select id="gender" name="gender" class="form-cb">
                                             <option value="" selected disabled hidden></option>
@@ -403,10 +467,44 @@
                                         <input type="text" id="nickname" name="nickname" class="form-input" value="{{ $selectedUser->nickname }}" @disabled($isInactive)>
                                     </div>
                                     <div class="form-group birthdate">
-                                        <label for="birthdate">Birthdate*:</label>
-                                        <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ $selectedUser->birthdate?->format('Y-m-d') }}" @disabled($isInactive)>
+                                        <label for="edit-user-birthdate">Birthdate*:</label>
+
+                                        <div class="birthday-picker" data-birthday-picker>
+                                            <input type="date" id="edit-user-birthdate" name="birthdate" class="form-input"
+                                                value="{{ $selectedUser->birthdate?->format('Y-m-d') }}"
+                                                data-role="input" @disabled($isInactive)>
+
+                                            <button type="button" aria-label="Open birthday calendar" aria-expanded="false"
+                                                    data-role="toggle" @disabled($isInactive)>
+                                                <span aria-hidden="true">▦</span>
+                                            </button>
+
+                                            <div class="birthday-calendar" data-role="calendar" hidden>
+                                                <div class="birthday-calendar-header">
+                                                    <button type="button" aria-label="Previous month" data-role="previous-month">‹</button>
+                                                    <button type="button" class="birthday-month-button" aria-expanded="false" data-role="month-button">Month</button>
+                                                    <button type="button" class="birthday-year-button" aria-expanded="false" data-role="year-button">Year</button>
+                                                    <button type="button" aria-label="Next month" data-role="next-month">›</button>
+                                                </div>
+
+                                                <div class="birthday-month-picker" data-role="month-picker" hidden>
+                                                    <div class="birthday-month-grid" data-role="month-grid"></div>
+                                                </div>
+
+                                                <div class="birthday-year-picker" data-role="year-picker" hidden>
+                                                    <div class="birthday-year-header">
+                                                        <button type="button" aria-label="Previous years" data-role="previous-year-range">‹</button>
+                                                        <span data-role="year-range"></span>
+                                                        <button type="button" aria-label="Next years" data-role="next-year-range">›</button>
+                                                    </div>
+                                                    <div class="birthday-year-grid" data-role="year-grid"></div>
+                                                </div>
+
+                                                <div class="birthday-calendar-grid" data-role="day-grid"></div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="form-group birthdate">
+                                    <div class="form-group gender">
                                         <label for="gender">Gender*:</label>
                                         <select id="gender" name="gender" class="form-cb" @disabled($isInactive)>
                                             <option value="" selected disabled hidden>Select Gender</option>
@@ -593,4 +691,223 @@
             </div>
         @endif
     </section>
+    <script>
+    (() => {
+        const monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+
+        document.querySelectorAll('[data-birthday-picker]').forEach(picker => {
+            const find = role => picker.querySelector(`[data-role="${role}"]`);
+
+            const input = find('input');
+            const openButton = find('toggle');
+            const calendar = find('calendar');
+            const monthButton = find('month-button');
+            const monthPicker = find('month-picker');
+            const monthGrid = find('month-grid');
+            const yearButton = find('year-button');
+            const yearPicker = find('year-picker');
+            const yearGrid = find('year-grid');
+            const yearRange = find('year-range');
+            const previousYearRangeButton = find('previous-year-range');
+            const nextYearRangeButton = find('next-year-range');
+            const dayGrid = find('day-grid');
+            const previousMonthButton = find('previous-month');
+            const nextMonthButton = find('next-month');
+
+            if (!input || !openButton || !calendar) {
+                return;
+            }
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let displayedMonth = input.value
+                ? new Date(`${input.value}T00:00:00`)
+                : new Date();
+
+            displayedMonth.setDate(1);
+
+            function renderYearPicker() {
+                const currentYear = today.getFullYear();
+                const selectedYear = displayedMonth.getFullYear();
+                const firstYear = Math.max(
+                    1900,
+                    Math.min(selectedYear - 5, currentYear - 11)
+                );
+                const lastYear = Math.min(firstYear + 11, currentYear);
+
+                yearRange.textContent = `${firstYear}–${lastYear}`;
+                yearGrid.replaceChildren();
+
+                for (let year = firstYear; year <= lastYear; year++) {
+                    const button = document.createElement('button');
+
+                    button.type = 'button';
+                    button.textContent = year;
+                    button.setAttribute('aria-selected', year === selectedYear);
+
+                    button.addEventListener('click', () => {
+                        displayedMonth = new Date(year, displayedMonth.getMonth(), 1);
+                        yearPicker.hidden = true;
+                        calendar.classList.remove('year-selection');
+                        dayGrid.hidden = false;
+                        yearButton.setAttribute('aria-expanded', 'false');
+                        renderCalendar();
+                    });
+
+                    yearGrid.append(button);
+                }
+
+                previousYearRangeButton.disabled = firstYear <= 1900;
+                nextYearRangeButton.disabled = lastYear >= currentYear;
+            }
+
+            function renderMonthPicker() {
+                monthGrid.replaceChildren();
+
+                monthNames.forEach((month, index) => {
+                    const button = document.createElement('button');
+
+                    button.type = 'button';
+                    button.textContent = month;
+                    button.setAttribute('aria-selected', index === displayedMonth.getMonth());
+                    button.disabled =
+                        displayedMonth.getFullYear() === today.getFullYear() &&
+                        index > today.getMonth();
+
+                    button.addEventListener('click', () => {
+                        displayedMonth.setMonth(index);
+                        monthPicker.hidden = true;
+                        calendar.classList.remove('month-selection');
+                        dayGrid.hidden = false;
+                        monthButton.setAttribute('aria-expanded', 'false');
+                        renderCalendar();
+                    });
+
+                    monthGrid.append(button);
+                });
+            }
+
+            function renderCalendar() {
+                const year = displayedMonth.getFullYear();
+                const month = displayedMonth.getMonth();
+                const firstWeekday = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                monthButton.textContent = monthNames[month];
+                yearButton.textContent = year;
+                dayGrid.replaceChildren();
+
+                ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].forEach(day => {
+                    const heading = document.createElement('span');
+                    heading.textContent = day;
+                    dayGrid.append(heading);
+                });
+
+                for (let blank = 0; blank < firstWeekday; blank++) {
+                    dayGrid.append(document.createElement('span'));
+                }
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const date = new Date(year, month, day);
+                    const button = document.createElement('button');
+                    const value = [
+                        year,
+                        String(month + 1).padStart(2, '0'),
+                        String(day).padStart(2, '0')
+                    ].join('-');
+
+                    button.type = 'button';
+                    button.textContent = day;
+                    button.setAttribute('aria-label', date.toLocaleDateString());
+                    button.setAttribute('aria-selected', input.value === value);
+                    button.disabled = date > today;
+
+                    button.addEventListener('click', () => {
+                        input.value = value;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                        input.dispatchEvent(new Event('change', { bubbles: true }));
+                        calendar.hidden = true;
+                        openButton.setAttribute('aria-expanded', 'false');
+                    });
+
+                    dayGrid.append(button);
+                }
+
+                previousMonthButton.disabled = year === 1900 && month === 0;
+                nextMonthButton.disabled =
+                    year === today.getFullYear() && month === today.getMonth();
+            }
+
+            openButton.addEventListener('click', () => {
+                displayedMonth = input.value
+                    ? new Date(`${input.value}T00:00:00`)
+                    : new Date();
+
+                displayedMonth.setDate(1);
+                calendar.hidden = !calendar.hidden;
+                openButton.setAttribute('aria-expanded', String(!calendar.hidden));
+
+                if (!calendar.hidden) {
+                    calendar.classList.remove('year-selection', 'month-selection');
+                    yearPicker.hidden = true;
+                    monthPicker.hidden = true;
+                    dayGrid.hidden = false;
+                    monthButton.setAttribute('aria-expanded', 'false');
+                    yearButton.setAttribute('aria-expanded', 'false');
+                    renderCalendar();
+                }
+            });
+
+            monthButton.addEventListener('click', () => {
+                calendar.classList.add('month-selection');
+                calendar.classList.remove('year-selection');
+                monthPicker.hidden = false;
+                yearPicker.hidden = true;
+                dayGrid.hidden = true;
+                monthButton.setAttribute('aria-expanded', 'true');
+                yearButton.setAttribute('aria-expanded', 'false');
+                renderMonthPicker();
+            });
+
+            yearButton.addEventListener('click', () => {
+                calendar.classList.remove('month-selection');
+                monthPicker.hidden = true;
+                monthButton.setAttribute('aria-expanded', 'false');
+                calendar.classList.add('year-selection');
+                yearPicker.hidden = false;
+                dayGrid.hidden = true;
+                yearButton.setAttribute('aria-expanded', 'true');
+                renderYearPicker();
+            });
+
+            previousYearRangeButton.addEventListener('click', () => {
+                displayedMonth.setFullYear(
+                    Math.max(1900, displayedMonth.getFullYear() - 12)
+                );
+                renderYearPicker();
+            });
+
+            nextYearRangeButton.addEventListener('click', () => {
+                displayedMonth.setFullYear(
+                    Math.min(today.getFullYear(), displayedMonth.getFullYear() + 12)
+                );
+                renderYearPicker();
+            });
+
+            previousMonthButton.addEventListener('click', () => {
+                displayedMonth.setMonth(displayedMonth.getMonth() - 1);
+                renderCalendar();
+            });
+
+            nextMonthButton.addEventListener('click', () => {
+                displayedMonth.setMonth(displayedMonth.getMonth() + 1);
+                renderCalendar();
+            });
+        });
+    })();
+    </script>
 </x-layout>
