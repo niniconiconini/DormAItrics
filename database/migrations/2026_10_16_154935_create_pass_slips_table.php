@@ -21,6 +21,7 @@ return new class extends Migration
             $table->time('requested_time_out');
             $table->time('requested_time_in');
             $table->enum('status', ['Pending', 'Approved', 'Rejected', 'Cancelled'])->default('Pending');
+            $table->timestamp('cleared_at')->nullable();
             $table->timestamps();
         });
     }

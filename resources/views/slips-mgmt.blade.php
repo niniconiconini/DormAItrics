@@ -97,7 +97,7 @@
             {{-- wipes every pass slip (opens the two-step confirmation below) --}}
             @if ($passSlips->total() > 0)
                 <div class="center-row">
-                    <button type="button" class="btn-primary btn-danger" id="openDelete">Delete All Pass Slips</button>
+                    <button type="button" class="btn-primary btn-danger" id="openDelete">Delete Old Pass Slips</button>
                 </div>
             @endif
 
@@ -169,8 +169,8 @@
 
                     {{-- step 1 --}}
                     <div id="deleteStep1">
-                        <h2 class="modal-title">Delete All Pass Slips</h2>
-                        <p>This will permanently delete every pass slip from every dormer, including pending, approved, denied, cancelled and expired ones. This cannot be undone.</p>
+                        <h2 class="modal-title">Delete Two Months and Older Pass Slips</h2>
+                        <p>This will clear every pass slip that are TWO MONTHS AGO OR OLDER from this list and from every dormer's Previous Pass Slips. The records stay in the database, and you won't be able to bring the cleared slips back.</p>
                         <div class="slip-submit">
                             <button type="button" class="btn-primary closeDelete">Cancel</button>
                             <button type="button" class="btn-primary btn-danger" id="toStep2">Continue</button>
@@ -182,10 +182,10 @@
                         @csrf
                         @method('DELETE')
                         <h2 class="modal-title">Are you absolutely sure?</h2>
-                        <p>This is your last chance. Every pass slip record will be erased from the database and cannot be recovered.</p>
+                        <p>This is your last chance. All pass slips whose trip ended TWO MONTHS AGO OR LATER will be cleared from the admin list and from every dormer's list, and cannot be shown there again.</p>
                         <div class="slip-submit">
                             <button type="button" class="btn-primary closeDelete">No, keep them</button>
-                            <button type="submit" class="btn-primary btn-danger">Yes, delete everything</button>
+                            <button type="submit" class="btn-primary btn-danger">Yes, delete them</button>
                         </div>
                     </form>
 

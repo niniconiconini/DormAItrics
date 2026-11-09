@@ -15,7 +15,7 @@ class AnnouncementsController extends Controller
     {
         $announcements = Announcement::with('user')
             ->latest('id')
-            ->paginate(5)
+            ->paginate(8)
             ->fragment('list-view');
 
         if ($announcements->isEmpty() && $announcements->currentPage() > 1) {

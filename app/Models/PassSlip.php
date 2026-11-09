@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
     'requested_time_out',
     'requested_time_in',
     'status',
+    'cleared_at',
 ])]
 
 class PassSlip extends Model

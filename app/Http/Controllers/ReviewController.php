@@ -22,7 +22,7 @@ class ReviewController extends Controller
     {
         $reviews = Review::with('user')
             ->latest('id')
-            ->paginate(5)
+            ->paginate(8)
             ->fragment('reviews-list');
 
         if ($reviews->isEmpty() && $reviews->currentPage() > 1) {
@@ -50,8 +50,8 @@ class ReviewController extends Controller
 
         $validated = $request->validate([
             'review_rating' => 'required|integer|between:1,5',
-            'title' => 'required|string|max:100',
-            'message' => 'required|string|max:500',
+            'title' => 'nullable|string|max:100',
+            'message' => 'nullable|string|max:500',
         ]);
 
         try {

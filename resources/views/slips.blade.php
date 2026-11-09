@@ -6,7 +6,7 @@
         {{-- ===== TOP HALF: FILL UP PASS SLIP ===== --}}
         <div class="announcement-card">
             <button type="button" class="card passslip-toggle" id="slipToggle" aria-expanded="{{ $errors->any() ? 'true' : 'false' }}" aria-controls="slipPanel">
-                Fill Up Pass Slip
+                Fill Out Pass Slip
                 <span class="chevron" aria-hidden="true"></span>
             </button>
 
@@ -20,32 +20,32 @@
                         <div class="slip-heading">
                             <h3>Pass Slip</h3>
                             <strong>(St. Paul University Manila System)</strong><br>
-                            <small>To be presented to the Guard</small>
                         </div>
 
                         <div class="slip-grid">
                             <div class="slip-field full">
                                 <label for="name">Name</label>
-                                <input type="text" id="name" value="{{ $fullName }}" readonly>
+                                <input type="text" id="name" value="{{ $fullName }}" readonly style="cursor: not-allowed;">
                             </div>
                             <div class="slip-field">
-                                <label for="date">Date</label>
+                                <label for="date">Date Out</label>
                                 <input type="date" id="date" name="requested_date_out" value="{{ old('requested_date_out') }}" required>
                             </div>
                             <div class="slip-field">
                                 <label for="time_out">Time out</label>
-                                <input type="time" id="time_out" name="requested_time_out" value="{{ old('requested_time_out') }}" max="21:00" required>
+                                <input type="time" id="time_out" name="requested_time_out" value="{{ old('requested_time_out') }}" min="00:00" max="21:00" step="600" required>
                             </div>
                             <div class="slip-field full">
                                 <label for="destination">Destination</label>
                                 <input type="text" id="destination" name="purpose" value="{{ old('purpose') }}" placeholder="Where are you going?" required>
                             </div>
-                            <div class="slip-field full">
-                                <label>Expected return</label>
-                                <div class="pair">
-                                    <input type="date" id="return_date" name="requested_date_in" value="{{ old('requested_date_in') }}" aria-label="Expected return date" required>
-                                    <input type="time" id="return_time" name="requested_time_in" value="{{ old('requested_time_in') }}" aria-label="Expected return time" max="21:00" required>
-                                </div>
+                            <div class="slip-field">
+                                <label for="return_date">Expected Return Date</label>
+                                <input type="date" id="return_date" name="requested_date_in" value="{{ old('requested_date_in') }}" required>
+                            </div>
+                            <div class="slip-field">
+                                <label for="return_time">Expected Return Time</label>
+                                <input type="time" id="return_time" name="requested_time_in" value="{{ old('requested_time_in') }}" min="00:00" max="21:00" step="600" required>
                             </div>
                         </div>
 
@@ -80,7 +80,16 @@
                             <div class="title">{{ $slip->purpose }}</div>
                             <div class="message"><b>Date:</b> {{ \Carbon\Carbon::parse($slip->requested_date_out)->format('M j, Y') }} | <b>Time out:</b> {{ \Carbon\Carbon::parse($slip->requested_time_out)->format('g:i A') }}<br><b>Expected return:</b> {{ $slip->returnAt()->format('M j, Y, g:i A') }}</div>
                         </div>
-                        <span class="status {{ $slip->statusClass() }}">{{ $label }}</span>
+
+                        <div class="slip-side">
+                            <button type="button" class="slip-copy"
+                                data-purpose="{{ $slip->purpose }}"
+                                data-date-out="{{ \Carbon\Carbon::parse($slip->requested_date_out)->format('Y-m-d') }}"
+                                data-time-out="{{ \Carbon\Carbon::parse($slip->requested_time_out)->format('H:i') }}"
+                                data-date-in="{{ \Carbon\Carbon::parse($slip->requested_date_in)->format('Y-m-d') }}"
+                                data-time-in="{{ \Carbon\Carbon::parse($slip->requested_time_in)->format('H:i') }}">Copy</button>
+                            <span class="status {{ $slip->statusClass() }}">{{ $label }}</span>
+                        </div>
 
                         {{-- date the admin decided (updated_at) --}}
                         @if (in_array($slip->status, ['Approved', 'Rejected']))
@@ -171,7 +180,7 @@
                 const back = new Date(`${form.requested_date_in.value}T${form.requested_time_in.value}`);
                 if (back <= out) {
                     e.preventDefault();
-                    errorEl.textContent = 'Expected return must be after your time out.';
+                    errorEl.textContent = 'Expected return time must be after your time out.';
                     errorEl.hidden = false;
                 }
             });
@@ -212,6 +221,60 @@
 
                         dots.replaceWith(input);
                         input.focus();
+                    });
+                });
+            })();
+        </script>
+
+        <script>
+            // Copy button: fills the pass slip form with the details of an earlier slip
+            (() => {
+                const panel = document.getElementById('slipPanel');
+                const toggle = document.getElementById('slipToggle');
+                const form = document.getElementById('slipForm');
+                const error = document.getElementById('slipError');
+
+                const pad = n => String(n).padStart(2, '0');
+                const todayString = () => {
+                    const d = new Date();
+                    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+                };
+
+                document.querySelectorAll('.slip-copy').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const slip = btn.dataset;
+                        const today = todayString();
+
+                        // which of the two dates are already in the past
+                        const outPast = slip.dateOut < today;
+                        const inPast = slip.dateIn < today;
+
+                        // a date in the past is set to today
+                        const dateOut = outPast ? today : slip.dateOut;
+                        const dateIn = inPast ? today : slip.dateIn;
+
+                        form.elements.requested_date_out.value = dateOut;
+                        form.elements.requested_time_out.value = slip.timeOut;
+                        form.elements.purpose.value = slip.purpose;
+                        form.elements.requested_date_in.value = dateIn;
+                        form.elements.requested_time_in.value = slip.timeIn;
+
+                        // the message depends on which dates were in the past
+                        if (outPast && inPast) {
+                            error.textContent = 'The requested date out and expected return date is already in the past, therefore it has been set to today.';
+                            error.hidden = false;
+                        } else if (outPast) {
+                            error.textContent = 'The requested date out is already in the past, therefore it has been set to today.';
+                            error.hidden = false;
+                        } else {
+                            error.hidden = true;
+                        }
+
+                        // open the form and take the person to it
+                        panel.classList.add('open');
+                        toggle.setAttribute('aria-expanded', 'true');
+                        toggle.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        form.elements.requested_time_out.focus({ preventScroll: true });
                     });
                 });
             })();
