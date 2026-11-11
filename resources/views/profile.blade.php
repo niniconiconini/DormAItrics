@@ -19,7 +19,7 @@
                             <div class="image-upload" style="align-items: center;">
                                 <img id="preview-image" src="{{ $user->profile_picture ? asset($user->profile_picture) : asset('images/user-profile.png') }}">
                                 <input type="file" name="profile_picture" id="profile_picture" accept="image/*" hidden>
-                                <label for="profile_picture" class="btn-primary">Update Profile</label>
+                                <label for="profile_picture" class="btn-primary">Upload Profile Picture</label>
                                 <span id="file-name">No file chosen</span><br>
                             </div>
                             @if($user->resident)

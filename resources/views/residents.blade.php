@@ -110,7 +110,7 @@
                                 <div class="image-upload" style="align-items: center;">
                                     <img id="preview-image" src="{{ $admin->profile_picture ? asset($admin->profile_picture) : asset('images/user-profile.png') }}">
                                     <input type="file" name="profile_picture" id="profile_picture" accept="image/*" hidden>
-                                    <label for="profile_picture" class="btn-primary">Choose File</label>
+                                    <label for="profile_picture" class="btn-primary">Choose Profile Picture</label>
                                     <span id="file-name">No file chosen</span><br>
                                 </div>
                             </div>
@@ -197,7 +197,7 @@
                                     <div class="password-group">
                                         <label for="password">Password*:</label>
                                         <div class="password-row">
-                                            <input type="password" id="password" name="password" class="form-input" placeholder="Leave blank to keep current password">
+                                            <input type="password" id="password" name="password" class="form-input" placeholder="Leave blank to set default password (spum123)">
                                         </div>
                                     </div>
                                 </div>
@@ -323,7 +323,7 @@
                                     <div class="password-group">
                                         <label for="password">Password*:</label>
                                         <div class="password-row">
-                                            <input type="password" id="password" name="password" class="form-input" placeholder="Leave blank to keep current password">
+                                            <input type="password" id="password" name="password" class="form-input" placeholder=" Leave blank to set default password (spum123)">
                                         </div>
                                     </div>
                                 </div>
@@ -391,7 +391,7 @@
                                 <input type="date" id="check_in_date" name="check_in_date" class="form-input" value="{{ old('check_in_date') }}">
                             </div>
                             <div class="form-group check_out_date">
-                                <label for="check_out_date">Check Out:</label>
+                                <label for="check_out_date">Check Out*:</label>
                                 <input type="date" id="check_out_date" name="check_out_date" class="form-input" value="{{ old('check_out_date') }}">
                             </div>
                         </div>
