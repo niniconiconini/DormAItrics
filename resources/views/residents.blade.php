@@ -17,15 +17,15 @@
                             <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
                             <div class="room-number"><p>{{ $admin->userName() }}</p></div>
                         </div>
-                    @elseif (auth()->user()->user_type === 'Manager' && auth()->id() === $admin->id)
-                        <a href="{{ route('profile') }}">
+                    @elseif (auth()->user()->user_type === 'Manager' && auth()->id() === $admin->id) {{-- ms aneen edit self --}}
+                        <a href="{{ route('profile', ['return' => route('users.index', ['view' => request('view')] )] ) }}">
                             <div class="card dorm-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
                                 <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
                                 <div class="room-number"><p>{{ $admin->userName() }}</p></div>
                             </div>
                         </a>
-                    @elseif (auth()->user()->user_type === 'Admin' && auth()->id() === $admin->id)
-                        <a href="{{ route('profile') }}">
+                    @elseif (auth()->user()->user_type === 'Admin' && auth()->id() === $admin->id) {{-- sister nicole edit self --}}
+                        <a href="{{ route('profile', ['return' => route('users.index', ['view' => request('view')] )] ) }}">
                             <div class="card dorm-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
                                 <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
                                 <div class="room-number"><p>{{ $admin->userName() }}</p></div>

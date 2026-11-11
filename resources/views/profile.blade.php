@@ -224,6 +224,11 @@
                                                     return confirm('Are you sure? Changing your user type or account status may affect your access.');
                                         } return true;">Save Changes</button>
                         <button type="reset" class="btn-primary" >Restore</button>
+                        @if(request('return'))
+                            <a href="{{ request('return') }}" style="text-decoration: none;" class="btn-primary">
+                                ← Back to Residents
+                            </a>
+                        @endif
                     </div>
                 </form>
             </div>
