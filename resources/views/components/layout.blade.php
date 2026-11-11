@@ -27,7 +27,7 @@
                 @if (auth()->user()->isAdmin())
                     <header class="text header-text">Dormitory Management System</header>
                     <ul class="menu-links">
-                        <li><a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') || request()->is('/users') ? 'active' : '' }}">Residents</a></li>
+                        <li><a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') || request()->is('/users') ? 'active' : '' }}">User Management</a></li>
                         <li><a href="{{ route('rooms.index') }}" class="nav-link {{ request()->routeIs('rooms.*') || request()->is('/rooms') ? 'active' : '' }}">Room Management</a></li>
                         <li><a href="{{ route('slips-mgmt') }}" class="nav-link {{ request()->routeIs('slips-mgmt') || request()->is('/slips-mgmt') ? 'active' : '' }}">Pass Slip Management</a></li>
                         {{-- <li><a href="{{ route('reports') }}" class="nav-link {{ request()->routeIs('reports') || request()->is('/logbook') ? 'active' : '' }}">Reports</a></li> --}}

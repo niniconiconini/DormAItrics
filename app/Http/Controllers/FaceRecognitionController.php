@@ -26,7 +26,7 @@ class FaceRecognitionController extends Controller
         }
         $resident = Resident::find($residentId);
 
-        session(['recognized_resident_id' => $residentId, 'confirmIdentity' => true, 'recognized_resident_name' => $resident->user->nickname]);
+        session(['recognized_resident_id' => $residentId, 'confirmIdentity' => true, 'recognized_resident_name' => $resident->user->nickname . ' ' . $resident->user->last_name]);
 
         return redirect()->route('facial-recognition');
     }
@@ -55,7 +55,7 @@ class FaceRecognitionController extends Controller
 
             return redirect()
                 ->route('facial-recognition')
-                ->with('message', 'Welcome back, '.$resident->user->nickname.'!');
+                ->with('message', 'Welcome back, ' . $resident->user->nickname . '!');
         }
 
         // check if pass slip has been used already
@@ -138,7 +138,7 @@ class FaceRecognitionController extends Controller
 
         session([
             'recognized_resident_id' => $resident->id,
-            'recognized_resident_name' => $resident->user->nickname,
+            'recognized_resident_name' => $resident->user->nickname . ' ' . $resident->user->last_name,
             'confirmIdentity' => true,
         ]);
 
@@ -159,6 +159,6 @@ class FaceRecognitionController extends Controller
 
         return redirect()
             ->back()
-            ->with('message', 'Face enrollment completed for '.$resident->user->nickname);
+            ->with('message', 'Face enrollment completed for ' . $resident->user->nickname . ' ' . $resident->user->lastname);
     }
 }

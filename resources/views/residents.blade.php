@@ -214,7 +214,7 @@
                             </div>
                         </div>
                         <div class="form-buttons">
-                            <button type="submit" class="btn-primary">Save Changes</button>
+                            <button type="submit" class="btn-primary">Create User</button>
                             <button type="reset" class="btn-primary">Clear</button>
                             <a href="{{ route('users.index', ['view' => request('view')]) }}" class="btn-primary">Close</a>
                         </div>
@@ -396,7 +396,7 @@
                             </div>
                         </div>
                         <div class="form-buttons">
-                            <button type="submit" class="btn-primary">Save Changes</button>
+                            <button type="submit" class="btn-primary">Create User</button>
                             <button type="reset" class="btn-primary">Clear</button>
                             <a href="{{ route('users.index', ['view' => request('view')]) }}" class="btn-primary">Close</a>
                         </div>
