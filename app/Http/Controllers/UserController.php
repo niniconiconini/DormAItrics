@@ -52,13 +52,13 @@ class UserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'last_name' => 'required|string|max:255',
-            'first_name' => 'required|string|max:255',
-            'middle_name' => 'nullable|string|max:255',
-            'nickname' => 'required|string|max:255',
+            'last_name' => ['required', 'regex:/^[\pL]+(?:[\s.,-][\pL]+)*$/u', 'max:25'],
+            'first_name' => ['required', 'regex:/^[\pL]+(?:[\s.,-][\pL]+)*$/u', 'max:75'],
+            'middle_name' => ['nullable', 'regex:/^[\pL]+(?:[\s.,-][\pL]+)*$/u', 'max:25'],
+            'nickname' => ['required', 'regex:/^[\pL]+(?:[\s.,-][\pL]+)*$/u', 'max:15'],
             'birthdate' => 'required|date',
             'gender' => 'required|in:Female,Male',
-            'phone_number' => 'nullable|string|max:20',
+            'phone_number' => 'nullable|regex:/^09\d{9}$/',
             'address' => 'nullable|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'nullable|min:8',
@@ -73,7 +73,7 @@ class UserController extends Controller
                 'payment_schedule' => 'required|string',
                 'room_type' => 'required|string',
                 'check_in_date' => 'required|date',
-                'check_out_date' => 'required|date|after_or_equal:check_in_date',
+                'check_out_date' => 'required|date|after:check_in_date',
             ]);
         }
 
@@ -83,6 +83,12 @@ class UserController extends Controller
         $profilePicture = '/images/users/user-profile.png';
         $validated['profile_picture'] = $profilePicture;
         $validated['status'] = 'Active';
+
+        // auto capitalize name
+        $validated['last_name'] = ucwords(strtolower($validated['last_name']));
+        $validated['first_name'] = ucwords(strtolower($validated['first_name']));
+        $validated['middle_name'] = !empty($validated['middle_name']) ? ucwords(strtolower($validated['middle_name'])) : null;
+        $validated['nickname'] = ucwords(strtolower($validated['nickname']));
 
         // create user
         $user = User::create($validated);
@@ -172,13 +178,13 @@ class UserController extends Controller
 
         // make sure user inputs are valid
         $validated = $request->validate([
-            'last_name' => 'required|string|max:255',
-            'first_name' => 'required|string|max:255',
-            'middle_name' => 'nullable|string|max:255',
-            'nickname' => 'required|string|max:255',
+            'last_name' => ['required', 'regex:/^[\pL]+(?:[\s.,-][\pL]+)*$/u', 'max:25'],
+            'first_name' => ['required', 'regex:/^[\pL]+(?:[\s.,-][\pL]+)*$/u', 'max:75'],
+            'middle_name' => ['nullable', 'regex:/^[\pL]+(?:[\s.,-][\pL]+)*$/u', 'max:25'],
+            'nickname' => ['required', 'regex:/^[\pL]+(?:[\s.,-][\pL]+)*$/u', 'max:15'],
             'gender' => 'required|in:Female,Male',
             'birthdate' => 'required|date',
-            'phone_number' => 'nullable|string|max:20',
+            'phone_number' => 'nullable|regex:/^09\d{9}$/',
             'address' => 'nullable|string|max:255',
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|min:8',
@@ -206,6 +212,12 @@ class UserController extends Controller
                 $validated['status'] = $user->status;
             }
         }
+
+        // auto capitalize name
+        $validated['last_name'] = ucwords(strtolower($validated['last_name']));
+        $validated['first_name'] = ucwords(strtolower($validated['first_name']));
+        $validated['middle_name'] = !empty($validated['middle_name']) ? ucwords(strtolower($validated['middle_name'])) : null;
+        $validated['nickname'] = ucwords(strtolower($validated['nickname']));
 
         $user->update($validated); // create user
 
@@ -235,7 +247,7 @@ class UserController extends Controller
                 'payment_schedule' => 'required|string',
                 'room_type' => 'required|string',
                 'check_in_date' => 'required|date',
-                'check_out_date' => 'required|date|after_or_equal:check_in_date',
+                'check_out_date' => 'required|date|after:check_in_date',
             ]);
 
             // lock changing resident info for residents

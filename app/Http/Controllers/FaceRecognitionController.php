@@ -58,16 +58,6 @@ class FaceRecognitionController extends Controller
                 ->with('message', 'Welcome back, ' . $resident->user->nickname . '!');
         }
 
-        // check if pass slip has been used already
-        $usedPassSlip = ResidentLog::where('resident_id', $residentId)
-            ->whereDate('departed_at', today())
-            ->exists();
-        if ($usedPassSlip) {
-            return redirect()
-                ->route('facial-recognition')
-                ->with('message', 'Hey '.$resident->user->nickname.', you have already used your pass slip for today.');
-        }
-
         // checking pass slip
         /** @var Resident $resident */
         $activePassSlip = PassSlip::where('resident_id', $residentId)
@@ -86,6 +76,10 @@ class FaceRecognitionController extends Controller
             'resident_id' => $residentId,
             'departed_at' => now(),
         ]);
+
+        if($activePassSlip) {
+            $activePassSlip->update(['status' => 'Used']);
+        }
 
         session()->forget([
             'recognized_resident_id',

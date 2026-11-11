@@ -1,12 +1,8 @@
 <x-layout>
     <x-slot:title>facial-recognition</x-slot:title>    
-    <header class="page-title">FACIAL RECOGNITION SCANNER</header>
     <section class="facial-recognition">
-        <div class="entry">
-            <a class="btn-primary scan" href="{{ route('facial-recognition.scan') }}" style="text-decoration: none;">Scan Me</a>
-        </div>
+        <header class="page-title">Please input your Email to manually log your time out / time in</header>
         <div>
-            <p>Please type in your Email to log your time out / time in</p>
             <form action="{{ route('facial-recognition.manual') }}" method="POST">
             @csrf
                 <label for="manualEntry">Email:</label>
@@ -14,6 +10,13 @@
                 <div class="form-buttons"><button type="submit" class="btn-primary">Find Me</button></div>
             </form>
         </div>
+        <br>
+        <div class="entry">
+            <header class="page-title">Automatically log your time out / time in</header>
+            <a class="btn-primary scan" href="{{ route('facial-recognition.scan') }}" style="text-decoration: none;">Scan Me</a>
+        </div>
+
+        {{-- modal pop out for user verification --}}
         @if(session('confirmIdentity') && session('recognized_resident_name') && !session('message'))
             <div class="modal">
                 <div class="card scan-modal">
@@ -31,7 +34,7 @@
                 </div>
             </div>
         @endif
-
+        {{-- modal pop  out for pass slip checking --}}
         @if(session('message'))
             <div class="modal">
                 <div class="card scan-modal">
