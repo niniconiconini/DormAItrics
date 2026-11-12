@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
+/**
+ * @property Carbon $departed_at
+ * @property Carbon|null $returned_at
+ */
 #[Fillable([
     'resident_id',
     'approved_by_user_id',

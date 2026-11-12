@@ -7,6 +7,7 @@ use App\Http\Controllers\FaceRecognitionController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PassSlipController;
 use App\Http\Controllers\PassSlipMgmtController;
+use App\Http\Controllers\ResidentLogController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UserController;
@@ -80,7 +81,7 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
     Route::delete('slips-mgmt', [PassSlipMgmtController::class, 'destroyAll'])->name('slips-mgmt.destroy-all');
 
     // reports
-    Route::view('reports', 'reports')->name('reports');
+    Route::get('/logs', [ResidentLogController::class, 'index'])->name('logs.index');
 
     // analytics
     Route::resource('analytics', AnalyticsController::class);

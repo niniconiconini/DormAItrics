@@ -46,7 +46,6 @@
         </section>
         <section class="dorm-section">
             <div class="residents-header">
-                <a href="{{ route('users.index', ['view' => request('view') === 'transient' ? 'resident' : 'transient']) }}" class="btn-primary">{{ request('view') === 'transient' ? 'View Residents' : 'View Transients' }}</a>
                 <div class="residents-title">
                     <h2>{{ request('view') === 'transient' ? 'Transients' : 'Residents' }}</h2>
                     <a href="{{ route('users.index', ['modal' => 'add-resident', 'view' => request('view')]) }}" class="btn-primary">+ Add {{ request('view') === 'transient' ? 'Transient' : 'Resident' }}</a>
@@ -54,9 +53,11 @@
             </div>
             <hr>
             <div class="section-dormname" style="margin-top: 0; margin-bottom: 1rem;">
-                <a href="{{ route('users.index', ['view' => request('view')]) }}" class="btn-primary">All {{ request('view') === 'transient' ? 'Transients' : 'Residents' }}</a>
-                <a href="{{ route('users.index', ['view' => request('view'), 'resident_type' => 'Student']) }}" class="btn-primary">Students</a>
-                <a href="{{ route('users.index', ['view' => request('view'), 'resident_type' => 'Employee']) }}" class="btn-primary">Employees</a>
+                <a href="{{ route('users.index', ['view' => request('view') === 'transient' ? 'resident' : 'transient']) }}" class="btn-primary">Switch to {{ request('view') === 'transient' ? 'Residents' : 'Transients' }}</a>
+                <h2> | </h2>
+                <a href="{{ route('users.index', ['view' => request('view')]) }}" class="btn-primary {{ !request('resident_type') ? 'active' : '' }}">All</a>
+                <a href="{{ route('users.index', ['view' => request('view'), 'resident_type' => 'Student']) }}" class="btn-primary  {{ request('resident_type') === 'Student' ? 'active' : '' }}">Students</a>
+                <a href="{{ route('users.index', ['view' => request('view'), 'resident_type' => 'Employee']) }}" class="btn-primary  {{ request('resident_type') === 'Employee' ? 'active' : '' }}">Employees</a>
             </div>
             <section class="flex-view">
                 @forelse ($residents as $resident)
@@ -424,7 +425,7 @@
                     @if ($isInactive)
                         <div class="inactive-banner">This account is inactive. Please reactivate to edit information.</div>
                     @endif
-                    <form action="{{ route('users.update', $selectedUser) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('users.update', $selectedUser) }}" method="POST" enctype="multipart/form-data" id="edit-user-form">
                         @csrf
                         @method('PUT')
                         {{-- PERSONAL INFORMATION --}}
@@ -440,7 +441,7 @@
                                     <p>Resident ID: <br><span>{{ $selectedUser->resident->id }}</span></p>
                                     <p>Room: <br><span>{{ $selectedUser->resident->room?->dorm_name ?? 'Unassigned' }} {{ $selectedUser->resident->room?->room_number ?? '' }}</span></p>
                                     @if ($selectedUser->resident->resident_type == 'Student')
-                                        <a href="/residents/{{ $selectedUser->resident->id }}/enroll-face" class="btn-primary">Enroll Face</a>                                
+                                        <a id="enroll-button" href="/residents/{{ $selectedUser->resident->id }}/enroll-face" class="btn-primary {{ $isInactive ? 'inactive-btn' : '' }}" @disabled($isInactive)>Enroll Face</a>                                
                                     @endif
                                 @else
                                     <p>User ID: <span>{{ $selectedUser->id }}</span></p>
@@ -668,8 +669,29 @@
                 </div>
             </div>
         @endif
-
+        @if(session('face_enrolled'))
+            <div class="modal">
+                <div class="card receipt-modal" style="background-color: var(--body-color);">
+                    <h2 class="modal-title">FACE ENROLLED</h2>
+                    <div class="form-buttons">
+                        <button type="button" class="btn-primary" onclick="this.closest('.modal').remove()">OK</button>
+                    </div>
+                </div>
+            </div>
+        @endif
+        
         {{-- error receipt --}}
+            {{-- CANCEL FACE ENROLLMENT POP OUT --}}
+        @if(session('face_cancelled'))
+            <div class="modal">
+                <div class="card receipt-modal" style="background-color: var(--body-color);">
+                    <h2 class="modal-title">FACE ENROLLMENT CANCELLED</h2>
+                    <div class="form-buttons">
+                        <button type="button" class="btn-primary" onclick="this.closest('.modal').remove()">OK</button>
+                    </div>
+                </div>
+            </div>
+        @endif
         @if($errors->any())
             <div class="modal">
                 <div class="card user-modal receipt-modal">

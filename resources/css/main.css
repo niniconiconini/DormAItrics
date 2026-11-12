@@ -1143,15 +1143,23 @@ color: var(--primary-color);
     left: 0;
 }
 
+.section-dormname .btn-primary.active {
+    background-color: var(--body-color);
+    color: var(--primary-color);
+    font-weight: 700;
+    border: 2px solid var(--primary-color);
+}
+
+.section-dormname .btn-primary.active:hover {
+    background-color: var(--body-color);
+    color: var(--primary-color);
+}
+
 .residents .flex-view {
     display: flex;
     flex-wrap: wrap;
     gap: 4rem;
 }
-
-/* .residents .dorm-card {
-    width: 18rem;
-} */
 
 .residents span {
     font-weight: 500;

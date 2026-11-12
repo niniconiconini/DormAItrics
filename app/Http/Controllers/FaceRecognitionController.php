@@ -26,7 +26,7 @@ class FaceRecognitionController extends Controller
         }
         $resident = Resident::find($residentId);
 
-        session(['recognized_resident_id' => $residentId, 'confirmIdentity' => true, 'recognized_resident_name' => $resident->user->nickname . ' ' . $resident->user->last_name]);
+        session(['recognized_resident_id' => $residentId, 'confirmIdentity' => true, 'recognized_resident_name' => $resident->user->nickname.' '.$resident->user->last_name]);
 
         return redirect()->route('facial-recognition');
     }
@@ -42,10 +42,51 @@ class FaceRecognitionController extends Controller
             ->whereNull('returned_at')
             ->latest()
             ->first();
+        // if ($openLog) {
+        //     $openLog->update([
+        //         'returned_at' => now(),
+        //     ]);
+        //     session()->forget([
+        //         'recognized_resident_id',
+        //         'recognized_resident_name',
+        //         'confirmIdentity',
+        //         'scan_attempts',
+        //     ]);
+
+        //     return redirect()
+        //         ->route('facial-recognition')
+        //         ->with('message', 'Welcome back, ' . $resident->user->nickname . '!');
+        // }
+
         if ($openLog) {
-            $openLog->update([
-                'returned_at' => now(),
+
+            // DEBUG: Check values before updating
+            logger()->debug('BEFORE UPDATE', [
+                'id' => $openLog->id,
+                'departed_at' => $openLog->getRawOriginal('departed_at'),
+                'returned_at' => $openLog->getRawOriginal('returned_at'),
             ]);
+
+            // Update ONLY returned_at
+            $openLog->returned_at = now();
+
+            // DEBUG: Check what Laravel is about to save
+            logger()->debug('DIRTY ATTRIBUTES', [
+                'dirty' => $openLog->getDirty(),
+                'departed_at_changed' => $openLog->isDirty('departed_at'),
+            ]);
+
+            $openLog->save();
+
+            // DEBUG: Check actual database values
+            $freshLog = $openLog->fresh();
+
+            logger()->debug('AFTER UPDATE', [
+                'id' => $freshLog->id,
+                'departed_at' => $freshLog->getRawOriginal('departed_at'),
+                'returned_at' => $freshLog->getRawOriginal('returned_at'),
+            ]);
+
             session()->forget([
                 'recognized_resident_id',
                 'recognized_resident_name',
@@ -55,7 +96,7 @@ class FaceRecognitionController extends Controller
 
             return redirect()
                 ->route('facial-recognition')
-                ->with('message', 'Welcome back, ' . $resident->user->nickname . '!');
+                ->with('message', 'Welcome back, '.$resident->user->nickname.'!');
         }
 
         // checking pass slip
@@ -75,11 +116,13 @@ class FaceRecognitionController extends Controller
         ResidentLog::create([
             'resident_id' => $residentId,
             'departed_at' => now(),
+            'pass_slip_id' => $activePassSlip->id,
         ]);
 
-        if($activePassSlip) {
-            $activePassSlip->update(['status' => 'Used']);
-        }
+        $activePassSlip->update(['status' => 'Used']);
+        // if ($activePassSlip) {
+
+        // }
 
         session()->forget([
             'recognized_resident_id',
@@ -132,7 +175,7 @@ class FaceRecognitionController extends Controller
 
         session([
             'recognized_resident_id' => $resident->id,
-            'recognized_resident_name' => $resident->user->nickname . ' ' . $resident->user->last_name,
+            'recognized_resident_name' => $resident->user->nickname.' '.$resident->user->last_name,
             'confirmIdentity' => true,
         ]);
 
@@ -143,9 +186,19 @@ class FaceRecognitionController extends Controller
     public function enroll(Resident $resident): RedirectResponse
     {
         set_time_limit(300);
-        // open python file
-        shell_exec('"'.dirname(base_path()).'\facial-recognition\venv\Scripts\python.exe" "'.dirname(base_path()).'\facial-recognition\referenceinator.py" '.$resident->id.' 2>&1');
+        // open enroll face python file
+        $output = trim((string) shell_exec('"'.dirname(base_path()).'\facial-recognition\venv\Scripts\python.exe" "'.dirname(base_path()).'\facial-recognition\referenceinator.py" '.$resident->id.' 2>&1'));
+        // if cancelled
+        if ($output === 'CANCELLED') {
+            return redirect()
+                ->back()
+                ->with('face_cancelled', true)
+                ->with('message', 'Face enrollment cancelled.');
+        }
+
         shell_exec('"'.dirname(base_path()).'\facial-recognition\venv\Scripts\python.exe" "'.dirname(base_path()).'\facial-recognition\build_encodings.py" 2>&1');
+
+        // if theres already previous, delete record then create
         FaceRecognition::where('resident_id', $resident->id)->delete();
         for ($i = 1; $i <= 5; $i++) {
             FaceRecognition::create(['resident_id' => $resident->id, 'face_reference' => $resident->id.'_'.$i.'.jpg']);
@@ -153,6 +206,7 @@ class FaceRecognitionController extends Controller
 
         return redirect()
             ->back()
-            ->with('message', 'Face enrollment completed for ' . $resident->user->nickname . ' ' . $resident->user->lastname);
+            ->with('face_enrolled', true)
+            ->with('message', 'Face enrollment completed for '.$resident->user->nickname.' '.$resident->user->last_name);
     }
 }

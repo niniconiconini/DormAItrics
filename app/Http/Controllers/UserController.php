@@ -87,7 +87,7 @@ class UserController extends Controller
         // auto capitalize name
         $validated['last_name'] = ucwords(strtolower($validated['last_name']));
         $validated['first_name'] = ucwords(strtolower($validated['first_name']));
-        $validated['middle_name'] = !empty($validated['middle_name']) ? ucwords(strtolower($validated['middle_name'])) : null;
+        $validated['middle_name'] = ! empty($validated['middle_name']) ? ucwords(strtolower($validated['middle_name'])) : null;
         $validated['nickname'] = ucwords(strtolower($validated['nickname']));
 
         // create user
@@ -216,7 +216,7 @@ class UserController extends Controller
         // auto capitalize name
         $validated['last_name'] = ucwords(strtolower($validated['last_name']));
         $validated['first_name'] = ucwords(strtolower($validated['first_name']));
-        $validated['middle_name'] = !empty($validated['middle_name']) ? ucwords(strtolower($validated['middle_name'])) : null;
+        $validated['middle_name'] = ! empty($validated['middle_name']) ? ucwords(strtolower($validated['middle_name'])) : null;
         $validated['nickname'] = ucwords(strtolower($validated['nickname']));
 
         $user->update($validated); // create user

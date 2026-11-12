@@ -8,12 +8,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable([
     'resident_id',
-    'room_type',
     'departed_at',
     'returned_at',
+    'pass_slip_id',
 ])]
 class ResidentLog extends Model
 {
+    protected $casts = [
+        'departed_at' => 'datetime',
+        'returned_at' => 'datetime',
+    ];
+
     /**
      * @return BelongsTo<Resident, $this>
      */

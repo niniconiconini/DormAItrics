@@ -65,7 +65,7 @@ class PassSlipController extends Controller
         ]);
 
         $out = Carbon::parse($validated['requested_date_out'].' '.$validated['requested_time_out']);
-            if ($out->isPast()) {
+        if ($out->isPast()) {
             return back()->withErrors([
                 'requested_time_out' => 'Time out cannot be in the past.',
             ])->withInput();

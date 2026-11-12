@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             // ConcernSeeder::class,
             // FaceRecognitionSeeder::class,
             // ResidentLogSeeder::class,
-            PassSlipSeeder::class,
+            // PassSlipSeeder::class,
         ]);
     }
 }

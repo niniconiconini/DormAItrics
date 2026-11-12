@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('resident_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('resident_id')->constrained('residents');
-            $table->timestamp('departed_at');
+            $table->foreignId('pass_slip_id')->nullable()->constrained('pass_slips');
+            $table->timestamp('departed_at')->useCurrent();
             $table->timestamp('returned_at')->nullable();
             $table->timestamps();
         });

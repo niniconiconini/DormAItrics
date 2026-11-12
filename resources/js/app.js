@@ -1,4 +1,4 @@
-// 
+// preview image for room and user
 const fileInput = document.querySelector('#profile_picture, #room_image');
 const previewImage = document.getElementById('preview-image');
 const previewText = document.getElementById('preview-text');
@@ -33,13 +33,17 @@ if (fileInput && previewImage) {
         form.addEventListener('reset', () => {
             setTimeout(() => {
                 previewImage.src = originalImage;
-                if (fileName) { fileName.textContent = originalFileText; }
+                if (fileName) {
+                    fileName.textContent = originalFileText;
+                }
 
                 // if add-room preview started empty
                 if (!originalImage) {
                     previewImage.style.display = 'none';
 
-                    if (previewText) { previewText.style.display = 'block'; }
+                    if (previewText) { 
+                        previewText.style.display = 'block'; 
+                    }
                 }
             }, 0);
         });
@@ -55,3 +59,41 @@ document.querySelectorAll('#last_name, #first_name, #middle_name, #nickname').fo
         }, 200)
     });
 });
+
+// user management edit modal when turning inactive user to active
+const statusSelect = document.getElementById('user-status');
+
+if (statusSelect) {
+    statusSelect.addEventListener('change', function () {
+        const disabledFields = document.querySelectorAll('#edit-user-form input, #edit-user-form select, #edit-user-form textarea, #edit-user-form button');
+        if (this.value === 'Active') {
+            disabledFields.forEach(field => {
+                if (field.id !== 'user-status') {
+                    field.disabled = false;
+                }
+            });
+            document.querySelectorAll('.inactive-btn').forEach(element => {
+                element.classList.remove('inactive-btn');
+            });
+            document.querySelector('.inactive-banner')?.remove();
+        }
+    });
+}
+
+// change enroll face to enrolling text
+const enrollButton = document.getElementById('enroll-button')
+if (enrollButton) {
+    enrollButton.addEventListener('click', function() {
+        this.textContent = 'Enrolling..';
+        this.style.pointerEvents = 'disabled';
+    });
+}
+
+// change scan me to scanning text
+const scanButton = document.getElementById('scan-button')
+if (scanButton) {
+    scanButton.addEventListener('click', function() {
+        this.textContent = 'Scanning..';
+        this.style.pointerEvents = 'disabled';
+    });
+}

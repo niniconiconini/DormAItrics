@@ -13,7 +13,7 @@
         <br>
         <div class="entry">
             <header class="page-title">Automatically log your time out / time in</header>
-            <a class="btn-primary scan" href="{{ route('facial-recognition.scan') }}" style="text-decoration: none;">Scan Me</a>
+            <a id="scan-button" class="btn-primary scan" href="{{ route('facial-recognition.scan') }}" style="text-decoration: none;">Scan Me</a>
         </div>
 
         {{-- modal pop out for user verification --}}
