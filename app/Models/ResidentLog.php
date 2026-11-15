@@ -11,7 +11,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'departed_at',
     'returned_at',
     'pass_slip_id',
+    'notes',
+    'user_id', // for guard in charge
 ])]
+
 class ResidentLog extends Model
 {
     protected $casts = [

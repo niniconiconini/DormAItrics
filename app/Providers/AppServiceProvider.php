@@ -32,6 +32,11 @@ class AppServiceProvider extends ServiceProvider
             return $user->isAdmin();
         });
 
+        // guard access
+        Gate::define('guards', function (User $user) {
+            return $user->isGuard();
+        });
+
         // all users access
         Gate::define('all-users', function (User $user) {
             return $user->isAdmin() || $user->isResident();

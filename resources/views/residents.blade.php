@@ -47,55 +47,126 @@
         <section class="dorm-section">
             <div class="residents-header">
                 <div class="residents-title">
-                    <h2>{{ request('view') === 'transient' ? 'Transients' : 'Residents' }}</h2>
-                    <a href="{{ route('users.index', ['modal' => 'add-resident', 'view' => request('view')]) }}" class="btn-primary">+ Add {{ request('view') === 'transient' ? 'Transient' : 'Resident' }}</a>
+                    <h2>
+                        @switch(request('view', 'resident'))
+                            @case('transient')
+                                Transients
+                                @break
+                            @case('applicant')
+                                Applicants  
+                                @break
+                            @case('inactive')
+                                Inactive Accounts
+                                @break
+                            @case('all')
+                                All Accounts
+                                @break
+                            @default
+                                Residents
+                        @endswitch
+                    </h2>
+                    @if(request('view') !== 'applicant' && request('view') !== 'all')
+                        <a href="{{ route('users.index', ['modal' => 'add-resident', 'view' => request('view')]) }}" class="btn-primary">+ Add {{ request('view') === 'transient' ? 'Transient' : 'Resident' }}</a>
+                    @endif
                 </div>
             </div>
             <hr>
             <div class="section-dormname" style="margin-top: 0; margin-bottom: 1rem;">
-                <a href="{{ route('users.index', ['view' => request('view') === 'transient' ? 'resident' : 'transient']) }}" class="btn-primary">Switch to {{ request('view') === 'transient' ? 'Residents' : 'Transients' }}</a>
+                <select id="user-view" class="user-view-select" onchange="window.location=this.value">
+                    <option value="{{ route('users.index', ['view' => 'all']) }}" {{ request('view') === 'all' ? 'selected' : '' }}>All Accounts</option>
+                    <option value="{{ route('users.index', ['view' => 'resident']) }}" {{ request('view', 'resident') === 'resident' ? 'selected' : '' }}>Residents</option>
+                    <option value="{{ route('users.index', ['view' => 'transient']) }}" {{ request('view', 'transient') === 'transient' ? 'selected' : '' }}>Transients</option>
+                    <option value="{{ route('users.index', ['view' => 'applicant']) }}" {{ request('view', 'applicant') === 'applicant' ? 'selected' : '' }}>Applicants</option>
+                    <option value="{{ route('users.index', ['view' => 'inactive']) }}" {{ request('view', 'inactive') === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                </select>
                 <h2> | </h2>
                 <a href="{{ route('users.index', ['view' => request('view')]) }}" class="btn-primary {{ !request('resident_type') ? 'active' : '' }}">All</a>
                 <a href="{{ route('users.index', ['view' => request('view'), 'resident_type' => 'Student']) }}" class="btn-primary  {{ request('resident_type') === 'Student' ? 'active' : '' }}">Students</a>
                 <a href="{{ route('users.index', ['view' => request('view'), 'resident_type' => 'Employee']) }}" class="btn-primary  {{ request('resident_type') === 'Employee' ? 'active' : '' }}">Employees</a>
             </div>
-            <section class="flex-view">
-                @forelse ($residents as $resident)
-                    <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $resident->user->id, 'view' => request('view')]) }}">
-                        <div class="card dorm-card {{ $resident->user->status === 'Inactive' ? 'inactive-card' : '' }}">
-                            <div class="room-image"><img src="{{ asset($resident->user->profile_picture) }}"></div>
-                            <div class="room-number"><p>{{ $resident->user->userName() }}</p></div>
-                            <div class="room-info"><p>Room: {{ $resident->room?->room_number ?? 'Unassigned' }}</p></div>
-                            <div class="room-info"><p>Dorm: {{ $resident->room?->dorm_name ?? 'Unassigned' }}</p></div>
-                            <div class="room-info"><p>Resident Type: {{ $resident->resident_type }}</p></div>
+            @if (request('view') === 'all')
+                <div class="card">
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>Resident ID</th>
+                                <th>Name</th>
+                                <th>Resident Type</th>
+                                <th>Accommodation</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($residents as $resident)
+                                <tr style="cursor:pointer" onclick="window.location='{{ route('users.index', ['modal' => 'edit-user', 'user' => $resident->user_id, 'view' => request('view') ]) }}'">
+                                    <td><strong>{{ $resident->id }}</strong></td>
+                                    <td><div class="resident-name"><strong>{{ $resident->user->last_name }}, {{ $resident->user->first_name }} {{ $resident->user->middle_name }}</strong></div></td>
+                                    <td>{{ $resident->resident_type }}</td>
+                                    <td>
+                                        @if($resident->is_applicant)
+                                            <span class="status-badge pending">
+                                                Applicant
+                                            </span>
+                                        @elseif($resident->accommodation_type === 'Resident')
+                                            <span class="status-badge approved">
+                                                Resident
+                                            </span>
+                                        @else
+                                            <span class="status-badge outside">
+                                                Transient
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($resident->user->status === 'Active')
+                                            <span class="status-badge approved">
+                                                Active
+                                            </span>
+                                        @else
+                                            <span class="status-badge no-slip">
+                                                Inactive
+                                            </span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="empty-state">
+                                        <div class="empty-icon">👤</div>
+                                        <strong>No Users Found</strong>
+                                        <p>User records will appear here.</p>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <section class="flex-view">
+                    @forelse ($residents as $resident)
+                        <div class="card dorm-card">
+                            <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $resident->user->id, 'view' => request('view')]) }}" style="color: inherit">
+                                <div class="dorm-card">
+                                    <div class="room-image"><img src="{{ asset($resident->user->profile_picture) }}"></div>
+                                    <div class="room-number"><p>{{ $resident->user->userName() }}</p></div>
+                                    <div class="room-info"><p>Room: {{ $resident->room?->room_number ?? 'Unassigned' }}</p></div>
+                                    <div class="room-info"><p>Dorm: {{ $resident->room?->dorm_name ?? 'Unassigned' }}</p></div>
+                                    <div class="room-info"><p>Resident Type: {{ $resident->resident_type }}</p></div>
+                                </div>
+                            </a>
+                            @if ($resident->is_applicant)
+                                <form action="{{ route('applicants.approve', $resident) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn-primary">Approve</button>
+                                </form>
+                            @endif 
                         </div>
-                    </a>
-                @empty
-                    <p>No {{ request('view') === 'transient' ? 'Transients' : 'Residents' }} found.</p>
-                @endforelse
-            </section>
-            <section class="dorm-section"> {{-- inactive users --}}
-                @if($inactiveUsers->count())
-                    <details class="inactive-section"><summary class="inactive-summary"><h2>Inactive Users ({{ $inactiveUsers->count() }})</h2><hr></summary>
-                        <section class="flex-view">
-                            @foreach($inactiveUsers as $user)
-                                <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $user->id, 'view' => request('view')]) }}">
-                                    <div class="card dorm-card inactive-card">
-                                        <div class="room-image"><img src="{{ asset($user->profile_picture) }}"></div>
-                                        <div class="room-number"><p>{{ $user->userName() }}</p></div>
-                                        @if(!$user->resident)
-                                            <div class="room-info"><p>{{ $user->user_type }}</p></div>
-                                        @endif
-                                        @if($user->resident)
-                                            <div class="room-info"><p>{{ $user->resident->accommodation_type }}</p></div>
-                                        @endif
-                                    </div>
-                                </a>
-                            @endforeach
-                        </section>
-                    </details>
-                @endif
-            </section>
+                    @empty
+                        <p>No {{ request('view') === 'transient' ? 'Transients' : 'Residents' }} found.</p>
+                    @endforelse
+                </section>
+            @endif
         </section>
 
         {{-- =============================== ADD ADMIN USER MODAL =============================== --}}
@@ -109,7 +180,7 @@
                         <div class="user-top-section">
                             <div class="sidebar">
                                 <div class="image-upload" style="align-items: center;">
-                                    <img id="preview-image" src="{{ $admin->profile_picture ? asset($admin->profile_picture) : asset('images/user-profile.png') }}">
+                                    <img id="preview-image" src="{{ $admin->profile_picture ? asset($admin->profile_picture) : asset('images/users/user-profile.png') }}">
                                     <input type="file" name="profile_picture" id="profile_picture" accept="image/*" hidden>
                                     <label for="profile_picture" class="btn-primary">Choose Profile Picture</label>
                                     <span id="file-name">No file chosen</span><br>
@@ -209,6 +280,7 @@
                                             <option value="" selected disabled hidden>Select User Type</option>
                                             <option value="Admin" {{ old('user_type') === 'Admin' ? 'selected' : ''}}>Admin</option>
                                             <option value="Manager" {{ old('user_type') === 'Manager' ? 'selected' : '' }}>Manager</option>
+                                            <option value="Guard" {{ old('user_type') === 'Guard' ? 'selected' : '' }}>Guard</option>
                                         </select>
                                     </div>
                                 </div>
@@ -228,14 +300,14 @@
         @if (request('modal') == 'add-resident')
             <div class="modal">
                 <div class="card user-modal">
-                    <h2 class="modal-title">Add Resident / Transient</h2>
+                    <h2 class="modal-title">Add {{ request('view') === 'transient' ? 'Transient' : 'Resident' }}</h2>
                     <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         {{-- PERSONAL INFORMATION --}}
                         <div class="user-top-section">
                             <div class="sidebar">
                                 <div class="image-upload" style="align-items: center;">
-                                <img id="preview-image" src="{{ $resident->user->profile_picture ? asset($resident->user->profile_picture) : asset('images/user-profile.png') }}">
+                                <img id="preview-image" src="{{ old('profile_picture') ? asset(old('profile_picture')) : asset('images/users/user-profile.png') }}">
                                 <input type="file" name="profile_picture" id="profile_picture" accept="image/*" hidden>
                                 <label for="profile_picture" class="btn-primary">Choose File</label>
                                 <span id="file-name">No file chosen</span><br>
@@ -346,11 +418,11 @@
                         <div class="resident-type">
                             <div class="form-group accommodation_type">
                                 <label for="accommodation_type">Accommodation Type*:</label>
-                                <select name="accommodation_type" id="accommodation_type" class="form-cb">
-                                    <option value="" selected disabled hidden></option>
-                                    <option value="Resident" {{ old('accommodation_type') === 'Resident' ? 'selected' : '' }}>Resident</option>
-                                    <option value="Transient" {{ old('accommodation_type') === 'Transient' ? 'selected' : '' }}>Transient</option>
+                                <select name="accommodation_type" id="accommodation_type" class="form-cb" disabled>
+                                    <option value="Resident" {{ old('accommodation_type'), request('view') === 'resident' ? 'selected' : '' }}>Resident</option>
+                                    <option value="Transient" {{ old('accommodation_type'), request('view') === 'transient' ? 'selected' : '' }}>Transient</option>
                                 </select>
+                                <input type="hidden" name="accommodation_type" value="{{ request('view') === 'transient' ? 'Transient' : 'Resident' }}">
                             </div>
                             <div class="form-group resident_type">
                                 <label for="resident_type">Resident Type*:</label>
@@ -364,15 +436,21 @@
                         <div class="lodging-type">
                             <div class="form-group payment_schedule">
                                 <label for="payment_schedule">Payment Schedule*:</label>
-                                <select name="payment_schedule" id="payment_schedule" class="form-cb">
-                                    <option value="" selected disabled hidden></option>
-                                    <option value="Full Payment" {{ old('payment_schedule') == 'Full Payment' ? 'selected' : '' }}>Full Payment</option>
-                                    <option value="4 Payments" {{ old('payment_schedule') == '4 Payments' ? 'selected' : '' }}>4 Payments</option>
-                                    <option value="3 Payments" {{ old('payment_schedule') == '3 Payments' ? 'selected' : '' }}>3 Payments</option>
-                                    <option value="2 Payments" {{ old('payment_schedule') == '2 Payments' ? 'selected' : '' }}>2 Payments</option>
-                                    <option value="Monthly" {{ old('payment_schedule') == 'Monthly' ? 'selected' : '' }}>Monthly</option>
-                                    <option value="Per Day" {{ old('payment_schedule') == 'Per Day' ? 'selected' : '' }}>Per Day</option>
-                                </select>
+                                @if (request('view') === 'transient')
+                                    <select name="payment_schedule" id="payment_schedule" class="form-cb" disabled>
+                                        <option selected>Per Day</option>
+                                        <input type="hidden" name="payment_schedule" value="Per Day">
+                                    </select>
+                                @else
+                                    <select name="payment_schedule" id="payment_schedule" class="form-cb">
+                                        <option value="" selected disabled hidden></option>
+                                        <option value="Full Payment" {{ old('payment_schedule') == 'Full Payment' ? 'selected' : '' }}>Full Payment</option>
+                                        <option value="4 Payments" {{ old('payment_schedule') == '4 Payments' ? 'selected' : '' }}>4 Payments</option>
+                                        <option value="3 Payments" {{ old('payment_schedule') == '3 Payments' ? 'selected' : '' }}>3 Payments</option>
+                                        <option value="2 Payments" {{ old('payment_schedule') == '2 Payments' ? 'selected' : '' }}>2 Payments</option>
+                                        <option value="Monthly" {{ old('payment_schedule') == 'Monthly' ? 'selected' : '' }}>Monthly</option>
+                                    </select>
+                                @endif
                             </div>
                             <div class="form-group room_type">
                                 <label for="room_type">Room Type*:</label>
@@ -432,7 +510,7 @@
                         <div class="user-top-section">
                             <div class="sidebar">
                                 <div class="image-upload" style="align-items: center; margin: 0;">
-                                    <img id="preview-image" src="{{ $selectedUser->profile_picture ? asset($selectedUser->profile_picture) : asset('images/user-profile.png') }}" style="margin: 0;">
+                                    <img id="preview-image" src="{{ $selectedUser->profile_picture ? asset($selectedUser->profile_picture) : asset('images/users/user-profile.png') }}" style="margin: 0;">
                                     <input type="file" name="profile_picture" id="profile_picture" accept="image/*" hidden @disabled($isInactive)>
                                     <label for="profile_picture" class="btn-primary {{ $isInactive ? 'inactive-btn' : '' }}">Choose File</label>
                                     <p id="file-name" style="padding-bottom: 0.3rem; font-weight: 400;">No file chosen</p>
@@ -573,6 +651,9 @@
                                 };
                             @endphp
                             <h2 class="modal-title">Resident Information</h2>
+                            @if ($isInactive)
+                                <div class="inactive-banner">Please update resident information before saving.</div>
+                            @endif
                             <div class="resident-type">
                                 <div class="form-group accommodation_type">
                                     <label for="accommodation_type">Accommodation Type*:</label>

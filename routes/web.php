@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 //      DMS AND PUBLIC CAN ACCESS
 Route::view('login', 'user-login')->name('login')->middleware('throttle:5,1');
 Route::post('login', LoginController::class)->name('login.attempt');
+Route::view('apply', 'user-regis')->name('apply');
+Route::post('apply', [UserController::class, 'applicant'])->name('users.applicant');
 
 Route::get('logout', function (Request $request) {
     Auth::logout();
@@ -58,6 +60,7 @@ Route::middleware(['auth', 'can:all-users'])->group(function () {
 Route::middleware(['auth', 'can:admins'])->group(function () {
     // dormer management
     Route::resource('users', UserController::class);
+    Route::put('/applicants/{resident}/approve', [UserController::class, 'approveApplicant'])->name('applicants.approve');
 
     // room management
     Route::resource('rooms', RoomController::class);
@@ -85,6 +88,11 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
 
     // analytics
     Route::resource('analytics', AnalyticsController::class);
+});
+
+Route::middleware(['auth', 'can:guards'])->group(function () {
+    // reports
+    Route::get('/logs', [ResidentLogController::class, 'index'])->name('logs.index');
 
     // biometrics
     Route::view('facial-recognition', 'facial-recognition')->name('facial-recognition');

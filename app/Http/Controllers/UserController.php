@@ -16,37 +16,55 @@ class UserController extends Controller
     public function index(): View
     {
         // get active users
-        $admins = User::whereIn('user_type', ['Admin', 'Manager'])
+        $admins = User::whereIn('user_type', ['Admin', 'Manager', 'Guard'])
             ->where('status', 'Active')
             ->get();
 
         $residents = Resident::with(['user', 'room']);
-        if (request('view') === 'transient') {
-            $residents->where('accommodation_type', 'Transient');
-        } else {
-            $residents->where('accommodation_type', 'Resident');
+
+        switch (request('view', 'resident')) {
+            case 'transient':
+                $residents = Resident::with(['user', 'room'])
+                    ->whereHas('user', function ($query) {
+                        $query->where('status', 'Active')
+                            ->where('is_applicant', false)
+                            ->where('accommodation_type', 'Transient');
+                    });
+                break;
+            case 'applicant':
+                $residents = Resident::with(['user', 'room'])
+                    ->whereHas('user', function ($query) {
+                        $query->where('status', 'Active')
+                            ->where('is_applicant', true);
+                    });
+                break;
+            case 'inactive':
+                $residents = Resident::with(['user', 'room'])
+                    ->whereHas('user', function ($query) {
+                        $query->where('status', 'Inactive');
+                    });
+                break;
+            case 'all':
+                // grid view
+                break;
+            default:
+                $residents = Resident::with(['user', 'room'])
+                    ->whereHas('user', function ($query) {
+                        $query->where('status', 'Active')
+                            ->where('is_applicant', false)
+                            ->where('accommodation_type', 'Resident');
+                    });
+                break;
         }
 
         if (request('resident_type')) {
             $residents->where('resident_type', request('resident_type'));
         }
-        $residents = $residents->get()->filter(function ($resident) {
-            return $resident->user->status === 'Active';
-        });
 
-        // get inaactive users
-        $inactiveUsers = User::with('resident')
-            ->where('status', 'Inactive')
-            ->orderByRaw("CASE
-                            WHEN user_type = 'Admin' THEN 1
-                            WHEN user_type = 'Manager' THEN 2
-                            WHEN user_type = 'Resident' THEN 3
-                            ELSE 4
-                        END")->get();
+        $residents = $residents->get();
 
         return view('residents', ['admins' => $admins,
-            'residents' => $residents,
-            'inactiveUsers' => $inactiveUsers, ]);
+            'residents' => $residents]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -62,7 +80,7 @@ class UserController extends Controller
             'address' => 'nullable|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'nullable|min:8',
-            'user_type' => 'required|in:Admin,Manager,Resident',
+            'user_type' => 'required|in:Admin,Manager,Guard,Resident',
             'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
@@ -148,6 +166,61 @@ class UserController extends Controller
             ->with('receipt', $receipt);
     }
 
+    public function applicant(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'last_name' => ['required', 'regex:/^[\pL]+(?:[\s.,-][\pL]+)*$/u', 'max:25'],
+            'first_name' => ['required', 'regex:/^[\pL]+(?:[\s.,-][\pL]+)*$/u', 'max:75'],
+            'middle_name' => ['nullable', 'regex:/^[\pL]+(?:[\s.,-][\pL]+)*$/u', 'max:25'],
+            'nickname' => ['required', 'regex:/^[\pL]+(?:[\s.,-][\pL]+)*$/u', 'max:15'],
+            'birthdate' => 'required|date',
+            'gender' => 'required|in:Female,Male',
+            'phone_number' => 'nullable|regex:/^09\d{9}$/',
+            'address' => 'nullable|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8',
+            'user_type' => 'required|in:Resident',
+            'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'resident_type' => 'required|in:Student,Employee',
+            'accommodation_type' => 'required|in:Resident,Transient',
+            'payment_schedule' => 'required|string',
+            'room_type' => 'required|string',
+        ]);
+
+        // set defaults
+        $validated['status'] = 'Active';
+
+        // auto capitalize name
+        $validated['last_name'] = ucwords(strtolower($validated['last_name']));
+        $validated['first_name'] = ucwords(strtolower($validated['first_name']));
+        $validated['middle_name'] = ! empty($validated['middle_name']) ? ucwords(strtolower($validated['middle_name'])) : null;
+        $validated['nickname'] = ucwords(strtolower($validated['nickname']));
+
+        // create user
+        $user = User::create($validated);
+
+        Resident::create([
+            'user_id' => $user->id,
+            'room_id' => null,
+            'is_applicant' => true,
+            'resident_type' => $request->resident_type,
+            'accommodation_type' => $request->accommodation_type,
+            'payment_schedule' => $request->payment_schedule,
+            'room_type' => $request->room_type,
+        ]);
+
+        return redirect()
+            ->route('apply')
+            ->with('application_submitted', true);
+    }
+
+    public function approveApplicant(Resident $resident): RedirectResponse
+    {
+        $resident->update(['is_applicant' => false]);
+
+        return redirect()->route('users.index', ['view' => 'applicant'])->with('success', 'Applicant approved successfully. Please update check in and check out dates.');
+    }
+
     public function update(Request $request, User $user): RedirectResponse
     {
         $userActivated = false;
@@ -188,7 +261,7 @@ class UserController extends Controller
             'address' => 'nullable|string|max:255',
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|min:8',
-            'user_type' => 'required|in:Admin,Manager,Resident',
+            'user_type' => 'required|in:Admin,Manager,Guard,Resident',
             'status' => 'required|in:Active,Inactive,Pending',
             'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);

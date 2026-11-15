@@ -12,8 +12,9 @@ use Illuminate\Support\Carbon;
 #[Fillable([
     'user_id',
     'room_id',
-    'resident_type',
+    'is_applicant',
     'accommodation_type',
+    'resident_type',
     'payment_schedule',
     'room_type',
     'check_in_date',
@@ -23,9 +24,10 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $user_id
  * @property int|null $room_id
- * @property string|null $room_type
- * @property string|null $resident_type
+ * @property bool $is_applicant
  * @property string|null $accommodation_type
+ * @property string|null $resident_type
+ * @property string|null $room_type
  * @property Carbon $check_in_date
  * @property Carbon $check_out_date
  * @property User $user
@@ -36,6 +38,7 @@ class Resident extends Model
     {
 
         return [
+            'is_applicant' => 'boolean',
             'check_in_date' => 'date',
             'check_out_date' => 'date',
         ];

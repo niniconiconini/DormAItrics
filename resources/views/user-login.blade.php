@@ -102,25 +102,42 @@
         a:hover {
             color: var(--primary-color);
         }
+
+        .modal {
+            position: fixed !important;
+            inset: 0;
+            display: flex !important;
+            justify-content: center;
+            align-items: center;
+            background: rgba(113, 121, 119, 0.7);
+            z-index: 1000;
+        }
+
+        .user-modal {
+            background-color: var(--body-color) !important;
+            width: min(1300px, 95vw);
+            padding: 1rem 3rem 2rem 3rem;
+            border-radius: 10px;
+            box-shadow: 20px 20px 50px var(--primary-color);
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+
+        .receipt-modal {
+            width: min(700px, 90vw) !important;
+            padding: 1.5rem !important;
+        }
+
     </style>
 </head>
 <body>
     <section id="login-form" class="form-section container">
         <header id="page-title">Login!</header>
-        @if ($errors->any())
-        <div>
-            <ul>
-                @foreach($errors->all() as $error)
-                <p style="text-align: center;">{{ $error }}</p>
-                @endforeach
-            </ul>
-        </div>
-        @endif
         <form method="POST" action="{{ route('login.attempt') }}" class="form-container">
             @csrf
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" name="email" id="email" placeholder="" required class="form-input">
+        <input type="email" name="email" id="email" placeholder="" required class="form-input" value="{{ old('email') }}">
             </div>
             <div class="form-group">
                 <label for="address">Password:</label>
@@ -131,6 +148,27 @@
                 <button type="submit" class="btn-primary">Login</button>
             </div>
         </form>
+
+        @if($errors->any())
+            <div class="modal">
+                <div class="card user-modal receipt-modal" style="text-align: center;">
+                    <h2 class="modal-title">ERROR</h2>
+                    <div class="receipt-box" style="padding: 1rem;">
+                        @foreach($errors->all() as $error)
+                            <p style="padding: 0.5rem;">{{ $error }}</p>
+                        @endforeach
+                    </div>
+                    <div class="form-buttons">
+                        <button
+                            type="button"
+                            class="btn-primary"
+                            onclick="this.closest('.modal').remove()">
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        @endif
     </section>
 </body>
 </html>

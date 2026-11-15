@@ -1,4 +1,4 @@
-<?php
+<!-- ?php
 
 namespace Database\Seeders;
 
@@ -325,4 +325,4 @@ class ResidentSeeder extends Seeder
         //     'check_out_date' => '2026-11-10',
         // ]);
     }
-}
+} -->

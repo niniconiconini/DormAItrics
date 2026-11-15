@@ -97,6 +97,11 @@ class User extends Authenticatable
         return in_array($this->user_type, ['Admin', 'Manager']);
     }
 
+    public function isGuard(): bool
+    {
+        return $this->user_type === 'Guard';
+    }
+
     public function isResident(): bool
     {
         return $this->user_type === 'Resident';

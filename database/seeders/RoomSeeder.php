@@ -1,4 +1,4 @@
-<?php
+<!-- ?php
 
 namespace Database\Seeders;
 
@@ -61,4 +61,4 @@ class RoomSeeder extends Seeder
         //     'capacity' => 2,
         // ]);
     }
-}
+} -->

@@ -636,9 +636,8 @@ color: var(--primary-color);
 .room-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: .75rem;
-    margin-bottom: 1rem;
 }
 
 .room-number {
@@ -1125,6 +1124,29 @@ color: var(--primary-color);
     display: flex;
     align-items: center;
     gap: 1rem;
+}
+
+.user-view-select {
+    padding: .5rem 1rem;
+    border: none;
+    border-radius: .5rem;
+    cursor: pointer;
+    background-color: var(--primary-color);
+    color: var(--body-color);
+    transition: var(--transition);
+    min-width: 100px;
+}
+
+.user-view-select option:hover {
+    background-color: #28a74686;
+    color: var(--sidebar-color);
+    font-weight: 600;
+}
+
+.user-view-select option {
+    background-color: var(--body-color);
+    color: var(--primary-color);
+    font-weight: normal;
 }
 
 .residents-header h2 {
@@ -1659,3 +1681,103 @@ color: var(--primary-color);
     border-radius: .5rem;
 }
 /* ===== FACIAL RECOGNITION END ===== */
+
+/* ===== TABLES START ===== */
+.logs-count {
+    background: #e8f2e9;
+    color: #155b43;
+    padding: 9px 17px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    width: 10%;
+    margin: auto;
+}
+
+.logs-table {
+    width: 100%;
+    /* border-collapse: collapse; */
+}
+
+.logs-table thead {
+    background: #f3f6ed;
+}
+
+.logs-table th {
+    color: #315b49;
+    text-align: left;
+    padding: 17px 20px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.logs-table td {
+    padding: 17px 20px;
+    border-bottom: 1px solid #edf0eb;
+    color: #40584c;
+    font-size: 0.9rem;
+}
+
+.logs-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.logs-table tbody tr:hover {
+    background: #f8faf5;
+}
+
+.logs-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 30px;
+    font-size: 0.76rem;
+    font-weight: 800;
+}
+
+.approved {
+    background: #e0f2e5;
+    color: #237343;
+}
+
+.pending {
+    background: #e3f0ff;
+    color: #2563eb;
+}
+
+.outside {
+    background: #fff0d4;
+    color: #a36a13;
+}
+
+.no-slip {
+    background: #f0eeee;
+    color: #777;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 65px 20px !important;
+}
+
+.empty-icon {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+}
+
+.empty-state strong {
+    display: block;
+    color: #155b43;
+    font-size: 1.1rem;
+}
+
+.empty-state p {
+    color: #91a096;
+    margin-top: 7px;
+}
+/* ===== TABLES END ===== */

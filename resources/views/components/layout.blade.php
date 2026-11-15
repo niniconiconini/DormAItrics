@@ -10,18 +10,20 @@
 </head>
 <body>
     <nav id="sidebar">
-        <header class="text header-text">DormAItrics</header>
         <div class="nav-links"> 
             <div class="menu-bar">
                 {{-- all nav --}}
-                <ul class="menu-links">
-                    <li><a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') || request()->is('/') ? 'active' : '' }}">Announcements</a></li>
-                    <li><a href="{{ route('reviews') }}" class="nav-link {{ request()->routeIs('reviews') || request()->is('/reviews') ? 'active' : '' }}">Reviews</a></li>
-                    <li><a href="{{ route('concerns') }}" class="nav-link {{ request()->routeIs('concerns') || request()->is('/concerns') ? 'active' : '' }}">Concerns</a></li>
-                    @if (auth()->user()->isResident() && auth()->user()->resident->resident_type != 'Employee')
-                        <li><a href="{{ route('pass-slips') }}" class="nav-link {{ request()->routeIs('pass-slips') || request()->is('/pass-slips') ? 'active' : '' }}">Pass Slips</a></li>
-                    @endif
-                </ul>
+                @if (auth()->user()->isAdmin() || auth()->user()->isResident())
+                    <header class="text header-text">DormAItrics</header>
+                    <ul class="menu-links">
+                        <li><a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') || request()->is('/') ? 'active' : '' }}">Announcements</a></li>
+                        <li><a href="{{ route('reviews') }}" class="nav-link {{ request()->routeIs('reviews') || request()->is('/reviews') ? 'active' : '' }}">Reviews</a></li>
+                        <li><a href="{{ route('concerns') }}" class="nav-link {{ request()->routeIs('concerns') || request()->is('/concerns') ? 'active' : '' }}">Concerns</a></li>
+                        @if (auth()->user()->isResident() && auth()->user()->resident->resident_type != 'Employee')
+                            <li><a href="{{ route('pass-slips') }}" class="nav-link {{ request()->routeIs('pass-slips') || request()->is('/pass-slips') ? 'active' : '' }}">Pass Slips</a></li>
+                        @endif
+                    </ul>
+                @endif
                 <br>
                 {{-- admin nav --}}
                 @if (auth()->user()->isAdmin())
@@ -32,6 +34,14 @@
                         <li><a href="{{ route('slips-mgmt') }}" class="nav-link {{ request()->routeIs('slips-mgmt') || request()->is('/slips-mgmt') ? 'active' : '' }}">Pass Slip Management</a></li>
                         <li><a href="{{ route('logs.index') }}" class="nav-link {{ request()->routeIs('logs') || request()->is('/logs') ? 'active' : '' }}">Logs</a></li>
                         <li><a href="{{ route('analytics.index') }}" class="nav-link {{ request()->routeIs('analytics.*') || request()->is('/analytics') ? 'active' : '' }}">Analytics</a></li>
+                        <li><a href="{{ route('facial-recognition') }}" class="nav-link {{ request()->routeIs('facial-recognition') || request()->is('/facial-recognition') ? 'active' : '' }}">Facial Recognition</a></li>
+                    </ul>
+                @endif
+                {{-- guard view --}}
+                @if (auth()->user()->isGuard())
+                    <header class="text header-text">Dormitory Management System</header>
+                    <ul class="menu-links">
+                        <li><a href="{{ route('logs.index') }}" class="nav-link {{ request()->routeIs('logs') || request()->is('/logs') ? 'active' : '' }}">Logs</a></li>
                         <li><a href="{{ route('facial-recognition') }}" class="nav-link {{ request()->routeIs('facial-recognition') || request()->is('/facial-recognition') ? 'active' : '' }}">Facial Recognition</a></li>
                     </ul>
                 @endif

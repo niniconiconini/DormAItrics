@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('pass_slip_id')->nullable()->constrained('pass_slips');
             $table->timestamp('departed_at')->useCurrent();
             $table->timestamp('returned_at')->nullable();
+            $table->string('notes')->default('None');
+            $table->string('user_id');
             $table->timestamps();
         });
     }
