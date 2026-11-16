@@ -12,7 +12,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'returned_at',
     'pass_slip_id',
     'notes',
-    'user_id', // for guard in charge
+    'time_out_approver', // for guard in charge
+    'time_in_approver', // for guard in charge
 ])]
 
 class ResidentLog extends Model
@@ -28,5 +29,16 @@ class ResidentLog extends Model
     public function resident(): BelongsTo
     {
         return $this->belongsTo(Resident::class);
+    }
+
+    // for guard
+    public function timeOutApprover(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'time_out_approver');
+    }
+
+    public function timeInApprover(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'time_in_approver');
     }
 }

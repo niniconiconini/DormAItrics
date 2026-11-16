@@ -11,6 +11,7 @@
                             <th>Time Out</th>
                             <th>Time In</th>
                             <th>Pass Slip</th>
+                            <th>Notes</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -26,21 +27,21 @@
                                 </td>
                                 <td>
                                     <div class="date-info">
-                                        <strong>
-                                            {{ $log->departed_at->format('M d, Y') }}
+                                        <strong>Date: </strong>{{ $log->departed_at->format('M d, Y') }}
                                             <br>
-                                            {{ $log->departed_at->format('h:i A') }}
-                                        </strong>
+                                        <strong>Time: </strong>{{ $log->departed_at->format('h:i A') }}
+                                            <br>
+                                        <strong>Guard: </strong>{{ $log->timeOutApprover->first_name }} {{ $log->timeOutApprover->last_name }}
                                     </div>
                                 </td>
                                 <td>
                                     @if ($log->returned_at)
                                         <div class="date-info">
-                                            <strong>
-                                                {{ $log->returned_at->format('M d, Y') }}
+                                            <strong>Date: </strong>{{ $log->returned_at->format('M d, Y') }}
+                                            <br>
+                                            <strong>Time: </strong>{{ $log->returned_at->format('h:i A') }}
                                                 <br>
-                                                {{ $log->returned_at->format('h:i A') }}
-                                            </strong>
+                                            <strong>Guard: </strong>{{ $log->timeInApprover?->first_name }} {{ $log->timeInApprover?->last_name }}
                                         </div>
                                     @else
                                         <span class="status-badge pending">
@@ -58,6 +59,11 @@
                                            x No
                                         </span>
                                     @endif
+                                </td>
+                                <td>
+                                    <div class="notes">
+                                        <strong>{{ ucfirst($log->notes) }}</strong>
+                                    </div>
                                 </td>
                             </tr>
                         @empty

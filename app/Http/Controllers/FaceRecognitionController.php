@@ -6,8 +6,10 @@ use App\Models\FaceRecognition;
 use App\Models\PassSlip;
 use App\Models\Resident;
 use App\Models\ResidentLog;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FaceRecognitionController extends Controller
 {
@@ -17,6 +19,20 @@ class FaceRecognitionController extends Controller
         $output = shell_exec('"'.dirname(base_path()).'\facial-recognition\venv\Scripts\python.exe" "'.dirname(base_path()).'\facial-recognition\recognizeinator.py'.'" 2>&1');
         $residentId = (int) trim((string) $output);
         if (! $residentId) {
+            $attempts = session('scan_attempts', 0) + 1;
+            session(['scan_attempts' => $attempts]);
+            session()->forget([
+                'recognized_resident_id',
+                'recognized_resident_name',
+                'confirmIdentity',
+            ]);
+            if ($attempts >= 3) {
+                return redirect()
+                    ->route('facial-recognition')
+                    ->with('message', 'Apologies, the scanner is currently having problems, please try manually.')
+                    ->with('manualEntry', true);
+            }
+
             return redirect()
                 ->route('facial-recognition')
                 ->with(
@@ -31,7 +47,7 @@ class FaceRecognitionController extends Controller
         return redirect()->route('facial-recognition');
     }
 
-    public function confirm(): RedirectResponse
+    public function confirm(Request $request): RedirectResponse
     {
         $residentId = session('recognized_resident_id');
         /** @var Resident $resident */
@@ -42,22 +58,6 @@ class FaceRecognitionController extends Controller
             ->whereNull('returned_at')
             ->latest()
             ->first();
-        // if ($openLog) {
-        //     $openLog->update([
-        //         'returned_at' => now(),
-        //     ]);
-        //     session()->forget([
-        //         'recognized_resident_id',
-        //         'recognized_resident_name',
-        //         'confirmIdentity',
-        //         'scan_attempts',
-        //     ]);
-
-        //     return redirect()
-        //         ->route('facial-recognition')
-        //         ->with('message', 'Welcome back, ' . $resident->user->nickname . '!');
-        // }
-
         if ($openLog) {
 
             // DEBUG: Check values before updating
@@ -69,6 +69,7 @@ class FaceRecognitionController extends Controller
 
             // Update ONLY returned_at
             $openLog->returned_at = now();
+            $openLog->time_in_approver = Auth::id();
 
             // DEBUG: Check what Laravel is about to save
             logger()->debug('DIRTY ATTRIBUTES', [
@@ -104,11 +105,20 @@ class FaceRecognitionController extends Controller
         $activePassSlip = PassSlip::where('resident_id', $residentId)
             ->where('status', 'Approved')
             ->whereDate('requested_date_out', now()->toDateString())
+            ->whereBetween('requested_time_out', [now()->copy()->subHour(), now()->copy()->addHour()])
             ->first();
+        $todayPassSlip = PassSlip::where('resident_id', $residentId)
+            ->where('status', 'Approved')
+            ->whereDate('requested_date_out', now()->toDateString())
+            ->first();
+        session()->forget('confirmIdentity');
         if (! $activePassSlip) {
+            session(['pending_no_pass_slip_resident_id' => $residentId]);
+
             return redirect()
                 ->route('facial-recognition')
-                ->with('message', 'Hi '.$resident->user->nickname.'! you don\'t have an approved pass slip for today. Fill up one to go out.');
+                ->with('overridePassSlip', true)
+                ->with('requestedTimeOut', $todayPassSlip ? Carbon::parse($todayPassSlip->requested_time_out)->format('h:i A') : 'No Pass Slips');
         }
 
         // if all success
@@ -116,13 +126,12 @@ class FaceRecognitionController extends Controller
         ResidentLog::create([
             'resident_id' => $residentId,
             'departed_at' => now(),
-            'pass_slip_id' => $activePassSlip->id,
+            'pass_slip_id' => $activePassSlip?->id,
+            'notes' => $activePassSlip ? 'None' : $request->notes,
+            'time_out_approver' => Auth::id(),
         ]);
 
         $activePassSlip->update(['status' => 'Used']);
-        // if ($activePassSlip) {
-
-        // }
 
         session()->forget([
             'recognized_resident_id',
@@ -134,6 +143,32 @@ class FaceRecognitionController extends Controller
         return redirect()
             ->route('facial-recognition')
             ->with('message', 'Pass slip verified. Take care '.$resident->user->nickname.'!');
+    }
+
+    public function logWithoutPassSlip(Request $request): RedirectResponse
+    {
+        $request->validate(['notes' => 'required|string|min:5|max:255']);
+        $residentId = session('pending_no_pass_slip_resident_id');
+
+        ResidentLog::create([
+            'resident_id' => $residentId,
+            'departed_at' => now(),
+            'pass_slip_id' => null,
+            'notes' => $request->notes,
+            'time_out_approver' => Auth::id(),
+        ]);
+
+        session()->forget([
+            'pending_no_pass_slip_resident_id',
+            'recognized_resident_id',
+            'recognized_resident_name',
+            'confirmIdentity',
+            'scan_attempts',
+        ]);
+
+        return redirect()
+            ->route('facial-recognition')
+            ->with('message', 'Resident log recorded.');
     }
 
     public function reject(): RedirectResponse

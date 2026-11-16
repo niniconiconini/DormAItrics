@@ -83,15 +83,13 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
     Route::patch('slips-mgmt/{passSlip}/deny', [PassSlipMgmtController::class, 'deny'])->name('slips-mgmt.deny');
     Route::delete('slips-mgmt', [PassSlipMgmtController::class, 'destroyAll'])->name('slips-mgmt.destroy-all');
 
-    // reports
-    Route::get('/logs', [ResidentLogController::class, 'index'])->name('logs.index');
-
     // analytics
     Route::resource('analytics', AnalyticsController::class);
 });
 
+//      GUARD AND ADMIN ACCESS
 Route::middleware(['auth', 'can:guards'])->group(function () {
-    // reports
+    // logs
     Route::get('/logs', [ResidentLogController::class, 'index'])->name('logs.index');
 
     // biometrics
@@ -99,5 +97,6 @@ Route::middleware(['auth', 'can:guards'])->group(function () {
     Route::get('facial-recognition/scan', [FaceRecognitionController::class, 'scan'])->name('facial-recognition.scan');
     Route::post('facial-recognition/manual', [FaceRecognitionController::class, 'manual'])->name('facial-recognition.manual');
     Route::post('facial-recognition/confirm', [FaceRecognitionController::class, 'confirm'])->name('facial-recognition.confirm');
+    Route::post('facial-recognition/no-slip', [FaceRecognitionController::class, 'logWithoutPassSlip'])->name('facial-recognition.no-slip');
     Route::post('facial-recognition/reject', [FaceRecognitionController::class, 'reject'])->name('facial-recognition.reject');
 });

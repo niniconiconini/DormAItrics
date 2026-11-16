@@ -18,7 +18,8 @@ return new class extends Migration
             $table->timestamp('departed_at')->useCurrent();
             $table->timestamp('returned_at')->nullable();
             $table->string('notes')->default('None');
-            $table->string('user_id');
+            $table->foreignId('time_out_approver')->constrained('users');
+            $table->foreignId('time_in_approver')->nullable()->constrained('users');
             $table->timestamps();
         });
     }

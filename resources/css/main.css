@@ -1680,9 +1680,40 @@ color: var(--primary-color);
     border: 2px solid var(--sidebar-color);
     border-radius: .5rem;
 }
+
+.scan-modal {
+    width: min(500px, 90vw);
+    padding: 2rem;
+}
+
+.scan-modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.scan-modal p {
+    margin: 0;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.scan-modal textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 0.75rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.scan-modal button {
+    align-self: center;
+}
 /* ===== FACIAL RECOGNITION END ===== */
 
-/* ===== TABLES START ===== */
+/* ===== LOG TABLES START ===== */
 .logs-count {
     background: #e8f2e9;
     color: #155b43;

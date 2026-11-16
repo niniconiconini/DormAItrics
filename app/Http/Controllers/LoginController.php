@@ -25,7 +25,7 @@ class LoginController extends Controller
                 $user->resident->check_out_date &&
                 $user->resident->check_out_date < now()->toDateString()
             ) {
-                // $user->update(['status' => 'Inactive',]);
+
                 User::where('id', $user->id)->update(['status' => 'Inactive']);
                 $user->resident->room_id = null;
 
