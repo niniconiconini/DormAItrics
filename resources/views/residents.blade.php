@@ -14,28 +14,28 @@
                 @forelse ($admins as $admin)
                     @if (auth()->user()->user_type === 'Manager' && $admin->id !== auth()->id())
                         <div class="card dorm-card disabled-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
-                            <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
-                            <div class="room-number"><p>{{ $admin->userName() }}</p></div>
+                            <div class="room-image resident-card"><img src="{{ asset($admin->profile_picture) }}"></div>
+                            <div class="room-number"><p>{{ $admin->nickname }}</p></div>
                         </div>
                     @elseif (auth()->user()->user_type === 'Manager' && auth()->id() === $admin->id) {{-- ms aneen edit self --}}
                         <a href="{{ route('profile', ['return' => route('users.index', ['view' => request('view')] )] ) }}">
                             <div class="card dorm-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
-                                <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
-                                <div class="room-number"><p>{{ $admin->userName() }}</p></div>
+                                <div class="room-image resident-card"><img src="{{ asset($admin->profile_picture) }}"></div>
+                                <div class="room-number"><p>{{ $admin->nickname }}</p></div>
                             </div>
                         </a>
                     @elseif (auth()->user()->user_type === 'Admin' && auth()->id() === $admin->id) {{-- sister nicole edit self --}}
                         <a href="{{ route('profile', ['return' => route('users.index', ['view' => request('view')] )] ) }}">
                             <div class="card dorm-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
-                                <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
-                                <div class="room-number"><p>{{ $admin->userName() }}</p></div>
+                                <div class="room-image resident-card"><img src="{{ asset($admin->profile_picture) }}"></div>
+                                <div class="room-number"><p>{{ $admin->nickname }}</p></div>
                             </div>
                         </a>
                     @else
                         <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $admin->id, 'view' => request('view')]) }}">
                             <div class="card dorm-card {{ $admin->status === 'Inactive' ? 'inactive-card' : '' }}">
-                                <div class="room-image"><img src="{{ asset($admin->profile_picture) }}"></div>
-                                <div class="room-number"><p>{{ $admin->userName() }}</p></div>
+                                <div class="room-image resident-card"><img src="{{ asset($admin->profile_picture) }}"></div>
+                                <div class="room-number"><p>{{ $admin->nickname }}</p></div>
                             </div>
                         </a>
                     @endif
@@ -47,13 +47,13 @@
         <section class="dorm-section">
             <div class="residents-header">
                 <div class="residents-title">
-                    <h2>
+                    <h2 class="section-title">
                         @switch(request('view', 'resident'))
                             @case('transient')
                                 Transients
                                 @break
                             @case('applicant')
-                                Applicants  
+                                Applicants
                                 @break
                             @case('inactive')
                                 Inactive Accounts
@@ -64,8 +64,9 @@
                             @default
                                 Residents
                         @endswitch
+                        <div class="logs-count" style="margin-top: 5px; width: 100%;">{{ $residents->count() }} Users</div>
                     </h2>
-                    @if(request('view') !== 'applicant' && request('view') !== 'all')
+                    @if(request('view') == 'resident' || request('view') == 'transient')
                         <a href="{{ route('users.index', ['modal' => 'add-resident', 'view' => request('view')]) }}" class="btn-primary">+ Add {{ request('view') === 'transient' ? 'Transient' : 'Resident' }}</a>
                     @endif
                 </div>
@@ -73,16 +74,26 @@
             <hr>
             <div class="section-dormname" style="margin-top: 0; margin-bottom: 1rem;">
                 <select id="user-view" class="user-view-select" onchange="window.location=this.value">
-                    <option value="{{ route('users.index', ['view' => 'all']) }}" {{ request('view') === 'all' ? 'selected' : '' }}>All Accounts</option>
-                    <option value="{{ route('users.index', ['view' => 'resident']) }}" {{ request('view', 'resident') === 'resident' ? 'selected' : '' }}>Residents</option>
-                    <option value="{{ route('users.index', ['view' => 'transient']) }}" {{ request('view', 'transient') === 'transient' ? 'selected' : '' }}>Transients</option>
-                    <option value="{{ route('users.index', ['view' => 'applicant']) }}" {{ request('view', 'applicant') === 'applicant' ? 'selected' : '' }}>Applicants</option>
-                    <option value="{{ route('users.index', ['view' => 'inactive']) }}" {{ request('view', 'inactive') === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                    <option value="{{ route('users.index', ['view' => 'all']) }}" @selected(request('view') === 'all')>All Accounts</option>
+                    <option value="{{ route('users.index', ['view' => 'resident']) }}" @selected(request('view', 'resident') === 'resident')>Residents</option>
+                    <option value="{{ route('users.index', ['view' => 'transient']) }}" @selected(request('view') === 'transient')>Transients</option>
+                    <option value="{{ route('users.index', ['view' => 'applicant']) }}" @selected(request('view') === 'applicant')>Applicants</option>
+                    <option value="{{ route('users.index', ['view' => 'inactive']) }}" @selected(request('view') === 'inactive')>Inactive</option>
                 </select>
                 <h2> | </h2>
                 <a href="{{ route('users.index', ['view' => request('view')]) }}" class="btn-primary {{ !request('resident_type') ? 'active' : '' }}">All</a>
                 <a href="{{ route('users.index', ['view' => request('view'), 'resident_type' => 'Student']) }}" class="btn-primary  {{ request('resident_type') === 'Student' ? 'active' : '' }}">Students</a>
                 <a href="{{ route('users.index', ['view' => request('view'), 'resident_type' => 'Employee']) }}" class="btn-primary  {{ request('resident_type') === 'Employee' ? 'active' : '' }}">Employees</a>
+                @if (request('view') === 'all')
+                    <h2> | </h2>
+                    <form method="GET" style="display:inline;">
+                        <input type="hidden" name="view" value="{{ request('view', 'resident') }}">
+                        <input type="hidden" name="resident_type" value="{{ request('resident_type') }}">
+                        <div class="password-row">
+                            <input type="text" name="search" class="form-input" value="{{ request('search') }}" placeholder="Search name..."> <button class="btn-primary">🔍︎</button>
+                        </div>
+                    </form>
+                @endif
             </div>
             @if (request('view') === 'all')
                 <div class="card">
@@ -140,6 +151,42 @@
                             @endforelse
                         </tbody>
                     </table>
+                    @if ($residents->hasPages())
+                        @php
+                            $current = $residents->currentPage();
+                            $last = $residents->lastPage();
+                            if ($last <= 7) {
+                                $pages = range(1, $last);
+                            } elseif ($current <= 4) {
+                                $pages = [...range(1, 5), '...', $last];
+                            } elseif ($current >= $last - 3) {
+                                $pages = [1, '...', ...range($last - 4, $last)];
+                            } else {
+                                $pages = [1, '...', $current - 1, $current, $current + 1, '...', $last];
+                            }
+                        @endphp
+                        <nav class="pager" aria-label="Pagination" data-last="{{ $last }}" data-url="{{ $residents->url(1) }}" data-page-name="{{ $residents->getPageName() }}">
+                            @if ($logs->onFirstPage())
+                                <span class="disabled">◀&#xFE0E;</span>
+                            @else
+                                <a href="{{ $logs->previousPageUrl() }}">◀&#xFE0E;</a>
+                            @endif
+                            @foreach ($pages as $page)
+                                @if ($page === '...')
+                                    <button type="button" class="dots">&hellip;</button>
+                                @elseif ($page == $current)
+                                    <span class="active">{{ $page }}</span>
+                                @else
+                                    <a href="{{ $logs->url($page) }}">{{ $page }}</a>
+                                @endif
+                            @endforeach
+                            @if ($logs->hasMorePages())
+                                <a href="{{ $logs->nextPageUrl() }}">▶&#xFE0E;</a>
+                            @else
+                                <span class="disabled">▶&#xFE0E;</span>
+                            @endif
+                        </nav>
+                    @endif
                 </div>
             @else
                 <section class="flex-view">
@@ -147,7 +194,7 @@
                         <div class="card dorm-card">
                             <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $resident->user->id, 'view' => request('view')]) }}" style="color: inherit">
                                 <div class="dorm-card">
-                                    <div class="room-image"><img src="{{ asset($resident->user->profile_picture) }}"></div>
+                                    <div class="room-image resident-card"><img src="{{ asset($resident->user->profile_picture) }}"></div>
                                     <div class="room-number"><p>{{ $resident->user->userName() }}</p></div>
                                     <div class="room-info"><p>Room: {{ $resident->room?->room_number ?? 'Unassigned' }}</p></div>
                                     <div class="room-info"><p>Dorm: {{ $resident->room?->dorm_name ?? 'Unassigned' }}</p></div>
@@ -163,7 +210,7 @@
                             @endif 
                         </div>
                     @empty
-                        <p>No {{ request('view') === 'transient' ? 'Transients' : 'Residents' }} found.</p>
+                        <p>No User found.</p>
                     @endforelse
                 </section>
             @endif
@@ -208,15 +255,9 @@
                                     </div>
                                     <div class="form-group birthdate">
                                         <label for="add-admin-birthdate">Birthdate*:</label>
-
                                         <div class="birthday-picker" data-birthday-picker>
-                                            <input type="date" id="add-admin-birthdate" name="birthdate" class="form-input"
-                                                value="{{ old('birthdate') }}" data-role="input">
-
-                                            <button type="button" aria-label="Open birthday calendar" aria-expanded="false" data-role="toggle">
-                                                <span aria-hidden="true">▦</span>
-                                            </button>
-
+                                            <input type="date" id="add-admin-birthdate" name="birthdate" class="form-input" value="{{ old('birthdate') }}" data-role="input">
+                                            <button type="button" aria-label="Open birthday calendar" aria-expanded="false" data-role="toggle"><span aria-hidden="true">▦</span></button>
                                             <div class="birthday-calendar" data-role="calendar" hidden>
                                                 <div class="birthday-calendar-header">
                                                     <button type="button" aria-label="Previous month" data-role="previous-month">‹</button>
@@ -224,11 +265,9 @@
                                                     <button type="button" class="birthday-year-button" aria-expanded="false" data-role="year-button">Year</button>
                                                     <button type="button" aria-label="Next month" data-role="next-month">›</button>
                                                 </div>
-
                                                 <div class="birthday-month-picker" data-role="month-picker" hidden>
                                                     <div class="birthday-month-grid" data-role="month-grid"></div>
                                                 </div>
-
                                                 <div class="birthday-year-picker" data-role="year-picker" hidden>
                                                     <div class="birthday-year-header">
                                                         <button type="button" aria-label="Previous years" data-role="previous-year-range">‹</button>
@@ -237,7 +276,6 @@
                                                     </div>
                                                     <div class="birthday-year-grid" data-role="year-grid"></div>
                                                 </div>
-
                                                 <div class="birthday-calendar-grid" data-role="day-grid"></div>
                                             </div>
                                         </div>
@@ -334,16 +372,10 @@
                                         <input type="text" id="nickname" name="nickname" class="form-input" value="{{ old('nickname') }}">
                                     </div>
                                     <div class="form-group birthdate">
-                                        <label for="add-resident-birthdate">Birthdate*:</label>
-
+                                        <label for="add-admin-birthdate">Birthdate*:</label>
                                         <div class="birthday-picker" data-birthday-picker>
-                                            <input type="date" id="add-resident-birthdate" name="birthdate" class="form-input"
-                                                value="{{ old('birthdate') }}" data-role="input">
-
-                                            <button type="button" aria-label="Open birthday calendar" aria-expanded="false" data-role="toggle">
-                                                <span aria-hidden="true">▦</span>
-                                            </button>
-
+                                            <input type="date" id="add-admin-birthdate" name="birthdate" class="form-input" value="{{ old('birthdate') }}" data-role="input">
+                                            <button type="button" aria-label="Open birthday calendar" aria-expanded="false" data-role="toggle"><span aria-hidden="true">▦</span></button>
                                             <div class="birthday-calendar" data-role="calendar" hidden>
                                                 <div class="birthday-calendar-header">
                                                     <button type="button" aria-label="Previous month" data-role="previous-month">‹</button>
@@ -351,11 +383,9 @@
                                                     <button type="button" class="birthday-year-button" aria-expanded="false" data-role="year-button">Year</button>
                                                     <button type="button" aria-label="Next month" data-role="next-month">›</button>
                                                 </div>
-
                                                 <div class="birthday-month-picker" data-role="month-picker" hidden>
                                                     <div class="birthday-month-grid" data-role="month-grid"></div>
                                                 </div>
-
                                                 <div class="birthday-year-picker" data-role="year-picker" hidden>
                                                     <div class="birthday-year-header">
                                                         <button type="button" aria-label="Previous years" data-role="previous-year-range">‹</button>
@@ -364,7 +394,6 @@
                                                     </div>
                                                     <div class="birthday-year-grid" data-role="year-grid"></div>
                                                 </div>
-
                                                 <div class="birthday-calendar-grid" data-role="day-grid"></div>
                                             </div>
                                         </div>
@@ -546,18 +575,10 @@
                                         <input type="text" id="nickname" name="nickname" class="form-input" value="{{ $selectedUser->nickname }}" @disabled($isInactive)>
                                     </div>
                                     <div class="form-group birthdate">
-                                        <label for="edit-user-birthdate">Birthdate*:</label>
-
+                                        <label for="add-admin-birthdate">Birthdate*:</label>
                                         <div class="birthday-picker" data-birthday-picker>
-                                            <input type="date" id="edit-user-birthdate" name="birthdate" class="form-input"
-                                                value="{{ $selectedUser->birthdate?->format('Y-m-d') }}"
-                                                data-role="input" @disabled($isInactive)>
-
-                                            <button type="button" aria-label="Open birthday calendar" aria-expanded="false"
-                                                    data-role="toggle" @disabled($isInactive)>
-                                                <span aria-hidden="true">▦</span>
-                                            </button>
-
+                                            <input type="date" id="add-admin-birthdate" name="birthdate" class="form-input" value="{{ $selectedUser->birthdate?->format('Y-m-d') }}" data-role="input" @disabled($isInactive)>
+                                            <button type="button" aria-label="Open birthday calendar" aria-expanded="false" data-role="toggle"><span aria-hidden="true">▦</span></button>
                                             <div class="birthday-calendar" data-role="calendar" hidden>
                                                 <div class="birthday-calendar-header">
                                                     <button type="button" aria-label="Previous month" data-role="previous-month">‹</button>
@@ -565,11 +586,9 @@
                                                     <button type="button" class="birthday-year-button" aria-expanded="false" data-role="year-button">Year</button>
                                                     <button type="button" aria-label="Next month" data-role="next-month">›</button>
                                                 </div>
-
                                                 <div class="birthday-month-picker" data-role="month-picker" hidden>
                                                     <div class="birthday-month-grid" data-role="month-grid"></div>
                                                 </div>
-
                                                 <div class="birthday-year-picker" data-role="year-picker" hidden>
                                                     <div class="birthday-year-header">
                                                         <button type="button" aria-label="Previous years" data-role="previous-year-range">‹</button>
@@ -578,7 +597,6 @@
                                                     </div>
                                                     <div class="birthday-year-grid" data-role="year-grid"></div>
                                                 </div>
-
                                                 <div class="birthday-calendar-grid" data-role="day-grid"></div>
                                             </div>
                                         </div>
@@ -627,6 +645,7 @@
                                             <select id="user_type" name="user_type" class="form-cb" @disabled($isInactive)>
                                                 <option value="Admin" {{ $selectedUser->user_type === 'Admin' ? 'selected' : '' }} @disabled($isInactive)>Admin</option>
                                                 <option value="Manager" {{ $selectedUser->user_type === 'Manager' ? 'selected' : '' }} @disabled($isInactive)>Manager</option>
+                                                <option value="Guard" {{ $selectedUser->user_type === 'Guard' ? 'selected' : '' }} @disabled($isInactive)>Guard</option>
                                             </select>
                                         @endif
                                     </div>
@@ -658,13 +677,15 @@
                                 <div class="form-group accommodation_type">
                                     <label for="accommodation_type">Accommodation Type*:</label>
                                     <select name="accommodation_type" id="accommodation_type" class="form-cb" @disabled($isInactive)>
-                                        <option value="Resident" {{ $selectedUser->resident->accommodation_type === 'Resident' ? 'selected' : '' }} @disabled($isInactive)>Resident</option>
-                                        <option value="Transient" {{ $selectedUser->resident->accommodation_type === 'Transient' ? 'selected' : '' }} @disabled($isInactive)>Transient</option>
+                                        <option value="" selected disabled hidden></option>
+                                        <option value="Resident" {{ $selectedUser->resident->accommodation_type === 'Resident' ? 'selected' : '' }}>Resident</option>
+                                        <option value="Transient" {{ $selectedUser->resident->accommodation_type === 'Transient' ? 'selected' : '' }}>Transient</option>
                                     </select>
                                 </div>
                                 <div class="form-group resident_type">
                                     <label for="resident_type">Resident Type*:</label>
                                     <select name="resident_type" id="resident_type" class="form-cb" @disabled($isInactive)>
+                                        <option value="" selected disabled hidden></option>
                                         <option value="Student" {{ $selectedUser->resident->resident_type === 'Student' ? 'selected' : '' }} @disabled($isInactive)>Student</option>
                                         <option value="Employee" {{ $selectedUser->resident->resident_type === 'Employee' ? 'selected' : '' }} @disabled($isInactive)>Employee</option>
                                     </select>
@@ -674,6 +695,7 @@
                                 <div class="form-group payment_schedule">
                                     <label for="payment_schedule">Payment Schedule*:</label>
                                     <select name="payment_schedule" id="payment_schedule" class="form-cb" @disabled($isInactive)>
+                                        <option value="" selected disabled hidden></option>
                                         @foreach ($paymentOptions as $paymentOption)
                                             <option value="{{ $paymentOption }}" @selected($selectedUser->resident->payment_schedule == $paymentOption) @disabled($isInactive)>{{ $paymentOption }}</option>
                                         @endforeach
@@ -682,6 +704,7 @@
                                 <div class="form-group room_type">
                                     <label for="room_type">Room Type*:</label>
                                     <select name="room_type" id="room_type" class="form-cb" @disabled($isInactive)>
+                                        <option value="" selected disabled hidden></option>
                                         <option value="8 persons" {{ $selectedUser->resident->room_type === '8 persons' ? 'selected' : '' }} @disabled($isInactive)>8 persons</option>
                                         <option value="4 persons" {{ $selectedUser->resident->room_type === '4 persons' ? 'selected' : '' }} @disabled($isInactive)>4 persons</option>
                                         <option value="3 persons" {{ $selectedUser->resident->room_type === '3 persons' ? 'selected' : '' }} @disabled($isInactive)>3 persons</option>
@@ -693,11 +716,11 @@
                             <div class="checkin-checkout">
                                 <div class="form-group check_in_date">
                                     <label for="check_in_date">Check In*:</label>
-                                    <input type="date" id="check_in_date" name="check_in_date" class="form-input" value="{{ $selectedUser->resident->check_in_date?->format('Y-m-d') }}" @disabled($isInactive)>
+                                    <input type="date" id="check_in_date" name="check_in_date" class="form-input" value="{{ $isInactive ? '' : $selectedUser->resident->check_in_date?->format('Y-m-d') }}" @disabled($isInactive)>
                                 </div>
                                 <div class="form-group check_out_date">
                                     <label for="check_out_date">Check Out*:</label>
-                                    <input type="date" id="check_out_date" name="check_out_date" class="form-input" value="{{ $selectedUser->resident->check_out_date?->format('Y-m-d') }}" @disabled($isInactive)>
+                                    <input type="date" id="check_out_date" name="check_out_date" class="form-input" value="{{ $isInactive ? '' : $selectedUser->resident->check_out_date?->format('Y-m-d') }}" @disabled($isInactive)>
                                 </div>
                             </div>
                         @endif
@@ -794,223 +817,4 @@
             </div>
         @endif
     </section>
-    <script>
-    (() => {
-        const monthNames = [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
-        ];
-
-        document.querySelectorAll('[data-birthday-picker]').forEach(picker => {
-            const find = role => picker.querySelector(`[data-role="${role}"]`);
-
-            const input = find('input');
-            const openButton = find('toggle');
-            const calendar = find('calendar');
-            const monthButton = find('month-button');
-            const monthPicker = find('month-picker');
-            const monthGrid = find('month-grid');
-            const yearButton = find('year-button');
-            const yearPicker = find('year-picker');
-            const yearGrid = find('year-grid');
-            const yearRange = find('year-range');
-            const previousYearRangeButton = find('previous-year-range');
-            const nextYearRangeButton = find('next-year-range');
-            const dayGrid = find('day-grid');
-            const previousMonthButton = find('previous-month');
-            const nextMonthButton = find('next-month');
-
-            if (!input || !openButton || !calendar) {
-                return;
-            }
-
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            let displayedMonth = input.value
-                ? new Date(`${input.value}T00:00:00`)
-                : new Date();
-
-            displayedMonth.setDate(1);
-
-            function renderYearPicker() {
-                const currentYear = today.getFullYear();
-                const selectedYear = displayedMonth.getFullYear();
-                const firstYear = Math.max(
-                    1900,
-                    Math.min(selectedYear - 5, currentYear - 11)
-                );
-                const lastYear = Math.min(firstYear + 11, currentYear);
-
-                yearRange.textContent = `${firstYear}–${lastYear}`;
-                yearGrid.replaceChildren();
-
-                for (let year = firstYear; year <= lastYear; year++) {
-                    const button = document.createElement('button');
-
-                    button.type = 'button';
-                    button.textContent = year;
-                    button.setAttribute('aria-selected', year === selectedYear);
-
-                    button.addEventListener('click', () => {
-                        displayedMonth = new Date(year, displayedMonth.getMonth(), 1);
-                        yearPicker.hidden = true;
-                        calendar.classList.remove('year-selection');
-                        dayGrid.hidden = false;
-                        yearButton.setAttribute('aria-expanded', 'false');
-                        renderCalendar();
-                    });
-
-                    yearGrid.append(button);
-                }
-
-                previousYearRangeButton.disabled = firstYear <= 1900;
-                nextYearRangeButton.disabled = lastYear >= currentYear;
-            }
-
-            function renderMonthPicker() {
-                monthGrid.replaceChildren();
-
-                monthNames.forEach((month, index) => {
-                    const button = document.createElement('button');
-
-                    button.type = 'button';
-                    button.textContent = month;
-                    button.setAttribute('aria-selected', index === displayedMonth.getMonth());
-                    button.disabled =
-                        displayedMonth.getFullYear() === today.getFullYear() &&
-                        index > today.getMonth();
-
-                    button.addEventListener('click', () => {
-                        displayedMonth.setMonth(index);
-                        monthPicker.hidden = true;
-                        calendar.classList.remove('month-selection');
-                        dayGrid.hidden = false;
-                        monthButton.setAttribute('aria-expanded', 'false');
-                        renderCalendar();
-                    });
-
-                    monthGrid.append(button);
-                });
-            }
-
-            function renderCalendar() {
-                const year = displayedMonth.getFullYear();
-                const month = displayedMonth.getMonth();
-                const firstWeekday = new Date(year, month, 1).getDay();
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-                monthButton.textContent = monthNames[month];
-                yearButton.textContent = year;
-                dayGrid.replaceChildren();
-
-                ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].forEach(day => {
-                    const heading = document.createElement('span');
-                    heading.textContent = day;
-                    dayGrid.append(heading);
-                });
-
-                for (let blank = 0; blank < firstWeekday; blank++) {
-                    dayGrid.append(document.createElement('span'));
-                }
-
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const date = new Date(year, month, day);
-                    const button = document.createElement('button');
-                    const value = [
-                        year,
-                        String(month + 1).padStart(2, '0'),
-                        String(day).padStart(2, '0')
-                    ].join('-');
-
-                    button.type = 'button';
-                    button.textContent = day;
-                    button.setAttribute('aria-label', date.toLocaleDateString());
-                    button.setAttribute('aria-selected', input.value === value);
-                    button.disabled = date > today;
-
-                    button.addEventListener('click', () => {
-                        input.value = value;
-                        input.dispatchEvent(new Event('input', { bubbles: true }));
-                        input.dispatchEvent(new Event('change', { bubbles: true }));
-                        calendar.hidden = true;
-                        openButton.setAttribute('aria-expanded', 'false');
-                    });
-
-                    dayGrid.append(button);
-                }
-
-                previousMonthButton.disabled = year === 1900 && month === 0;
-                nextMonthButton.disabled =
-                    year === today.getFullYear() && month === today.getMonth();
-            }
-
-            openButton.addEventListener('click', () => {
-                displayedMonth = input.value
-                    ? new Date(`${input.value}T00:00:00`)
-                    : new Date();
-
-                displayedMonth.setDate(1);
-                calendar.hidden = !calendar.hidden;
-                openButton.setAttribute('aria-expanded', String(!calendar.hidden));
-
-                if (!calendar.hidden) {
-                    calendar.classList.remove('year-selection', 'month-selection');
-                    yearPicker.hidden = true;
-                    monthPicker.hidden = true;
-                    dayGrid.hidden = false;
-                    monthButton.setAttribute('aria-expanded', 'false');
-                    yearButton.setAttribute('aria-expanded', 'false');
-                    renderCalendar();
-                }
-            });
-
-            monthButton.addEventListener('click', () => {
-                calendar.classList.add('month-selection');
-                calendar.classList.remove('year-selection');
-                monthPicker.hidden = false;
-                yearPicker.hidden = true;
-                dayGrid.hidden = true;
-                monthButton.setAttribute('aria-expanded', 'true');
-                yearButton.setAttribute('aria-expanded', 'false');
-                renderMonthPicker();
-            });
-
-            yearButton.addEventListener('click', () => {
-                calendar.classList.remove('month-selection');
-                monthPicker.hidden = true;
-                monthButton.setAttribute('aria-expanded', 'false');
-                calendar.classList.add('year-selection');
-                yearPicker.hidden = false;
-                dayGrid.hidden = true;
-                yearButton.setAttribute('aria-expanded', 'true');
-                renderYearPicker();
-            });
-
-            previousYearRangeButton.addEventListener('click', () => {
-                displayedMonth.setFullYear(
-                    Math.max(1900, displayedMonth.getFullYear() - 12)
-                );
-                renderYearPicker();
-            });
-
-            nextYearRangeButton.addEventListener('click', () => {
-                displayedMonth.setFullYear(
-                    Math.min(today.getFullYear(), displayedMonth.getFullYear() + 12)
-                );
-                renderYearPicker();
-            });
-
-            previousMonthButton.addEventListener('click', () => {
-                displayedMonth.setMonth(displayedMonth.getMonth() - 1);
-                renderCalendar();
-            });
-
-            nextMonthButton.addEventListener('click', () => {
-                displayedMonth.setMonth(displayedMonth.getMonth() + 1);
-                renderCalendar();
-            });
-        });
-    })();
-    </script>
 </x-layout>

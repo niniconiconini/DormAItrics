@@ -61,13 +61,10 @@
                                 <div class="form-group birthdate">
                                     <label for="birthdate">Birthdate*:</label>
                                     <div class="birthday-picker">
-                                        <input type="date" id="birthdate" name="birthdate" class="form-input"
-                                            value="{{ $user->birthdate?->format('Y-m-d') }}">
-                                        <button type="button" id="birthdayPickerButton"
-                                                aria-label="Open birthday calendar" aria-expanded="false">
+                                        <input type="date" id="birthdate" name="birthdate" class="form-input" value="{{ $user->birthdate?->format('Y-m-d') }}">
+                                        <button type="button" id="birthdayPickerButton" aria-label="Open birthday calendar" aria-expanded="false">
                                             <span aria-hidden="true">▦</span>
                                         </button>
-
                                         <div class="birthday-calendar" id="birthdayCalendar" hidden>
                                             <div class="birthday-calendar-header">
                                                 <button type="button" id="birthdayPreviousMonth" aria-label="Previous month">‹</button>
@@ -75,11 +72,9 @@
                                                 <button type="button" id="birthdayYearButton" aria-expanded="false">Year</button>
                                                 <button type="button" id="birthdayNextMonth" aria-label="Next month">›</button>
                                             </div>
-
                                             <div class="birthday-month-picker" id="birthdayMonthPicker" hidden>
                                                 <div class="birthday-month-grid" id="birthdayMonthGrid"></div>
                                             </div>
-
                                             <div class="birthday-year-picker" id="birthdayYearPicker" hidden>
                                                 <div class="birthday-year-header">
                                                     <button type="button" id="birthdayPreviousYearRange" aria-label="Previous years">‹</button>
@@ -88,7 +83,6 @@
                                                 </div>
                                                 <div class="birthday-year-grid" id="birthdayYearGrid"></div>
                                             </div>
-
                                             <div class="birthday-calendar-grid" id="birthdayCalendarGrid"></div>
                                         </div>
                                     </div>
@@ -100,7 +94,9 @@
                                             <option value="Female" {{ $user->gender === 'Female' ? 'selected' : ''}}>Female</option>
                                             <option value="Male" {{ $user->gender === 'Male' ? 'selected' : '' }}>Male</option>
                                         </select>
-                                        <input type="hidden" name="gender" value="{{ $user->gender }}">
+                                        @if (!$isAdmin && !$isManager)
+                                            <input type="hidden" name="gender" value="{{ $user->gender }}">
+                                        @endif
                                     </div>
                                 </div>
                             <div class="contact">
@@ -257,12 +253,7 @@
                         @endforeach
                     </div>
                     <div class="form-buttons">
-                        <button
-                            type="button"
-                            class="btn-primary"
-                            onclick="this.closest('.modal').remove()">
-                            OK
-                        </button>
+                        <button type="button" class="btn-primary" onclick="this.closest('.modal').remove()">OK</button>
                     </div>
                 </div>
             </div>

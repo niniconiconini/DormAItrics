@@ -43,6 +43,12 @@ body {
     margin-bottom: 1rem;
 }
 
+.section-title {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
 /* ===== REUSABLE STYLES ===== */
 .list-view {
     display: flex;
@@ -1149,6 +1155,15 @@ color: var(--primary-color);
     font-weight: normal;
 }
 
+.form-input {
+    width: 100%;
+    padding: 0 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    background-color: white;
+}
+
 .residents-header h2 {
     margin: 0;
     padding-top: 0.2rem;
@@ -1811,4 +1826,40 @@ color: var(--primary-color);
     color: #91a096;
     margin-top: 7px;
 }
+
+.logs-modal {
+    width: 500px;
+    max-width: 90vw;
+    padding: 1.5rem;
+}
+
+.logs-modal textarea {
+    min-height: 80px;
+}
+
+.pass-slip-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    width: 100%;
+}
+
+.pass-slip-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #155b43;
+    margin: 0;
+}
 /* ===== TABLES END ===== */
+
+/* ===== IMAGE CROPPING START ===== */
+.user-profile,
+.sidebar img,
+.resident-card img {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 1rem;
+}
+
+/* ===== IMAGE CROPPING END ===== */

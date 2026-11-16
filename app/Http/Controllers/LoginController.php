@@ -42,7 +42,7 @@ class LoginController extends Controller
 
             $request->session()->regenerate();
 
-            if ($user->isGuard()) {
+            if ($user->isGuard() && ! $user->isAdmin()) {
                 return redirect()->route('logs.index');
             }
 

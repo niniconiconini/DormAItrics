@@ -42,7 +42,6 @@
                 </a>
             </section>
         </section>
-        
         {{-- list of rooms in the selected dormitory --}}
         @forelse ($roomsByDorm as $dorm_name => $rooms)
             <section class="dorm-section">
@@ -68,7 +67,14 @@
                 </section>
             </section>
             @empty
-                <p style="text-align: center;">No dorm info yet. Please add the dorm information.</p>
+                <section class="dorm-section">
+                    <div class="section-dormname">
+                        <h2>{{ request('dorm') }}</h2>
+                        <a href="{{ route('rooms.index', ['modal' => 'add', 'dorm' => request('dorm')]) }}" class="btn-primary">+ Add Room</a>
+                    </div>
+                    <hr>
+                    <p style="text-align: center;">No dorm info yet. Please add the dorm information.</p>
+                </section>
         @endforelse
 
         {{-- =============================== ADD ROOM MODAL =============================== --}}

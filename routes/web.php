@@ -90,7 +90,8 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
 //      GUARD AND ADMIN ACCESS
 Route::middleware(['auth', 'can:guards'])->group(function () {
     // logs
-    Route::get('/logs', [ResidentLogController::class, 'index'])->name('logs.index');
+    // Route::get('/logs', [ResidentLogController::class, 'index'])->name('logs.index');
+    Route::resource('/logs', ResidentLogController::class);
 
     // biometrics
     Route::view('facial-recognition', 'facial-recognition')->name('facial-recognition');

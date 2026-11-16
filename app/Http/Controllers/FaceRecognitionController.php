@@ -68,8 +68,10 @@ class FaceRecognitionController extends Controller
             ]);
 
             // Update ONLY returned_at
+            $userId = Auth::id();
+            /** @var positive-int $userId */
             $openLog->returned_at = now();
-            $openLog->time_in_approver = Auth::id();
+            $openLog->time_in_approver = $userId;
 
             // DEBUG: Check what Laravel is about to save
             logger()->debug('DIRTY ATTRIBUTES', [
@@ -126,8 +128,8 @@ class FaceRecognitionController extends Controller
         ResidentLog::create([
             'resident_id' => $residentId,
             'departed_at' => now(),
-            'pass_slip_id' => $activePassSlip?->id,
-            'notes' => $activePassSlip ? 'None' : $request->notes,
+            'pass_slip_id' => $activePassSlip->id,
+            'notes' => 'None',
             'time_out_approver' => Auth::id(),
         ]);
 
