@@ -166,10 +166,10 @@
                             }
                         @endphp
                         <nav class="pager" aria-label="Pagination" data-last="{{ $last }}" data-url="{{ $residents->url(1) }}" data-page-name="{{ $residents->getPageName() }}">
-                            @if ($logs->onFirstPage())
+                            @if ($residents->onFirstPage())
                                 <span class="disabled">◀&#xFE0E;</span>
                             @else
-                                <a href="{{ $logs->previousPageUrl() }}">◀&#xFE0E;</a>
+                                <a href="{{ $residents->previousPageUrl() }}">◀&#xFE0E;</a>
                             @endif
                             @foreach ($pages as $page)
                                 @if ($page === '...')
@@ -177,11 +177,11 @@
                                 @elseif ($page == $current)
                                     <span class="active">{{ $page }}</span>
                                 @else
-                                    <a href="{{ $logs->url($page) }}">{{ $page }}</a>
+                                    <a href="{{ $residents->url($page) }}">{{ $page }}</a>
                                 @endif
                             @endforeach
-                            @if ($logs->hasMorePages())
-                                <a href="{{ $logs->nextPageUrl() }}">▶&#xFE0E;</a>
+                            @if ($residents->hasMorePages())
+                                <a href="{{ $residents->nextPageUrl() }}">▶&#xFE0E;</a>
                             @else
                                 <span class="disabled">▶&#xFE0E;</span>
                             @endif
@@ -686,8 +686,8 @@
                                     <label for="resident_type">Resident Type*:</label>
                                     <select name="resident_type" id="resident_type" class="form-cb" @disabled($isInactive)>
                                         <option value="" selected disabled hidden></option>
-                                        <option value="Student" {{ $selectedUser->resident->resident_type === 'Student' ? 'selected' : '' }} @disabled($isInactive)>Student</option>
-                                        <option value="Employee" {{ $selectedUser->resident->resident_type === 'Employee' ? 'selected' : '' }} @disabled($isInactive)>Employee</option>
+                                        <option value="Student" {{ $selectedUser->resident->resident_type === 'Student' ? 'selected' : '' }}>Student</option>
+                                        <option value="Employee" {{ $selectedUser->resident->resident_type === 'Employee' ? 'selected' : '' }}>Employee</option>
                                     </select>
                                 </div>
                             </div>
@@ -697,7 +697,7 @@
                                     <select name="payment_schedule" id="payment_schedule" class="form-cb" @disabled($isInactive)>
                                         <option value="" selected disabled hidden></option>
                                         @foreach ($paymentOptions as $paymentOption)
-                                            <option value="{{ $paymentOption }}" @selected($selectedUser->resident->payment_schedule == $paymentOption) @disabled($isInactive)>{{ $paymentOption }}</option>
+                                            <option value="{{ $paymentOption }}" @selected($selectedUser->resident->payment_schedule == $paymentOption)>{{ $paymentOption }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -705,11 +705,11 @@
                                     <label for="room_type">Room Type*:</label>
                                     <select name="room_type" id="room_type" class="form-cb" @disabled($isInactive)>
                                         <option value="" selected disabled hidden></option>
-                                        <option value="8 persons" {{ $selectedUser->resident->room_type === '8 persons' ? 'selected' : '' }} @disabled($isInactive)>8 persons</option>
-                                        <option value="4 persons" {{ $selectedUser->resident->room_type === '4 persons' ? 'selected' : '' }} @disabled($isInactive)>4 persons</option>
-                                        <option value="3 persons" {{ $selectedUser->resident->room_type === '3 persons' ? 'selected' : '' }} @disabled($isInactive)>3 persons</option>
-                                        <option value="2 persons" {{ $selectedUser->resident->room_type === '2 persons' ? 'selected' : '' }} @disabled($isInactive)>2 persons</option>
-                                        <option value="1 person" {{ $selectedUser->resident->room_type === '1 person' ? 'selected' : '' }} @disabled($isInactive)>1 person</option>
+                                        <option value="8 persons" {{ $selectedUser->resident->room_type === '8 persons' ? 'selected' : '' }}>8 persons</option>
+                                        <option value="4 persons" {{ $selectedUser->resident->room_type === '4 persons' ? 'selected' : '' }}>4 persons</option>
+                                        <option value="3 persons" {{ $selectedUser->resident->room_type === '3 persons' ? 'selected' : '' }}>3 persons</option>
+                                        <option value="2 persons" {{ $selectedUser->resident->room_type === '2 persons' ? 'selected' : '' }}>2 persons</option>
+                                        <option value="1 person" {{ $selectedUser->resident->room_type === '1 person' ? 'selected' : '' }}>1 person</option>
                                     </select>
                                 </div>
                             </div>

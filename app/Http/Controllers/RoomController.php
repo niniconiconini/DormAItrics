@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\Resident;
 use App\Models\Room;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -83,6 +85,7 @@ class RoomController extends Controller
         }
 
         Room::create($validated);
+        ActivityLog::create(['user_id' => Auth::id(), 'action_taken' => 'Room Created']);
 
         return redirect('rooms')
             ->with(['success' => 'Room added successfully!',
@@ -140,6 +143,7 @@ class RoomController extends Controller
         }
 
         $resident->update(['room_id' => $room->id]);
+        ActivityLog::create(['user_id' => Auth::id(), 'action_taken' => 'Assigned resident to room']);
 
         return redirect()->route('rooms.index', ['modal' => 'edit', 'room' => $room->id, 'occupants' => 'open']);
     }
@@ -149,6 +153,8 @@ class RoomController extends Controller
     {
         $roomID = $resident->room_id;
         $resident->update(['room_id' => null]);
+
+        ActivityLog::create(['user_id' => Auth::id(), 'action_taken' => 'Removed resident from room']);
 
         return redirect()->route('rooms.index', ['modal' => 'edit', 'room' => $roomID, 'occupants' => 'open']);
     }
@@ -204,6 +210,7 @@ class RoomController extends Controller
         }
 
         $room->update($validated);
+        ActivityLog::create(['user_id' => Auth::id(), 'action_taken' => 'Room Updated']);
 
         return redirect()
             ->route('rooms.index')
@@ -233,6 +240,7 @@ class RoomController extends Controller
         ];
 
         $room->delete();
+        ActivityLog::create(['user_id' => Auth::id(), 'action_taken' => 'Room Deleted']);
 
         return redirect()
             ->route('rooms.index')

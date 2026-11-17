@@ -17,7 +17,7 @@
                     {{-- PERSONAL INFORMATION --}}
                     <div class="user-top-section">
                         <div class="user-details">
-                            <img id="preview-image" src="images/users/user-profile.png" hidden>
+                            <img src="images/users/user-profile.png" hidden>
                             <div class="fullname">
                                 <div class="form-group last_name">
                                     <label for="last_name">Last Name*:</label>
@@ -136,7 +136,7 @@
                     <div class="lodging-type">
                         <div class="form-group payment_schedule">
                             <label for="payment_schedule">Payment Schedule*:</label>
-                            <select name="payment_schedule" id="payment_schedule" class="form-cb" onchange="this.form.submit()">
+                            <select name="payment_schedule" id="payment_schedule" class="form-cb">
                                 <option value="" selected disabled hidden></option>
                                 <option value="Full Payment" {{ old('payment_schedule') == 'Full Payment' ? 'selected' : '' }}>Full Payment</option>
                                 <option value="4 Payments" {{ old('payment_schedule') == '4 Payments' ? 'selected' : '' }}>4 Payments</option>
@@ -167,10 +167,10 @@
         </div>
         @if(session('application_submitted'))
             <div class="modal">
-                <div style="background-color: var(--body-color); padding-bottom: 1rem;" class="card receipt-modal">
+                <div style="background-color: var(--body-color);" class="card receipt-modal">
                     <h2 class="modal-title">APPLICATION SUBMITTED!</h2>
-                    <p style="text-align: center;">Your application has been submitted successfully.
-                        <br>Please check your email for further updates.
+                    <p style="text-align: center; padding-bottom: 1rem;">Your application has been submitted successfully.
+                        <br>Please check your email for further updates.<br>
                     </p>
                     <div class="form-buttons">
                         <a href="{{ route('login') }}" class="btn-primary">

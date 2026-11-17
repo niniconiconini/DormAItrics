@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\PassSlip;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -56,6 +57,8 @@ class PassSlipMgmtController extends Controller
             return back()->with('error', 'There are no pass slips whose trip ended two months ago or earlier.');
         }
 
+        ActivityLog::create(['user_id' => Auth::id(), 'action_taken' => 'Pass Slips Cleared']);
+
         return redirect()->route('slips-mgmt')->with('success', "Cleared {$cleared} pass slip(s) whose trip ended two months ago or earlier.");
     }
 
@@ -69,6 +72,12 @@ class PassSlipMgmtController extends Controller
         $passSlip->update([
             'status' => $status,
             'approved_by_user_id' => Auth::id(),
+        ]);
+
+        ActivityLog::create(['user_id' => Auth::id(),
+            'action_taken' => $status === 'Approved'
+                ? 'Pass Slip Approved'
+                : 'Pass Slip Rejected',
         ]);
 
         return back()->with('success', $message);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\Resident;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -13,6 +14,7 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
+    // =============================== VIEW USERS ===============================
     public function index(): View
     {
         // get active users
@@ -76,6 +78,7 @@ class UserController extends Controller
             'residents' => $residents]);
     }
 
+    // =============================== CREATE USERS ===============================
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -169,12 +172,15 @@ class UserController extends Controller
             $receipt['check_out_date'] = Carbon::parse($user->resident->check_out_date)->format('F d, Y');
         }
 
+        ActivityLog::create(['user_id' => Auth::id(), 'action_taken' => 'User Created']);
+
         return redirect()
             ->route('users.index', ['view' => $request->accommodation_type === 'Transient' ? 'transient' : 'resident'])
             ->with('success', 'User created successfully!')
             ->with('receipt', $receipt);
     }
 
+    // =============================== APPLICANTS ===============================
     public function applicant(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -223,13 +229,16 @@ class UserController extends Controller
             ->with('application_submitted', true);
     }
 
+    // =============================== APPROVE APPLICANTS ===============================
     public function approveApplicant(Resident $resident): RedirectResponse
     {
         $resident->update(['is_applicant' => false]);
+        ActivityLog::create(['user_id' => Auth::id(), 'action_taken' => 'Applicant Approved']);
 
         return redirect()->route('users.index', ['view' => 'applicant'])->with('success', 'Applicant approved successfully. Please update check in and check out dates.');
     }
 
+    // =============================== UPDATE USERS ===============================
     public function update(Request $request, User $user): RedirectResponse
     {
         $userActivated = false;
@@ -301,7 +310,7 @@ class UserController extends Controller
         $validated['middle_name'] = ! empty($validated['middle_name']) ? ucwords(strtolower($validated['middle_name'])) : null;
         $validated['nickname'] = ucwords(strtolower($validated['nickname']));
 
-        // dd($request->all());
+        $wasActive = $user->status === 'Active';
         $user->update($validated); // update user
 
         // reset resident info when turning user inactive
@@ -401,10 +410,27 @@ class UserController extends Controller
 
         // show confirmation after creating account
         if ($currentUser->id === $user->id) {
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'action_taken' => 'Profile Updated',
+            ]);
+
             return redirect()
                 ->route('profile')
                 ->with('success', $successMessage)
                 ->with('receipt', $receipt);
+        }
+
+        if ($wasActive && $user->status === 'Inactive') {
+            ActivityLog::create(['user_id' => Auth::id(),
+                'action_taken' => 'User Deactivated',
+            ]);
+        } else {
+            ActivityLog::create(['user_id' => Auth::id(),
+                'action_taken' => $userActivated
+                    ? 'User Activated'
+                    : 'User Updated',
+            ]);
         }
 
         return redirect()
