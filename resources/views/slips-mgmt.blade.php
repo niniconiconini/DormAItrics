@@ -170,7 +170,7 @@
                     {{-- step 1 --}}
                     <div id="deleteStep1">
                         <h2 class="modal-title">Delete Two Months and Older Pass Slips</h2>
-                        <p>This will clear every pass slip that are TWO MONTHS AGO OR OLDER from this list and from every dormer's Previous Pass Slips. The records stay in the database, and you won't be able to bring the cleared slips back.</p>
+                        <p>This will clear every pass slip that are TWO MONTHS AGO OR OLDER from this list and from every dormer's Previous Pass Slips. The records will ONLY stay in the database, and you won't be able to bring the cleared slips back.</p>
                         <div class="slip-submit">
                             <button type="button" class="btn-primary closeDelete">Cancel</button>
                             <button type="button" class="btn-primary btn-danger" id="toStep2">Continue</button>

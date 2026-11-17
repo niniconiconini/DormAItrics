@@ -39,7 +39,7 @@
             <section class="post-box">
             <div class="input-message">
                 <div class="author post-author">
-                    <img src="{{ asset('images/users/user-profile.png') }}" alt="">
+                    <img src="{{ asset(auth()->user()->profile_picture ?: 'images/users/user-profile.png') }}" alt="{{ auth()->user()->userName() }} profile picture">
                     <span>{{ auth()->user()->first_name . ' ' . auth()->user()->last_name }}</span>
                 </div>
                 <form method="POST" action="{{ route('reviews.store') }}" id="reviewForm">
@@ -82,7 +82,7 @@
             @forelse ($reviews as $review)
                 <div class="card announcement-card">
                     <div class="author post-author">
-                        <img src="{{ asset('images/users/user-profile.png') }}" alt="">
+                        <img src="{{ asset($review->user?->profile_picture ?: 'images/users/user-profile.png') }}" alt="{{ $review->reviewerName() }} profile picture">
                         <div>
                             <span>{{ $review->reviewerName() }}</span><br>
                             <small class="post-time">{{ $review->created_at->format('M j, Y \a\t g:i A') }}</small>
@@ -161,7 +161,7 @@
                         <h2 class="modal-title">Are you sure you want to submit this review?</h2>
                         <p>You won't be able to edit or delete this review afterwards.</p>
                         <div class="slip-submit">
-                            <button type="button" class="btn-primary" id="cancelSubmit">Cancel</button>
+                            <button type="button" class="btn-primary btn-danger" id="cancelSubmit">Cancel</button>
                             <button type="button" class="btn-primary" id="confirmSubmit">Submit Review</button>
                         </div>
                     </div>

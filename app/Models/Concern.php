@@ -8,14 +8,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
     'resident_id',
-    'subject',
     'message',
+    'visibility',
+    'status',
 ])]
 class Concern extends Model
 {
+    use SoftDeletes;
     /**
      * @return BelongsTo<Resident, $this>
      */
@@ -36,7 +39,7 @@ class Concern extends Model
 
     public function reporterName(): string
     {
-        return collect([$this->user?->first_name, $this->user?->last_name])->filter()->implode(' ');
+        return $this->user?->userName() ?? '';
     }
 
     /**

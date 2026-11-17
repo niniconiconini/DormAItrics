@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('concerns', function (Blueprint $table) {
             $table->id();
             $table->foreignId('resident_id')->constrained('residents');
-            $table->string('subject');
             $table->text('message');
             $table->timestamps();
         });

@@ -1,7 +1,14 @@
 <x-layout>
     <x-slot:title>Concerns</x-slot:title>
-    <section class="announcement">
+    <section class="announcement concerns-page">
         <header class="page-title">CONCERNS</header>
+            @can('admins')
+                <nav class="concern-management-tabs" aria-label="Filter concerns by visibility">
+                    <a href="{{ route('concerns', ['visibility' => 'public']) }}" class="concern-tab {{ $visibility === 'public' ? 'active' : '' }}" @if ($visibility === 'public') aria-current="page" @endif>PUBLIC</a>
+                    <span class="concern-tab-divider" aria-hidden="true">|</span>
+                    <a href="{{ route('concerns', ['visibility' => 'private']) }}" class="concern-tab {{ $visibility === 'private' ? 'active' : '' }}" @if ($visibility === 'private') aria-current="page" @endif>PRIVATE</a>
+                </nav>
+            @endcan
 
         @if (session('success'))
             <div class="announcement-card">
@@ -17,61 +24,89 @@
 
         {{-- only residents can post a concern --}}
         @if ($canPost)
-            <section class="post-box">
+            <section class="post-box concern-compose">
             <div class="input-message">
                 <div class="author post-author">
-                    <img src="{{ asset('images/users/user-profile.png') }}" alt="">
-                    <span>{{ auth()->user()->first_name . ' ' . auth()->user()->last_name }}</span>
+                    <img src="{{ asset(auth()->user()->profile_picture ?: 'images/users/user-profile.png') }}" alt="{{ auth()->user()->userName() }} profile picture">
+                    <span>{{ auth()->user()->userName() }}</span>
                 </div>
-                <form method="POST" action="{{ route('concerns.store') }}">
+                <form id="concern-form" method="POST" action="{{ route('concerns.store') }}">
                     @csrf
                     @if ($errors->any())
                         <p class="slip-error">{{ $errors->first() }}</p>
                     @endif
-                    <textarea
-                        name="subject"
-                        placeholder="What is your concern about?"
-                        class="message-box"
-                        maxlength="200"
-                        required
-                    >{{ old('subject') }}</textarea>
-                    <textarea
-                        name="message"
-                        placeholder="Describe your concern"
-                        class="message-box"
-                        maxlength="750"
-                        required
-                    >{{ old('message') }}</textarea>
+                    <label for="concern-message">Your concern:</label>
+                    <textarea id="concern-message" name="message" placeholder="Write your concern..." class="message-box" maxlength="750" required>{{ old('message') }}</textarea>
+                    <label for="concern-visibility">Who can see this?</label>
+                    <select id="concern-visibility" name="visibility" required>
+                        <option value="public" @selected(old('visibility', 'public') === 'public')>Public - visible to all dormers and admins</option>
+                        <option value="private" @selected(old('visibility') === 'private')>Private - visible to you and admins</option>
+                    </select> 
                     <div style="text-align: center; padding-top: 1vh; justify-content: center;">
                         <button type="submit" class="btn-primary">Submit!</button>
                     </div>
                 </form>
+                <dialog id="concern-confirmation" class="concern-confirmation" aria-labelledby="concern-confirmation-title" aria-describedby="concern-confirmation-message">
+                    <h2 id="concern-confirmation-title">Submit this concern?</h2>
+                    <p id="concern-confirmation-message">After submitting, you will not be able to edit or delete this concern. Are you sure you want to continue?</p>
+                    <div class="concern-confirmation-actions">
+                        <button type="button" id="cancel-concern-submit" class="btn-primary btn-danger">Cancel</button>
+                        <button type="button" id="confirm-concern-submit" class="btn-primary">Continue</button>
+                    </div>
+                </dialog>                
             </div>
         </section>
         <hr>
         @endif
 
+        @if ($canPost)
+            <nav class="concern-management-tabs" aria-label="Filter concerns">
+                <a href="{{ route('concerns', ['visibility' => 'public']) }}" class="concern-tab {{ $visibility === 'public' ? 'active' : '' }}" @if ($visibility === 'public') aria-current="page" @endif>PUBLIC CONCERNS</a>
+                <span class="concern-tab-divider" aria-hidden="true">|</span>
+                <a href="{{ route('concerns', ['visibility' => 'private']) }}" class="concern-tab {{ $visibility === 'private' ? 'active' : '' }}" @if ($visibility === 'private') aria-current="page" @endif>MY PRIVATE CONCERNS</a>
+            </nav>
+        @endif
+
         <section id="concerns-list" class="list-view">
             @forelse ($concerns as $concern)
-                <div class="card announcement-card" id="concern-{{ $concern->id }}">
+                <div class="card announcement-card concern-card" id="concern-{{ $concern->id }}">
                     <div class="author post-author">
-                        <img src="{{ asset('images/users/user-profile.png') }}" alt="">
-                        <div>
-                            <span>{{ $concern->reporterName() }}</span><br>
-                            <small class="post-time">{{ $concern->created_at->format('M j, Y \a\t g:i A') }}</small>
-                        </div>
+                        <img src="{{ asset($concern->user?->profile_picture ?: 'images/users/user-profile.png') }}" alt="{{ $concern->reporterName() }} profile picture">
+                            <div class="concern-author-info">
+                                <div class="concern-author-name">
+                                    <span>{{ $concern->reporterName() }}</span>
+                                    <span class="concern-visibility-badge {{ $concern->visibility === 'private' ? 'is-private' : 'is-public' }}">{{ strtoupper($concern->visibility) }}</span>
+                                    <span class="concern-status-badge status-{{ $concern->status }}">{{ strtoupper($concern->status) }}</span>
+                                </div>
+                                <small class="post-time">{{ $concern->created_at->format('M j, Y \a\t g:i A') }}</small>
+                            </div>
                         @can('admins')
-                            <div class="post-actions">
+                            <div class="post-actions concern-admin-actions">
+                                @if ($concern->status === 'pending')
+                                    <form method="POST" action="{{ route('concerns.status', $concern) }}">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="status" value="acknowledged">
+                                        <button type="submit" class="btn-primary concern-acknowledge-button">Acknowledge</button>
+                                    </form>
+                                @endif
+                                @if ($concern->status !== 'resolved')
+                                    <form method="POST" action="{{ route('concerns.status', $concern) }}" class="resolve-concern-form">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="status" value="resolved">
+                                        <button type="submit" class="btn-primary concern-resolve-button">Resolve</button>
+                                    </form>
+                                @endif
                                 <form method="POST" action="{{ route('concerns.destroy', $concern) }}" onsubmit="return confirm('Are you sure you want to delete this concern? Its replies and likes will be deleted too.')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn-primary btn-danger">Delete</button>
                                 </form>
                             </div>
-                        @endcan
+                        @endcan           
                     </div>
-                    <div class="title">{{ $concern->subject }}</div>
-                    <div class="message">{{ $concern->message }}</div>
+                <div class="message concern-message">{{ $concern->message }}</div>
 
                     <div class="concern-actions">
                         <form method="POST" action="{{ route('concerns.like', $concern) }}" class="like-form">
@@ -146,8 +181,90 @@
             @endif
         </section>
 
+        @can('admins')
+            <dialog id="resolve-confirmation" class="concern-confirmation" aria-labelledby="resolve-confirmation-title" aria-describedby="resolve-confirmation-message">
+                <h2 id="resolve-confirmation-title">Resolve this concern?</h2>
+                <p id="resolve-confirmation-message">Are you sure you want to mark this concern as resolved?</p>
+                <div class="concern-confirmation-actions">
+                    <button type="button" id="cancel-resolve-concern" class="btn-primary btn-danger">Cancel</button>
+                    <button type="button" id="confirm-resolve-concern" class="btn-primary">Resolve</button>
+                </div>
+            </dialog>
+        @endcan        
+
         <script>
             const csrf = "{{ csrf_token() }}";
+
+            // ask for confirmation before resolving a concern
+            const resolveConfirmation = document.getElementById('resolve-confirmation');
+            const confirmResolveButton = document.getElementById('confirm-resolve-concern');
+            const cancelResolveButton = document.getElementById('cancel-resolve-concern');
+            let pendingResolveForm = null;
+
+            if (resolveConfirmation && confirmResolveButton && cancelResolveButton) {
+                document.querySelectorAll('.resolve-concern-form').forEach(form => {
+                    form.addEventListener('submit', event => {
+                        if (form.dataset.confirmed === 'true') {
+                            form.dataset.confirmed = 'false';
+                            return;
+                        }
+
+                        event.preventDefault();
+                        pendingResolveForm = form;
+                        resolveConfirmation.showModal();
+                    });
+                });
+
+                cancelResolveButton.addEventListener('click', () => {
+                    pendingResolveForm = null;
+                    resolveConfirmation.close();
+                });
+
+                confirmResolveButton.addEventListener('click', () => {
+                    if (!pendingResolveForm) {
+                        return;
+                    }
+
+                    const form = pendingResolveForm;
+                    pendingResolveForm = null;
+                    form.dataset.confirmed = 'true';
+                    resolveConfirmation.close();
+                    form.requestSubmit();
+                });
+
+                resolveConfirmation.addEventListener('cancel', () => {
+                    pendingResolveForm = null;
+                });
+            }
+
+            // ask for confirmation before sending a concern 
+            const concernForm = document.getElementById('concern-form');
+            const concernConfirmation = document.getElementById('concern-confirmation');
+            const confirmConcernButton = document.getElementById('confirm-concern-submit');
+            const cancelConcernButton = document.getElementById('cancel-concern-submit');
+            let concernSubmissionConfirmed = false;
+
+            if (concernForm && concernConfirmation && confirmConcernButton && cancelConcernButton) {
+                concernForm.addEventListener('submit', event => {
+                    if (concernSubmissionConfirmed) {
+                        concernSubmissionConfirmed = false;
+                        return;
+                    }
+
+                    event.preventDefault();
+                    concernConfirmation.showModal();
+                });
+
+                cancelConcernButton.addEventListener('click', () => {
+                    concernConfirmation.close();
+                });
+
+                confirmConcernButton.addEventListener('click', () => {
+                    concernSubmissionConfirmed = true;
+                    concernConfirmation.close();
+                    concernForm.requestSubmit();
+                });
+            }            
 
             function htmlToElement(html) {
                 const tpl = document.createElement('template');

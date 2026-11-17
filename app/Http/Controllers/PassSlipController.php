@@ -27,7 +27,9 @@ class PassSlipController extends Controller
             'required',
             'date_format:H:i',
             function ($attribute, $value, $fail) use ($label) {
-                if ($value > '21:00') {
+                if ($label === 'Time out' && $value < '05:00') {
+                    $fail('$label cannot be earlier than 5:00 AM.');
+                } elseif ($value > '21:00') {
                     $fail("$label cannot be later than 9:00 PM (curfew).");
                 } elseif ((int) substr($value, 3, 2) % 10 !== 0) {
                     $fail("$label must be in 10-minute steps (for example 4:00 or 4:10).");
