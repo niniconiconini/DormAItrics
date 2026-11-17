@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\FaceRecognition;
 use App\Models\PassSlip;
 use App\Models\Resident;
@@ -240,6 +241,11 @@ class FaceRecognitionController extends Controller
         for ($i = 1; $i <= 5; $i++) {
             FaceRecognition::create(['resident_id' => $resident->id, 'face_reference' => $resident->id.'_'.$i.'.jpg']);
         }
+
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'action_taken' => 'Face Enrolled',
+        ]);
 
         return redirect()
             ->back()

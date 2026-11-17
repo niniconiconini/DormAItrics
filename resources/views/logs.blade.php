@@ -153,11 +153,11 @@
                         </div>
                         <div class="slip-field">
                             <label for="return_date">Date In</label>
-                            <input type="date" id="return_date" name="returned_date" value="{{ $selectedLog->returned_at->format('Y-m-d') }}" required>
+                            <input type="date" id="return_date" name="returned_date" value="{{ $selectedLog->returned_at?->format('Y-m-d') }}" required>
                         </div>
                         <div class="slip-field">
                             <label for="return_time">Time In</label>
-                            <input type="time" id="return_time" name="returned_time" value="{{ $selectedLog->returned_at->format('H:i') }}" min="00:00" max="21:00" required>
+                            <input type="time" id="return_time" name="returned_time" value="{{ $selectedLog->returned_at?->format('H:i') }}" min="00:00" max="21:00" required>
                         </div>
                         <div class="slip-field full">
                             <label>Notes</label>
@@ -176,7 +176,88 @@
         </div>
     @endif
     <br>
-    <section>
-        <header class="page-title">ACTIVITY LOGS <div class="logs-count">{{ $logs->count() }} Records</div></header>
-    </section>
+    @if (auth()->user()->isAdmin())
+        <section>
+            <header class="page-title">ACTIVITY LOGS <div class="logs-count">{{ $activityLogs->count() }} Records</div></header>
+            <div class="card">
+                <div class="logs-table-wrapper">
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Date & Time</th>
+                                <th>Action Taken</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($activityLogs as $activity)
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            {{ $activity->user->first_name }}
+                                            {{ $activity->user->last_name }}
+                                        </strong>
+                                    </td>
+                                    <td>{{ $activity->created_at->format('M d, Y | h:i A') }}</td>
+                                    <td><strong>{{ $activity->action_taken }}</strong></td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="empty-state">
+                                        <div class="empty-icon">📋</div>
+                                        <strong>No Activity Logs Yet</strong>
+                                        <p>System activity records will appear here.</p>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                    @if ($activityLogs->hasPages())
+                        @php
+                            $current = $activityLogs->currentPage();
+                            $last = $activityLogs->lastPage();
+                            if ($last <= 7) {
+                                $pages = range(1, $last);
+                            } elseif ($current <= 4) {
+                                $pages = [...range(1, 5), '...', $last];
+                            } elseif ($current >= $last - 3) {
+                                $pages = [1, '...', ...range($last - 4, $last)];
+                            } else {
+                                $pages = [
+                                    1,
+                                    '...',
+                                    $current - 1,
+                                    $current,
+                                    $current + 1,
+                                    '...',
+                                    $last
+                                ];
+                            }
+                        @endphp
+                        <nav class="pager" aria-label="Pagination" data-last="{{ $last }}" data-url="{{ $logs->url(1) }}" data-page-name="{{ $logs->getPageName() }}">
+                            @if ($activityLogs->onFirstPage())
+                                <span class="disabled">◀&#xFE0E;</span>
+                            @else
+                                <a href="{{ $logs->previousPageUrl() }}">◀&#xFE0E;</a>
+                            @endif
+                            @foreach ($pages as $page)
+                                @if ($page === '...')
+                                    <button type="button" class="dots">&hellip;</button>
+                                @elseif ($page == $current)
+                                    <span class="active">{{ $page }}</span>
+                                @else
+                                    <a href="{{ $logs->url($page) }}">{{ $page }}</a>
+                                @endif
+                            @endforeach
+                            @if ($activityLogs->hasMorePages())
+                                <a href="{{ $activityLogs->nextPageUrl() }}">▶&#xFE0E;</a>
+                            @else
+                                <span class="disabled">▶&#xFE0E;</span>
+                            @endif
+                        </nav>
+                    @endif
+                </div>
+            </div>
+        </section>
+    @endif
 </x-layout>

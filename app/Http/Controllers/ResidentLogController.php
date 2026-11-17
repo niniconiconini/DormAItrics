@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\ResidentLog;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -19,6 +20,7 @@ class ResidentLogController extends Controller
             'timeInApprover',
         ])->latest()->paginate(10);
 
+        $activityLogs = ActivityLog::with('user')->latest()->paginate(10, ['*'], 'activities');
         $selectedLog = null;
 
         if (request('modal')) {
@@ -27,18 +29,20 @@ class ResidentLogController extends Controller
 
         return view('logs', [
             'logs' => $logs,
+            'activityLogs' => $activityLogs,
             'selectedLog' => $selectedLog,
         ]);
     }
 
     public function update(Request $request, ResidentLog $log): RedirectResponse
     {
+
         $request->validate([
             'departed_date' => 'required|date',
             'departed_time' => 'required',
             'returned_date' => 'nullable|date',
             'returned_time' => 'nullable',
-            'notes' => 'required|string|min:5|max:255',
+            'notes' => 'required|string|min:5|max:500',
             'pass_slip_id' => 'nullable',
         ]);
 
@@ -55,6 +59,8 @@ class ResidentLogController extends Controller
             'notes' => $request->notes."\n".$editedBy,
             'pass_slip_id' => $request->has('has_pass_slip') ? $log->pass_slip_id ?? 1 : null,
         ]);
+
+        ActivityLog::create(['user_id' => Auth::id(), 'action_taken' => 'Resident Log Edited']);
 
         return redirect()
             ->route('logs.index')
