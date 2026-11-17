@@ -142,7 +142,7 @@
             </div>
         </div>
 
-        {{-- E. RESIDENT DEMOGRAPHICS
+        {{-- E. RESIDENT DEMOGRAPHICS --}}
         <div class="analytics-section">
             <h3>E. Resident Demographics</h3>
             <div class="demographics-grid">
@@ -159,15 +159,43 @@
                     <canvas id="demographicsChart_resident"></canvas>
                 </div>
             </div>
-            <h4 class="chart-heading">Top Resident Locations</h4>
+            <br>
+            {{-- <h4 class="chart-heading">Top Resident Locations</h4>
             <div class="leaderboard-card">
                 @forelse($residentLocationLeaderboard as $row)
                     <div class="leaderboard-row"><span>{{ $row['location'] }}</span><strong>{{ $row['count'] }}</strong></div>
                 @empty
                     <div class="empty-state">No location data available.</div>
                 @endforelse
+            </div> --}}
+        </div>
+
+        {{-- F. CONCERN ANALYTICS --}}
+        <div class="analytics-section">
+            <h3>F. Concern Analytics</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">Submitted This Month</span>
+                    <h2>{{ $concernAnalytics['submitted'] }}</h2>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Resolved Concerns</span>
+                    <h2>{{ $concernAnalytics['resolved'] }}</h2>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Acknowledged Concerns</span>
+                    <h2>{{ $concernAnalytics['acknowledged'] }}</h2>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Public Concerns</span>
+                    <h2>{{ $concernAnalytics['public'] }}</h2>
+                </div>
             </div>
-        </div> --}}
+            <h4 class="chart-heading">Public vs Private Concerns</h4>
+            <div class="monthly-chart">
+                <canvas id="concernChart"></canvas>
+            </div>
+        </div>
     </section>
 
     {{-- CHARTS --}}
@@ -306,5 +334,66 @@
             }
         );
 
+        // e
+        const genderData = @json($demographicsTrend['gender']);
+        new Chart(
+            document.getElementById('demographicsChart_gender'), {
+                type: 'doughnut', data: {
+                    labels: genderData.map(item => item.gender ?? 'Unspecified'
+                    ), datasets: [{
+                        data: genderData.map(item => item.count
+                        )
+                    }]
+                }, options: commonOptions
+            }
+        );
+        const accommodationData = @json($demographicsTrend['accommodation_type']);
+        new Chart(
+            document.getElementById('demographicsChart_accommodation'), {
+                type: 'doughnut', data: {
+                    labels: accommodationData.map(item => item.accommodation_type ?? 'Unspecified'
+                    ), datasets: [{
+                        data: accommodationData.map(item => item.count
+                        )
+                    }]
+                }, options: commonOptions
+            }
+        );
+
+        const residentTypeData = @json($demographicsTrend['resident_type']);
+            new Chart(
+                document.getElementById('demographicsChart_resident'), {
+                    type: 'doughnut', data: {
+                        labels: residentTypeData.map(item => item.resident_type ?? 'Unspecified'
+                        ), datasets: [{
+                            data: residentTypeData.map(item => item.count
+                            )
+                        }]
+                    }, options: commonOptions
+                }
+            );
+
+        // f
+        const concernData = @json($monthlyConcernTrend);
+        new Chart(
+            document.getElementById('concernChart'), {
+                type: 'bar', data: {
+                    labels: concernData.map(item => new Date(item.year, item.month - 1).toLocaleString('en-US', {
+                                month: 'short',
+                                year: 'numeric'
+                            })
+                    ), datasets: [{
+                            label: 'Public',
+                            data: concernData.map(item => item.public_count),
+                            backgroundColor: '#5799f5'
+                        }, {
+                            label: 'Private',
+                            data: concernData.map(item => item.private_count),
+                            backgroundColor: '#6bc580'
+                        }
+                    ]
+                }, options: commonOptions
+            }
+        );
     </script>
 </x-layout>

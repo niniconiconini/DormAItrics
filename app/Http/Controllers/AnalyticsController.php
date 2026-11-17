@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PassSlip;
 use App\Models\Resident;
 use App\Models\ResidentLog;
+use App\Models\Concern;
 use App\Models\Room;
 use App\Models\User;
 use Carbon\Carbon;
@@ -270,7 +271,7 @@ class AnalyticsController extends Controller
                 'count' => $logs->count(),
             ])->sortByDesc('count')->take(5)->values();
 
-        // Demographics trend
+        // E. DEMOGRAPHICS
         $gender = User::where('status', 'active')
             ->whereIn('user_type', ['resident'])
             ->selectRaw('gender, COUNT(*) as count')
@@ -295,6 +296,25 @@ class AnalyticsController extends Controller
             'resident_type' => $resident_type,
         ];
 
+        // F. CONCERN ANALYTICS
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+
+        $concernAnalytics = [
+            'submitted' => Concern::whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count(),
+            'resolved' => Concern::where('status', 'resolved')->count(),
+            'acknowledged' => Concern::where('status', 'acknowledged')->count(),
+            'public' => Concern::where('visibility', 'public')->count(),
+        ];
+
+        $monthlyConcernTrend = Concern::selectRaw('
+                YEAR(created_at) as year,
+                MONTH(created_at) as month,
+                COUNT(*) as submitted,
+                SUM(visibility = "public") as public_count,
+                SUM(visibility = "private") as private_count
+            ')->groupByRaw('YEAR(created_at), MONTH(created_at)')->orderByRaw('YEAR(created_at), MONTH(created_at)')->get();
+
         return view('analytics', compact(
             'facilityStatistics',
             'checkInCheckOut',
@@ -310,6 +330,8 @@ class AnalyticsController extends Controller
             'withoutSlipLeaderboard',
             'lateReturnLeaderboard',
             'demographicsTrend',
+            'concernAnalytics',
+            'monthlyConcernTrend',
         ));
     }
 }
