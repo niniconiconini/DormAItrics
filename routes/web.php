@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 //      DMS AND PUBLIC CAN ACCESS
-Route::view('login', 'user-login')->name('login')->middleware('throttle:5,1');
+Route::get('login', [LoginController::class, 'show'])->name('login');
 Route::post('login', LoginController::class)->name('login.attempt');
 Route::view('apply', 'user-regis')->name('apply');
 Route::post('apply', [UserController::class, 'applicant'])->name('users.applicant');

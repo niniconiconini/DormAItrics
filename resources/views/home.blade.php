@@ -12,7 +12,7 @@
             <div class="input-message">
                 <div class="author post-author">
                     <img src="{{ asset('images/users/user-profile.png') }}" alt="">
-                    <span>{{ auth()->user()->first_name . ' ' . auth()->user()->last_name }}</span>
+                    <span>{{ auth()->user()->userName() }}</span>
                 </div>
                 <form method="POST" action="{{ route('announcements.store') }}">
                     @csrf
@@ -45,7 +45,7 @@
                     <div class="author post-author">
                         <img src="{{ asset('images/users/user-profile.png') }}" alt="">
                         <div>
-                            <span>{{ $announcement->user->first_name . ' ' . $announcement->user->last_name }}</span><br>
+                            <span>{{ $announcement->user->userName() }}</span><br>
                             <small class="post-time">{{ $announcement->created_at->format('M j, Y \a\t g:i A') }}@if ($announcement->updated_at->gt($announcement->created_at)) &middot; Edited @endif</small>
                         </div>
 
