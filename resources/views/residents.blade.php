@@ -64,9 +64,9 @@
                             @default
                                 Residents
                         @endswitch
-                        <div class="logs-count" style="margin-top: 5px; width: 100%;">{{ $residents->count() }} Users</div>
+                        <div class="logs-count" style="margin-top: 5px; width: 100%;">{{ $residents->total() }} Users</div>
                     </h2>
-                    @if(request('view') == 'resident' || request('view') == 'transient')
+                    @if(in_array(request('view', 'resident'), ['resident', 'transient']))
                         <a href="{{ route('users.index', ['modal' => 'add-resident', 'view' => request('view')]) }}" class="btn-primary">+ Add {{ request('view') === 'transient' ? 'Transient' : 'Resident' }}</a>
                     @endif
                 </div>
@@ -448,8 +448,7 @@
                             <div class="form-group accommodation_type">
                                 <label for="accommodation_type">Accommodation Type*:</label>
                                 <select name="accommodation_type" id="accommodation_type" class="form-cb" disabled>
-                                    <option value="Resident" {{ old('accommodation_type'), request('view') === 'resident' ? 'selected' : '' }}>Resident</option>
-                                    <option value="Transient" {{ old('accommodation_type'), request('view') === 'transient' ? 'selected' : '' }}>Transient</option>
+                                    <option selected>{{ request('view') === 'transient' ? 'Transient' : 'Resident' }}</option>
                                 </select>
                                 <input type="hidden" name="accommodation_type" value="{{ request('view') === 'transient' ? 'Transient' : 'Resident' }}">
                             </div>

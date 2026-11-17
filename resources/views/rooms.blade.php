@@ -69,8 +69,10 @@
             @empty
                 <section class="dorm-section">
                     <div class="section-dormname">
-                        <h2>{{ request('dorm') }}</h2>
-                        <a href="{{ route('rooms.index', ['modal' => 'add', 'dorm' => request('dorm')]) }}" class="btn-primary">+ Add Room</a>
+                        <h2>{{ request('dorm') ?? 'No rooms yet'}}</h2>
+                        @if(request('dorm'))
+                            <a href="{{ route('rooms.index', ['modal' => 'add', 'dorm' => request('dorm')]) }}" class="btn-primary">+ Add Room</a>
+                        @endif
                     </div>
                     <hr>
                     <p style="text-align: center;">No dorm info yet. Please add the dorm information.</p>
@@ -235,7 +237,7 @@
                                 $eligibleResidents = collect();
                                 $firstOccupant = $selectedRoom->residents->first();
                                 foreach ($availableResidents as $resident) {
-                                    $allowed = $resident->room_type === $selectedRoom->capacity . ' persons';
+                                    $allowed = (int) $resident->room_type === (int) $selectedRoom->capacity;
                                     if ($firstOccupant) {
                                         $allowed =
                                             $allowed &&

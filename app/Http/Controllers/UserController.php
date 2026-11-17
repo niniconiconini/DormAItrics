@@ -312,6 +312,7 @@ class UserController extends Controller
 
         $wasActive = $user->status === 'Active';
         $user->update($validated); // update user
+        $user->refresh();
 
         // reset resident info when turning user inactive
         if ($user->status === 'Inactive' && $user->resident) {

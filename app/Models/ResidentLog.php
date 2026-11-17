@@ -31,12 +31,26 @@ class ResidentLog extends Model
         return $this->belongsTo(Resident::class);
     }
 
+    /**
+     * @return BelongsTo<PassSlip, $this>
+     */
+    public function passSlip(): BelongsTo
+    {
+        return $this->belongsTo(PassSlip::class);
+    }
+
     // for guard
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function timeOutApprover(): BelongsTo
     {
         return $this->belongsTo(User::class, 'time_out_approver');
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function timeInApprover(): BelongsTo
     {
         return $this->belongsTo(User::class, 'time_in_approver');

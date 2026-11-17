@@ -118,8 +118,8 @@ class RoomController extends Controller
             return back()->withErrors(['error' => 'Resident is already assigned to another room.']);
         }
 
-        // check if resident's preffered room type matches the room's capacity
-        if ($resident->room_type !== $room->capacity.' persons') {
+        // check if resident's preferred room type matches the room's capacity
+        if ((int) $resident->room_type !== (int) $room->capacity) {
             return back()->withErrors(['error' => 'Room type preference does not match.']);
         }
 

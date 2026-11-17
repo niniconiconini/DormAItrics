@@ -13,35 +13,36 @@ class LoginController extends Controller
 {
     // Five failed login attempts trigger a five minute cooldown
     private const MAX_LOGIN_ATTEMPTS = 5;
-    private const LOGIN_ATTEMPT_WINDOW_SECONDS = 900;
-    private const LOGIN_COOLDOWN_SECONDS = 300;
 
+    private const LOGIN_ATTEMPT_WINDOW_SECONDS = 900;
+
+    private const LOGIN_COOLDOWN_SECONDS = 300;
 
     // show timer after refreshing the page
     public function show(Request $request): View
-{
-    $lockedOutEmail = $request->session()->get('login_lockout_email');
-    $lockoutNotice = null;
+    {
+        $lockedOutEmail = $request->session()->get('login_lockout_email');
+        $lockoutNotice = null;
 
-    if ($lockedOutEmail) {
-        $baseKey = 'login:session:'.hash('sha256', $request->session()->getId());
-        $lockoutKey = $baseKey.':lockout';
+        if ($lockedOutEmail) {
+            $baseKey = 'login:session:'.hash('sha256', $request->session()->getId());
+            $lockoutKey = $baseKey.':lockout';
 
-        if (RateLimiter::tooManyAttempts($lockoutKey, 1)) {
-            $retryAfter = RateLimiter::availableIn($lockoutKey);
-            $timeRemaining = sprintf('%dm %02ds', intdiv($retryAfter, 60), $retryAfter % 60);
-            $lockoutNotice = "Remaining attempts: 0. Please try again in {$timeRemaining}.";
-        } else {
-            $request->session()->forget('login_lockout_email');
-            $lockedOutEmail = null;
+            if (RateLimiter::tooManyAttempts($lockoutKey, 1)) {
+                $retryAfter = RateLimiter::availableIn($lockoutKey);
+                $timeRemaining = sprintf('%dm %02ds', intdiv($retryAfter, 60), $retryAfter % 60);
+                $lockoutNotice = "Remaining attempts: 0. Please try again in {$timeRemaining}.";
+            } else {
+                $request->session()->forget('login_lockout_email');
+                $lockedOutEmail = null;
+            }
         }
-    }
 
-    return view('user-login', [
-        'lockoutNotice' => $lockoutNotice,
-        'lockedOutEmail' => $lockedOutEmail,
-    ]);
-}
+        return view('user-login', [
+            'lockoutNotice' => $lockoutNotice,
+            'lockedOutEmail' => $lockedOutEmail,
+        ]);
+    }
 
     public function __invoke(Request $request): RedirectResponse
     {

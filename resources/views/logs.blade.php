@@ -1,7 +1,7 @@
 <x-layout>
     <x-slot:title>Facial Recognition Logs</x-slot:title>
     <section id="facial-recognition-logs">
-        <header class="page-title">FACIAL RECOGNITION LOGS <div class="logs-count">{{ $logs->count() }} Records</div></header>
+        <header class="page-title">FACIAL RECOGNITION LOGS <div class="logs-count">{{ $logs->total() }} Records</div></header>
         <div class="card">
             <div class="logs-table-wrapper">
                 <table class="logs-table">
@@ -136,7 +136,7 @@
     @if($selectedLog)
         <div class="modal">
             <div class="card scan-modal logs-modal" style="height: 50%;">
-                <form action="{{ route('logs.update', $selectedLog) }}" method="POST">
+                <form action="{{ route('logs.update', $selectedLog) }}" method="POST"  onclick="event.stopPropagation();">
                     @csrf
                     @method('PUT')
                     <div class="slip-heading">
@@ -153,11 +153,11 @@
                         </div>
                         <div class="slip-field">
                             <label for="return_date">Date In</label>
-                            <input type="date" id="return_date" name="returned_date" value="{{ $selectedLog->returned_at?->format('Y-m-d') }}" required>
+                            <input type="date" id="return_date" name="returned_date" value="{{ $selectedLog->returned_at?->format('Y-m-d') }}">
                         </div>
                         <div class="slip-field">
                             <label for="return_time">Time In</label>
-                            <input type="time" id="return_time" name="returned_time" value="{{ $selectedLog->returned_at?->format('H:i') }}" min="00:00" max="21:00" required>
+                            <input type="time" id="return_time" name="returned_time" value="{{ $selectedLog->returned_at?->format('H:i') }}" min="00:00" max="21:00">
                         </div>
                         <div class="slip-field full">
                             <label>Notes</label>
@@ -168,7 +168,7 @@
                         </div>
                     </div>
                     <div class="form-buttons">
-                        <button class="btn-primary">Save</button>
+                        <button type="submit" class="btn-primary">Save</button>
                         <a href="{{ route('logs.index') }}" class="btn-primary">Close</a>
                     </div>
                 </form>
@@ -177,8 +177,8 @@
     @endif
     <br>
     @if (auth()->user()->isAdmin())
-        <section>
-            <header class="page-title">ACTIVITY LOGS <div class="logs-count">{{ $activityLogs->count() }} Records</div></header>
+        <section id="activity-logs">
+            <header class="page-title">ACTIVITY LOGS <div class="logs-count">{{ $activityLogs->total() }} Records</div></header>
             <div class="card">
                 <div class="logs-table-wrapper">
                     <table class="logs-table">
@@ -234,11 +234,11 @@
                                 ];
                             }
                         @endphp
-                        <nav class="pager" aria-label="Pagination" data-last="{{ $last }}" data-url="{{ $logs->url(1) }}" data-page-name="{{ $logs->getPageName() }}">
+                        <nav class="pager" aria-label="Pagination" data-last="{{ $last }}" data-url="{{ $activityLogs->url(1) }}" data-page-name="{{ $activityLogs->getPageName() }}">
                             @if ($activityLogs->onFirstPage())
                                 <span class="disabled">◀&#xFE0E;</span>
                             @else
-                                <a href="{{ $logs->previousPageUrl() }}">◀&#xFE0E;</a>
+                                <a href="{{ $activityLogs->previousPageUrl() }}">◀&#xFE0E;</a>
                             @endif
                             @foreach ($pages as $page)
                                 @if ($page === '...')
@@ -246,7 +246,7 @@
                                 @elseif ($page == $current)
                                     <span class="active">{{ $page }}</span>
                                 @else
-                                    <a href="{{ $logs->url($page) }}">{{ $page }}</a>
+                                    <a href="{{ $activityLogs->url($page) }}">{{ $page }}</a>
                                 @endif
                             @endforeach
                             @if ($activityLogs->hasMorePages())

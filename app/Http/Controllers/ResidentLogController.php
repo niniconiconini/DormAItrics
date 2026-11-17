@@ -18,9 +18,9 @@ class ResidentLogController extends Controller
             'resident.user',
             'timeOutApprover',
             'timeInApprover',
-        ])->latest()->paginate(10);
+        ])->latest()->paginate(10)->fragment('facial-recognition-logs');
 
-        $activityLogs = ActivityLog::with('user')->latest()->paginate(10, ['*'], 'activities');
+        $activityLogs = ActivityLog::with('user')->latest()->paginate(10, ['*'], 'activities')->fragment('activity-logs');
         $selectedLog = null;
 
         if (request('modal')) {
@@ -55,9 +55,10 @@ class ResidentLogController extends Controller
 
         $log->update([
             'departed_at' => Carbon::parse($request->departed_date.' '.$request->departed_time),
-            'returned_at' => $request->returned_date ? Carbon::parse($request->returned_date.' '.$request->returned_time) : null,
+            'time_in_approver' => ($request->filled('returned_date') && $request->filled('returned_time')) ? Auth::id() : null,
+            'returned_at' => ($request->filled('returned_date') && $request->filled('returned_time')) ? Carbon::parse($request->returned_date.' '.$request->returned_time) : null,
             'notes' => $request->notes."\n".$editedBy,
-            'pass_slip_id' => $request->has('has_pass_slip') ? $log->pass_slip_id ?? 1 : null,
+            'pass_slip_id' => $request->has('has_pass_slip') ? $log->pass_slip_id : null,
         ]);
 
         ActivityLog::create(['user_id' => Auth::id(), 'action_taken' => 'Resident Log Edited']);
