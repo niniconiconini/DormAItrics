@@ -74,7 +74,7 @@ class ConcernController extends Controller
     public function reply(Request $request, Concern $concern): RedirectResponse|JsonResponse
     {
         $validated = $request->validateWithBag('reply', [
-            'reply' => 'required|string|max:1000',
+            'reply' => 'required|string|max:500',
         ]);
 
         $reply = $concern->replies()->create([
@@ -95,7 +95,7 @@ class ConcernController extends Controller
         abort_unless((int) $reply->user_id === (int) Auth::id(), 403);
 
         $validated = $request->validateWithBag('reply', [
-            'reply' => 'required|string|max:1000',
+            'reply' => 'required|string|max:500',
         ]);
 
         $reply->update(['message' => $validated['reply']]);

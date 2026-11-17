@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
+    <title>Login</title>
     <link rel="shortcut icon" href="images/spumlogo.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
@@ -64,7 +64,7 @@
             color: var(--text-color);
         }
         
-        #login-form .form-input, .form-cb {
+        #login-form .form-input {
             height: 5vh;
             font-size: 1vw;
             border: 1px solid #ccc;
@@ -89,12 +89,6 @@
             color: var(--primary-color);
         }
 
-        #link p {
-            font-size: 1.8vh;
-            text-align: center;
-            margin-top: 1vh;
-        }
-        
         a {
             color: var(--secondary-color);
         }
@@ -127,21 +121,66 @@
             width: min(700px, 90vw) !important;
             padding: 1.5rem !important;
         }
+        
+        /* show password design */
+        #login-form .password-field {
+            position: relative;
+            width: 100%;
+        }
 
+        #login-form .password-field .form-input {
+            padding-right: 4.5rem;
+        }
+
+        #login-form .password-toggle {
+            position: absolute;
+            top: 50%;
+            right: 0.75rem;
+            transform: translateY(-50%);
+            border: 0;
+            padding: 0;
+            background: transparent;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: clamp(0.75rem, 0.8vw, 0.95rem);
+            font-weight: 600;
+        }
+
+        #login-form .password-toggle:focus-visible {
+            outline: 2px solid var(--secondary-color);
+            outline-offset: 3px;
+        }    
+
+        #login-form .login-lockout-message {
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background: #f8d7da;
+            color: #842029;
+            text-align: center;
+            font-size: clamp(0.8rem, 1vw, 1rem);
+        }    
     </style>
 </head>
 <body>
     <section id="login-form" class="form-section container">
         <header id="page-title">Login!</header>
+        @if ($lockoutNotice)
+            <p class="login-lockout-message" role="alert">{{ $lockoutNotice }}</p>
+        @endif
         <form method="POST" action="{{ route('login.attempt') }}" class="form-container">
             @csrf
             <div class="form-group">
                 <label for="email">Email:</label>
-        <input type="email" name="email" id="email" placeholder="" required class="form-input" value="{{ old('email') }}">
+        <input type="email" name="email" id="email" required class="form-input" value="{{ old('email', $lockedOutEmail) }}">
             </div>
             <div class="form-group">
-                <label for="address">Password:</label>
-                <input type="password" id="password" name="password" placeholder="" required class="form-input">
+                <label for="password">Password:</label>
+                <div class="password-field">
+                    <input type="password" id="password" name="password" required class="form-input" autocomplete="current-password">
+                    <button type="button" id="togglePassword" class="password-toggle" aria-controls="password" aria-pressed="false">Show</button>
+                </div>
                 <a href="#">Forgot Password?</a>
             </div>
             <div style="text-align: center;">
@@ -170,5 +209,19 @@
             </div>
         @endif
     </section>
+        <script>
+        const passwordInput = document.getElementById('password');
+        const togglePasswordButton = document.getElementById('togglePassword');
+
+        if (passwordInput && togglePasswordButton) {
+            togglePasswordButton.addEventListener('click', () => {
+                const shouldShowPassword = passwordInput.type === 'password';
+                passwordInput.type = shouldShowPassword ? 'text' : 'password';
+
+                togglePasswordButton.textContent = shouldShowPassword ? 'Hide' : 'Show';
+                togglePasswordButton.setAttribute('aria-pressed', String(shouldShowPassword));
+            });
+        }
+    </script>
 </body>
 </html>
