@@ -1,6 +1,6 @@
 <x-layout>
     <x-slot:title>Facial Recognition Logs</x-slot:title>
-    <section>
+    <section id="facial-recognition-logs">
         <header class="page-title">FACIAL RECOGNITION LOGS <div class="logs-count">{{ $logs->count() }} Records</div></header>
         <div class="card">
             <div class="logs-table-wrapper">
@@ -11,11 +11,12 @@
                             <th>Time Out</th>
                             <th>Time In</th>
                             <th>Pass Slip</th>
+                            <th>Notes</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($logs as $log)
-                            <tr>
+                            <tr onclick="window.location='{{ route('logs.index', ['modal' => $log->id]) }}'">
                                 <td>
                                     <div class="resident-name">
                                         <strong>
@@ -26,21 +27,21 @@
                                 </td>
                                 <td>
                                     <div class="date-info">
-                                        <strong>
-                                            {{ $log->departed_at->format('M d, Y') }}
+                                        <strong>Date: </strong>{{ $log->departed_at->format('M d, Y') }}
                                             <br>
-                                            {{ $log->departed_at->format('h:i A') }}
-                                        </strong>
+                                        <strong>Time: </strong>{{ $log->departed_at->format('h:i A') }}
+                                            <br>
+                                        <strong>Guard: </strong>{{ $log->timeOutApprover->first_name }} {{ $log->timeOutApprover->last_name }}
                                     </div>
                                 </td>
                                 <td>
                                     @if ($log->returned_at)
                                         <div class="date-info">
-                                            <strong>
-                                                {{ $log->returned_at->format('M d, Y') }}
+                                            <strong>Date: </strong>{{ $log->returned_at->format('M d, Y') }}
                                                 <br>
-                                                {{ $log->returned_at->format('h:i A') }}
-                                            </strong>
+                                            <strong>Time: </strong>{{ $log->returned_at->format('h:i A') }}
+                                                <br>
+                                            <strong>Guard: </strong>{{ $log->timeInApprover?->first_name }} {{ $log->timeInApprover?->last_name }}
                                         </div>
                                     @else
                                         <span class="status-badge pending">
@@ -59,6 +60,19 @@
                                         </span>
                                     @endif
                                 </td>
+                                <td>
+                                    <div class="notes">
+                                        @php
+                                            $lines = explode("\n", $log->notes);
+                                        @endphp
+                                        <strong>{{ $lines[0] }}</strong>
+                                        @if(isset($lines[1]))
+                                            <br>
+                                            <span style="font-style: italic;">{{ $lines[1] }}</span>
+                                        @endif
+                                    </div>
+
+                                </td>
                             </tr>
                         @empty
                             <tr>
@@ -71,160 +85,98 @@
                         @endforelse
                     </tbody>
                 </table>
+                @if ($logs->hasPages())
+                    @php
+                        $current = $logs->currentPage();
+                        $last = $logs->lastPage();
+
+                        if ($last <= 7) {
+                            $pages = range(1, $last);
+                        } elseif ($current <= 4) {
+                            $pages = [...range(1, 5), '...', $last];
+                        } elseif ($current >= $last - 3) {
+                            $pages = [1, '...', ...range($last - 4, $last)];
+                        } else {
+                            $pages = [
+                                1,
+                                '...',
+                                $current - 1,
+                                $current,
+                                $current + 1,
+                                '...',
+                                $last
+                            ];
+                        }
+                    @endphp
+                    <nav class="pager" aria-label="Pagination" data-last="{{ $last }}" data-url="{{ $logs->url(1) }}" data-page-name="{{ $logs->getPageName() }}">
+                        @if ($logs->onFirstPage())
+                            <span class="disabled">◀&#xFE0E;</span>
+                        @else
+                            <a href="{{ $logs->previousPageUrl() }}">◀&#xFE0E;</a>
+                        @endif
+                        @foreach ($pages as $page)
+                            @if ($page === '...')
+                                <button type="button" class="dots">&hellip;</button>
+                            @elseif ($page == $current)
+                                <span class="active">{{ $page }}</span>
+                            @else
+                                <a href="{{ $logs->url($page) }}">{{ $page }}</a>
+                            @endif
+                        @endforeach
+                        @if ($logs->hasMorePages())
+                            <a href="{{ $logs->nextPageUrl() }}">▶&#xFE0E;</a>
+                        @else
+                            <span class="disabled">▶&#xFE0E;</span>
+                        @endif
+                    </nav>
+                @endif
             </div>
         </div>
     </section>
-
-    {{-- <style>
-        .logs-table {
-            width: 100%;
-            min-width: 750px;
-        }
-
-        .logs-table thead {
-            background: #f3f6ed;
-        }
-
-        .logs-table th {
-            color: #315b49;
-            text-align: left;
-            padding: 17px 20px;
-            font-size: 0.85rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .logs-table td {
-            padding: 17px 20px;
-            border-bottom: 1px solid #edf0eb;
-            color: #40584c;
-            font-size: 0.9rem;
-        }
-
-        .logs-table tbody tr {
-            transition: background 0.2s ease;
-        }
-
-        .logs-table tbody tr:hover {
-            background: #f8faf5;
-        }
-
-        .logs-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .log-id {
-            color: #9aa99f !important;
-            font-weight: 700;
-        }
-
-        .resident-name {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .resident-avatar {
-            width: 40px;
-            height: 40px;
-            min-width: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #dcebdc;
-            color: #155b43;
-            border-radius: 50%;
-            font-weight: 800;
-            font-size: 1rem;
-        }
-
-        .resident-name strong {
-            display: block;
-            color: #194b38;
-            font-size: 0.9rem;
-        }
-
-        .resident-name small,
-        .date-info small {
-            display: block;
-            color: #91a096;
-            font-size: 0.78rem;
-            margin-top: 4px;
-        }
-
-        .date-info strong {
-            color: #40584c;
-            font-size: 0.88rem;
-            white-space: nowrap;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 7px 12px;
-            border-radius: 30px;
-            font-size: 0.76rem;
-            font-weight: 800;
-            white-space: nowrap;
-        }
-
-        .approved,
-        .returned {
-            background: #e0f2e5;
-            color: #237343;
-        }
-
-        .pending,
-        .outside {
-            background: #fff0d4;
-            color: #a36a13;
-        }
-
-        .no-slip {
-            background: #f0eeee;
-            color: #777;
-        }
-
-        .empty-state {
-            text-align: center !important;
-            padding: 65px 20px !important;
-        }
-
-        .empty-icon {
-            font-size: 2.5rem;
-            margin-bottom: 12px;
-        }
-
-        .empty-state strong {
-            display: block;
-            color: #155b43;
-            font-size: 1.1rem;
-        }
-
-        .empty-state p {
-            color: #91a096;
-            margin-top: 7px;
-        }
-
-        @media (max-width: 768px) {
-            .logs-page {
-                padding: 15px;
-            }
-
-            .logs-header h1 {
-                font-size: 1.7rem;
-            }
-
-            .logs-card-header {
-                padding: 18px;
-                gap: 12px;
-                flex-wrap: wrap;
-            }
-
-            .logs-table th,
-            .logs-table td {
-                padding: 14px;
-            }
-        }
-    </style> --}}
+    @if($selectedLog)
+        <div class="modal">
+            <div class="card scan-modal logs-modal" style="height: 50%;">
+                <form action="{{ route('logs.update', $selectedLog) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="slip-heading">
+                        <h3>Edit Log</h3>
+                    </div>
+                    <div class="slip-grid">
+                        <div class="slip-field">
+                            <label for="date">Date Out</label>
+                            <input type="date" id="date" name="departed_date" value="{{ $selectedLog->departed_at->format('Y-m-d') }}" required>
+                        </div>
+                        <div class="slip-field">
+                            <label for="time_out">Time out</label>
+                            <input type="time" id="time_out" name="departed_time" value="{{ $selectedLog->departed_at->format('H:i') }}" min="00:00" max="21:00" required>
+                        </div>
+                        <div class="slip-field">
+                            <label for="return_date">Date In</label>
+                            <input type="date" id="return_date" name="returned_date" value="{{ $selectedLog->returned_at->format('Y-m-d') }}" required>
+                        </div>
+                        <div class="slip-field">
+                            <label for="return_time">Time In</label>
+                            <input type="time" id="return_time" name="returned_time" value="{{ $selectedLog->returned_at->format('H:i') }}" min="00:00" max="21:00" required>
+                        </div>
+                        <div class="slip-field full">
+                            <label>Notes</label>
+                             <textarea name="notes">{{ $selectedLog->notes }}</textarea>
+                        </div>
+                        <div class="slip-field full">
+                            <label class="pass-slip-label" style="font-size: 1.20rem; font-weight: 500;"><input type="checkbox" name="has_pass_slip" @checked($selectedLog->pass_slip_id)> With Pass Slip</label>
+                        </div>
+                    </div>
+                    <div class="form-buttons">
+                        <button class="btn-primary">Save</button>
+                        <a href="{{ route('logs.index') }}" class="btn-primary">Close</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+    <br>
+    <section>
+        <header class="page-title">ACTIVITY LOGS <div class="logs-count">{{ $logs->count() }} Records</div></header>
+    </section>
 </x-layout>

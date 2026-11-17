@@ -79,7 +79,7 @@ class LoginController extends Controller
                 $user->resident->check_out_date &&
                 $user->resident->check_out_date < now()->toDateString()
             ) {
-                // $user->update(['status' => 'Inactive',]);
+
                 User::where('id', $user->id)->update(['status' => 'Inactive']);
                 $user->resident->room_id = null;
 
@@ -96,7 +96,7 @@ class LoginController extends Controller
 
             $request->session()->regenerate();
 
-            if ($user->isGuard()) {
+            if ($user->isGuard() && ! $user->isAdmin()) {
                 return redirect()->route('logs.index');
             }
 

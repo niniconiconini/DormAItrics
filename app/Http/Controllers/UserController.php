@@ -61,7 +61,16 @@ class UserController extends Controller
             $residents->where('resident_type', request('resident_type'));
         }
 
-        $residents = $residents->get();
+        if (request('search')) {
+            $search = request('search');
+            $residents->whereHas('user', function ($query) use ($search) {
+                $query->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('nickname', 'like', "%{$search}%");
+            });
+        }
+
+        $residents = $residents->paginate(10)->withQueryString();
 
         return view('residents', ['admins' => $admins,
             'residents' => $residents]);
@@ -292,7 +301,8 @@ class UserController extends Controller
         $validated['middle_name'] = ! empty($validated['middle_name']) ? ucwords(strtolower($validated['middle_name'])) : null;
         $validated['nickname'] = ucwords(strtolower($validated['nickname']));
 
-        $user->update($validated); // create user
+        // dd($request->all());
+        $user->update($validated); // update user
 
         // reset resident info when turning user inactive
         if ($user->status === 'Inactive' && $user->resident) {
