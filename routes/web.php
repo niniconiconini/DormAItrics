@@ -75,6 +75,7 @@ Route::middleware(['auth', 'can:admins'])->group(function () {
     Route::delete('reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 
     // concerns
+    Route::patch('concerns/{concern}/status', [ConcernController::class, 'updateStatus'])->name('concerns.status');
     Route::delete('concerns/{concern}', [ConcernController::class, 'destroy'])->name('concerns.destroy');
 
     // pass slip management

@@ -397,7 +397,7 @@ color: var(--primary-color);
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 1rem;
-    resize: vertical;
+    resize: none;
 }
 
 .edit-modal .slip-field {
@@ -473,15 +473,17 @@ color: var(--primary-color);
     margin-top: 1rem;
     padding-top: 0.75rem;
     border-top: 1px solid #ccc;
+    font-size: 1.3rem;
 }
 
 .like-btn {
-    padding: 0.4rem 0.9rem;
+    padding: 0.5rem 1rem;
     border: 2px solid var(--sidebar-color);
     border-radius: 0.5rem;
     background: none;
     color: var(--sidebar-color);
     font-weight: 600;
+    font-size: 1.15rem;
     cursor: pointer;
     transition: var(--transition);
 }
@@ -509,15 +511,286 @@ color: var(--primary-color);
 
 .reply-form input {
     flex: 1;
-    height: 40px;
-    padding: 0 0.75rem;
+    height: 48px;
+    padding: 0 1rem;
     border: 1px solid #ccc;
     border-radius: 8px;
+    font-size: 1rem;
+}
+
+/* Bigger forms and texts */
+.concerns-page .post-box {
+    width: 100%;
+    margin: 1.5rem 0;
+}
+
+.concerns-page .input-message {
+    width: min(1450px, 96%);
+    padding: 1.5rem 2rem;
+}
+
+.concerns-page .input-message:focus-within {
+    width: min(1450px, 96%);
+}
+
+.concerns-page #concerns-list {
+    width: 100%;
+    align-items: stretch;
+    gap: 1.25rem;
+}
+
+.concerns-page .concern-card {
+    width: min(1500px, 100%);
+    padding: 1.5rem 2rem;
+}
+
+.concerns-page .concern-card .author {
+    font-size: 1.45rem;
+}
+
+.concerns-page .concern-card .post-time {
+    font-size: 0.95rem;
+}
+
+.concerns-page .concern-message {
+    margin-top: 1rem;
+    font-size: clamp(1.2rem, 1.35vw, 1.5rem);
+    line-height: 1.75;
+}
+
+.concerns-page #concerns-list > p {
+    width: 100%;
+    padding: 2rem 1rem;
+    color: var(--primary-color);
+    font-size: clamp(1.25rem, 1.6vw, 1.6rem);
+    font-weight: 600;
+    text-align: center;
+}
+
+.concerns-page .slip-success {
+    text-align: center;
+}
+
+.concerns-page .concern-card > .post-author > img {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* concerns confirmation popup */
+
+.concern-confirmation {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(700px, 90vw);
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 1.5rem 2rem;
+    border: none;
+    border-radius: 10px;
+    background: var(--body-color);
+    color: var(--primary-color);
+    box-shadow: 20px 20px 50px var(--primary-color);
+    text-align: center;
+}
+
+.concern-confirmation::backdrop {
+    background: rgba(113, 121, 119, 0.7);
+}
+
+.concern-confirmation h2 {
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.concern-confirmation p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+.concern-confirmation-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+/* private/public status design */
+
+.concern-management-tabs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.25rem;
+    margin: 0 auto 1.5rem;
+}
+
+.concern-tab {
+    padding: 0.25rem 0.1rem 0.45rem;
+    border-bottom: 3px solid transparent;
+    color: var(--primary-color);
+    font-size: clamp(1.4rem, 2vw, 2rem);
+    text-decoration: none;
+}
+
+.concern-tab.active {
+    border-bottom-color: var(--primary-color);
+    font-weight: 700;
+}
+
+.concern-tab-divider {
+    color: var(--primary-color);
+    font-size: 2rem;
+}
+
+.concern-author-name {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.concern-visibility-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.concern-visibility-badge.is-public {
+    background: #e5f3e9;
+    color: #155332;
+}
+
+.concern-visibility-badge.is-private {
+    background: #fff0cf;
+    color: #795300;
+}
+
+.concerns-page .concern-compose label {
+    display: block;
+    margin: 1rem 0 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.concerns-page .concern-compose textarea[name="message"] {
+    display: block;
+    width: 100%;
+    min-height: 10rem;
+    padding: 1rem;
+    border: 1px solid #b8c4bc;
+    border-radius: 0.75rem;
+    background: white;
+    font-size: 1.15rem;
+    line-height: 1.6;
+    resize: none;
+}
+
+.concerns-page .concern-compose textarea[name="message"]:focus,
+.concerns-page .concern-compose select:focus {
+    outline: 2px solid var(--secondary-color);
+    outline-offset: 2px;
+}
+
+.concerns-page .concern-compose select {
+    width: 100%;
+    min-height: 3rem;
+    margin-top: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8c4bc;
+    border-radius: 0.75rem;
+    background: white;
+    font-size: 1.1rem;
+}
+
+.concerns-page .concern-compose .btn-primary {
+    padding: 0.85rem 1.4rem;
+    font-size: 1rem;
+}
+
+@media (max-width: 700px) {
+    .concerns-page .input-message,
+    .concerns-page .input-message:focus-within,
+    .concerns-page .concern-card {
+        width: 100%;
+    }
+
+    .concerns-page .input-message,
+    .concerns-page .concern-card {
+        padding: 1rem;
+    }
+}
+
+/* Unreviewed, acknowledged, & resolved designs */
+.concern-status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.concern-status-badge.status-pending {
+    background: #fff0cf;
+    color: #795300;
+}
+
+.concern-status-badge.status-acknowledged {
+    background: #dcecff;
+    color: #174c78;
+}
+
+.concern-status-badge.status-resolved {
+    background: #e5f3e9;
+    color: #155332;
+}
+
+.concerns-page .concern-card > .post-author {
+    align-items: flex-start;
+}
+
+.concern-admin-actions {
+    display: flex;
+    align-items: center;
+    align-self: flex-start;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.concerns-page .concern-admin-actions .btn-primary {
+    padding: 0.6rem 1rem;
+    font-size: 1.1rem;
+}
+
+.concern-acknowledge-button {
+    background: #174c78;
+}
+
+.concern-resolve-button {
+    background: #155332;
 }
 
 /* Concerns: reply edit and delete */
 .reply-body {
     flex: 1;
+    font-size: 1.2rem;
+}
+
+.concerns-page .reply-body .message {
+    margin-top: 0.35rem;
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+.concerns-page .reply-body .post-time {
+    font-size: 1rem;
 }
 
 .reply-actions {
@@ -530,7 +803,7 @@ color: var(--primary-color);
     border: none;
     background: none;
     color: var(--sidebar-color);
-    font-size: 0.8rem;
+    font-size: 1.05rem;
     font-weight: 600;
     cursor: pointer;
 }
@@ -540,6 +813,7 @@ color: var(--primary-color);
 }
 
 .reply-deleted {
+    font-size: 1.15rem;
     font-style: italic;
     color: #6b716b;
 }
@@ -552,15 +826,16 @@ color: var(--primary-color);
 
 .reply-edit-form input {
     flex: 1;
-    height: 36px;
-    padding: 0 0.75rem;
+    height: 48px;
+    padding: 0 1rem;
     border: 1px solid #ccc;
     border-radius: 8px;
+    font-size: 1rem;
 }
 
 .reply-edit-form .btn-primary {
-    padding: 0.3rem 0.8rem;
-    font-size: 0.85rem;
+    padding: 0.65rem 1rem;
+    font-size: 1rem;
 }
 
 /* ===== CONCERNS END ===== */

@@ -11,7 +11,7 @@
             <section class="post-box">
             <div class="input-message">
                 <div class="author post-author">
-                    <img src="{{ asset('images/users/user-profile.png') }}" alt="">
+                    <img src="{{ asset(auth()->user()->profile_picture ?: 'images/users/user-profile.png') }}" alt="{{ auth()->user()->userName() }} profile picture">
                     <span>{{ auth()->user()->userName() }}</span>
                 </div>
                 <form method="POST" action="{{ route('announcements.store') }}">
@@ -43,7 +43,7 @@
             @forelse ($announcements as $announcement)
                 <div class="card announcement-card">
                     <div class="author post-author">
-                        <img src="{{ asset('images/users/user-profile.png') }}" alt="">
+                        <img src="{{ asset($announcement->user?->profile_picture ?: 'images/users/user-profile.png') }}" alt="{{ $announcement->user?->userName() }} profile picture">
                         <div>
                             <span>{{ $announcement->user->userName() }}</span><br>
                             <small class="post-time">{{ $announcement->created_at->format('M j, Y \a\t g:i A') }}@if ($announcement->updated_at->gt($announcement->created_at)) &middot; Edited @endif</small>

@@ -33,7 +33,7 @@
                             </div>
                             <div class="slip-field">
                                 <label for="time_out">Time out</label>
-                                <input type="time" id="time_out" name="requested_time_out" value="{{ old('requested_time_out') }}" min="00:00" max="21:00" step="600" required>
+                                <input type="time" id="time_out" name="requested_time_out" value="{{ old('requested_time_out') }}" min="05:00" max="21:00" step="600" required>
                             </div>
                             <div class="slip-field full">
                                 <label for="destination">Destination</label>
