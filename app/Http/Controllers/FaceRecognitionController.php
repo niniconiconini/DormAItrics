@@ -20,7 +20,7 @@ class FaceRecognitionController extends Controller
         // recognizing
         // $output = shell_exec('"'.dirname(base_path()).'\facial-recognition\venv\Scripts\python.exe" "'.dirname(base_path()).'\facial-recognition\recognizeinator.py'.'" 2>&1');
         // $residentId = (int) trim((string) $output);
-        $response = Http::timeout(20)->get('http://192.168.254.156:5000/scan');
+        $response = Http::timeout(20)->get('https://blurred-roulette-unstuffed.ngrok-free.dev');
         $residentId = (int) trim($response->body());
         if (! $residentId) {
             $attempts = session('scan_attempts', 0) + 1;
