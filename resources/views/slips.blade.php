@@ -1,7 +1,7 @@
 <x-layout>
     <x-slot:title>Pass Slips</x-slot:title>    
     <header class="page-title">PASS SLIPS</header>
-    <section>
+    <section class="pass-slips-page">
 
         {{-- ===== TOP HALF: FILL UP PASS SLIP ===== --}}
         <div class="announcement-card">

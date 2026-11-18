@@ -1,10 +1,10 @@
 <x-layout>
     <x-slot:title>Pass Slip Management</x-slot:title>
     <header class="page-title">PASS SLIPS MANAGEMENT</header>
-    <section>
+    <section class="pass-slip-management">
 
         @if (session('success') || session('error'))
-            <div class="announcement-card">
+            <div class="announcement-card slips-mgmt-flash">
                 @if (session('success'))
                     <p class="slip-success">{{ session('success') }}</p>
                 @endif
@@ -165,7 +165,7 @@
         {{-- ===== DELETE ALL PASS SLIPS: two-step confirmation ===== --}}
         <div id="deleteModal" hidden>
             <div class="modal">
-                <div class="room-modal delete-modal">
+                <div class="room-modal delete-modal confirmation-modal">
 
                     {{-- step 1 --}}
                     <div id="deleteStep1">

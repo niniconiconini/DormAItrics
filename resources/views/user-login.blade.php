@@ -127,8 +127,30 @@
         }
 
         .receipt-modal {
-            width: min(700px, 90vw) !important;
-            padding: 1.5rem !important;
+            width: min(850px, 94vw) !important;
+            max-width: 94vw;
+            padding: 2.5rem !important;
+        }
+
+        .confirmation-modal .modal-title {
+            margin-bottom: 1.5rem;
+            font-size: clamp(1.6rem, 2.5vw, 2rem);
+        }
+
+        .confirmation-modal p {
+            font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+            line-height: 1.8;
+        }
+
+        .confirmation-modal button {
+            padding: 0.85rem 1.2rem;
+            font-size: 1.05rem;
+        }
+
+        @media (max-width: 600px) {
+            .confirmation-modal {
+                padding: 1.5rem !important;
+            }
         }
         
         /* show password design */
@@ -169,7 +191,12 @@
             color: #842029;
             text-align: center;
             font-size: clamp(0.8rem, 1vw, 1rem);
-        }    
+        }   
+
+        .login-error-message {
+            white-space: pre-line;
+        } 
+        
     </style>
 </head>
 <body>
@@ -201,7 +228,7 @@
 
             @if(request('modal') === 'forgot')
                 <div class="modal">
-                    <div class="card user-modal receipt-modal" style="text-align: center;">
+                    <div class="card user-modal receipt-modal confirmation-modal" style="text-align: center;">
                         <h2 class="modal-title">Forgot Password?</h2>
                         <div class="receipt-box" style="padding: 1rem;">
                             <p style="padding: 0.5rem;">Please contact the dormitory administrator to reset your password.</p>
@@ -215,11 +242,11 @@
 
             @if($errors->any())
                 <div class="modal">
-                    <div class="card user-modal receipt-modal" style="text-align: center;">
+                    <div class="card user-modal receipt-modal confirmation-modal" style="text-align: center;">
                         <h2 class="modal-title">ERROR</h2>
                         <div class="receipt-box" style="padding: 1rem;">
                             @foreach($errors->all() as $error)
-                                <p style="padding: 0.5rem;">{{ $error }}</p>
+                                <p class="login-error-message" style="padding: 0.5rem;">{{ $error }}</p>
                             @endforeach
                         </div>
                         <div class="form-buttons">

@@ -46,7 +46,7 @@
                         <button type="submit" class="btn-primary">Submit!</button>
                     </div>
                 </form>
-                <dialog id="concern-confirmation" class="concern-confirmation" aria-labelledby="concern-confirmation-title" aria-describedby="concern-confirmation-message">
+                <dialog id="concern-confirmation" class="concern-confirmation confirmation-modal" aria-labelledby="concern-confirmation-title" aria-describedby="concern-confirmation-message">
                     <h2 id="concern-confirmation-title">Submit this concern?</h2>
                     <p id="concern-confirmation-message">After submitting, you will not be able to edit or delete this concern. Are you sure you want to continue?</p>
                     <div class="concern-confirmation-actions">

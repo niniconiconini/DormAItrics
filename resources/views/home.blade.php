@@ -1,6 +1,6 @@
 <x-layout>
     <x-slot:title>Home</x-slot:title>
-    <section class="announcement">
+    <section class="announcement announcements-page">
         <header class="page-title">ANNOUNCEMENTS</header>
         @if (session('success'))
             <div class="announcement-card">
@@ -37,44 +37,18 @@
                 </form>
             </div>
         </section>
-        <hr style=" width: 119%; margin: 1rem 0; grid-column: 1 / -1;">
+        <hr>
         @endif
-        <div class="card home-links" style="margin-right: 250px;">
-            <h3>⚜️ SPUM Links</h3>
-            <div class="link-item">
-                <span>SPUM Website</span>
-                <a href="https://spumanila.edu.ph" target="_blank" class="btn-primary">Go</a>
-            </div>
-            <div class="link-item">
-                <span>SPUM Facebook Page</span>
-                <a href="https://www.facebook.com/spumanila" target="_blank" class="btn-primary">Go</a>
-            </div>
-            <div class="link-item">
-                <span>SIS</span>
-                <a href="https://spumanilacollege.orangeapps.com.ph/" target="_blank" class="btn-primary">Go</a>
-            </div>
-            <div class="link-item">
-                <span>FLOW</span>
-                <a href="https://spumanila.orangeapps.ph/oa_school/" target="_blank" class="btn-primary">Go</a>
-            </div>
-            <div class="link-item">
-                <span>Public Dormitory Website</span>
-                <a href="#" class="btn-primary">Go</a>
-            </div>
-            <div class="link-item">
-                <span>User Manual</span>
-                <a href="#" class="btn-primary">Go</a>
-            </div>
-        </div>
-        <section id="list-view" class="list-view">
-            @forelse ($announcements as $announcement)
-                <div class="card announcement-card">
-                    <div class="author post-author">
-                        <img src="{{ asset($announcement->user?->profile_picture ?: 'images/users/user-profile.png') }}" alt="{{ $announcement->user?->userName() }} profile picture">
-                        <div>
-                            <span>{{ $announcement->user->userName() }}</span><br>
-                            <small class="post-time">{{ $announcement->created_at->format('M j, Y \a\t g:i A') }}@if ($announcement->updated_at->gt($announcement->created_at)) &middot; Edited @endif</small>
-                        </div>
+        <div class="announcements-content">
+            <section id="list-view" class="list-view">
+                @forelse ($announcements as $announcement)
+                    <div class="card announcement-card">
+                        <div class="author post-author">
+                            <img src="{{ asset($announcement->user?->profile_picture ?: 'images/users/user-profile.png') }}" alt="{{ $announcement->user?->userName() }} profile picture">
+                            <div>
+                                <span>{{ $announcement->user->userName() }}</span><br>
+                                <small class="post-time">{{ $announcement->created_at->format('M j, Y \a\t g:i A') }}@if ($announcement->updated_at->gt($announcement->created_at)) &middot; Edited @endif</small>
+                            </div>
 
                         {{-- edit and delete: only for the admin who posted it --}}
                         @if ((int) $announcement->user_id === (int) auth()->id())
@@ -139,6 +113,34 @@
             @endif
         </section>
 
+            <div class="card home-links">
+            <h3>⚜️ SPUM Links</h3>
+            <div class="link-item">
+                <span>SPUM Website</span>
+                <a href="https://spumanila.edu.ph" target="_blank" class="btn-primary">Go</a>
+            </div>
+            <div class="link-item">
+                <span>SPUM Facebook Page</span>
+                <a href="https://www.facebook.com/spumanila" target="_blank" class="btn-primary">Go</a>
+            </div>
+            <div class="link-item">
+                <span>SIS</span>
+                <a href="https://spumanilacollege.orangeapps.com.ph/" target="_blank" class="btn-primary">Go</a>
+            </div>
+            <div class="link-item">
+                <span>FLOW</span>
+                <a href="https://spumanila.orangeapps.ph/oa_school/" target="_blank" class="btn-primary">Go</a>
+            </div>
+            <div class="link-item">
+                <span>Public Dormitory Website</span>
+                <a href="#" class="btn-primary">Go</a>
+            </div>
+            <div class="link-item">
+                <span>User Manual</span>
+                <a href="#" class="btn-primary">Go</a>
+            </div>
+        </div>
+        
         {{-- ===== EDIT ANNOUNCEMENT POPUP ===== --}}
         <div id="editModal" hidden>
             <div class="modal">

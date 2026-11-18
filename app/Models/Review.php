@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
     'resident_id',
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Review extends Model
 {
+    use SoftDeletes;
     /**
      * @return BelongsTo<Resident, $this>
      */
