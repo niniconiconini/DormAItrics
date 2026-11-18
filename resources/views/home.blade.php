@@ -37,8 +37,35 @@
                 </form>
             </div>
         </section>
-        <hr>
+        <hr style=" width: 119%; margin: 1rem 0; grid-column: 1 / -1;">
         @endif
+        <div class="card home-links" style="margin-right: 250px;">
+            <h3>⚜️ SPUM Links</h3>
+            <div class="link-item">
+                <span>SPUM Website</span>
+                <a href="https://spumanila.edu.ph" target="_blank" class="btn-primary">Go</a>
+            </div>
+            <div class="link-item">
+                <span>SPUM Facebook Page</span>
+                <a href="https://www.facebook.com/spumanila" target="_blank" class="btn-primary">Go</a>
+            </div>
+            <div class="link-item">
+                <span>SIS</span>
+                <a href="https://spumanilacollege.orangeapps.com.ph/" target="_blank" class="btn-primary">Go</a>
+            </div>
+            <div class="link-item">
+                <span>FLOW</span>
+                <a href="https://spumanila.orangeapps.ph/oa_school/" target="_blank" class="btn-primary">Go</a>
+            </div>
+            <div class="link-item">
+                <span>Public Dormitory Website</span>
+                <a href="#" class="btn-primary">Go</a>
+            </div>
+            <div class="link-item">
+                <span>User Manual</span>
+                <a href="#" class="btn-primary">Go</a>
+            </div>
+        </div>
         <section id="list-view" class="list-view">
             @forelse ($announcements as $announcement)
                 <div class="card announcement-card">

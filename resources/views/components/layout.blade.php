@@ -9,13 +9,13 @@
     @vite(['resources/css/main.css', 'resources/js/app.js']) {{-- css stylesheet --}}
 </head>
 <body>
-    <button id="mobile-menu-btn">☰ Menu</button>
+    <button id="mobile-menu-btn">☰</button>
     <nav id="sidebar">
         <div class="nav-links"> 
             <div class="menu-bar">
                 {{-- all nav --}}
                 @if (auth()->user()->isAdmin() || auth()->user()->isResident())
-                    <header class="text header-text">DormAItrics</header>
+                <header class="text header-text">DormAItrics</header>
                     <ul class="menu-links">
                         <li><a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') || request()->is('/') ? 'active' : '' }}">Announcements</a></li>
                         <li><a href="{{ route('reviews') }}" class="nav-link {{ request()->routeIs('reviews') || request()->is('/reviews') ? 'active' : '' }}">Reviews</a></li>
