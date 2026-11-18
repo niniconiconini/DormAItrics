@@ -74,6 +74,13 @@ class LoginController extends Controller
             $request->session()->forget('login_lockout_email');
             /** @var User $user */
             $user = Auth::user();
+
+            if ($user->resident?->is_applicant) {
+                Auth::logout();
+
+                return back()->withErrors(['email' => 'Your application is still pending for approval'])->onlyInput('email');
+            }
+
             // automatically deactivate residents whose checkout date has passed
             if (
                 $user->resident &&

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Concern;
 use App\Models\PassSlip;
 use App\Models\Resident;
 use App\Models\ResidentLog;
-use App\Models\Concern;
 use App\Models\Room;
 use App\Models\User;
 use Carbon\Carbon;
@@ -28,9 +28,9 @@ class AnalyticsController extends Controller
 
         $totalCapacity = Room::sum('capacity');
 
-        $occupiedSlots = Resident::whereHas('user', function ($query) {
-            $query->where('status', 'active');
-        })->count();
+        $occupiedSlots = Resident::whereNotNull('room_id')
+            ->whereHas('user', fn ($q) => $q->where('status', 'Active'))
+            ->count();
 
         $availableSlots = max(0, $totalCapacity - $occupiedSlots);
 
@@ -290,6 +290,16 @@ class AnalyticsController extends Controller
             ->groupBy('resident_type')
             ->get();
 
+        $residentLocationLeaderboard =
+            User::where('status', 'Active')
+                ->where('user_type', 'Resident')
+                ->whereNotNull('address')
+                ->selectRaw('address, COUNT(*) as count')
+                ->groupBy('address')
+                ->orderByDesc('count')
+                ->limit(5)
+                ->get();
+
         $demographicsTrend = [
             'gender' => $gender,
             'accommodation_type' => $accommodation_type,
@@ -315,6 +325,12 @@ class AnalyticsController extends Controller
                 SUM(visibility = "private") as private_count
             ')->groupByRaw('YEAR(created_at), MONTH(created_at)')->orderByRaw('YEAR(created_at), MONTH(created_at)')->get();
 
+        $commonConcerns = Concern::selectRaw('message, COUNT(*) as count')
+            ->groupBy('message')
+            ->orderByDesc('count')
+            ->limit(5)
+            ->get();
+
         return view('analytics', compact(
             'facilityStatistics',
             'checkInCheckOut',
@@ -330,8 +346,10 @@ class AnalyticsController extends Controller
             'withoutSlipLeaderboard',
             'lateReturnLeaderboard',
             'demographicsTrend',
+            'residentLocationLeaderboard',
             'concernAnalytics',
             'monthlyConcernTrend',
+            'commonConcerns',
         ));
     }
 }

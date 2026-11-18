@@ -17,12 +17,21 @@
         }
         
         body {
-            background: var(--text-color) url('{{ asset('images/bg.png') }}') no-repeat fixed center;
+            background: url('{{ asset('images/bg.png') }}') no-repeat fixed center;
             background-size: cover;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(113, 121, 119, 0.7);
         }
 
         :root {
@@ -164,52 +173,64 @@
     </style>
 </head>
 <body>
-    <section id="login-form" class="form-section container">
-        <header id="page-title">Login!</header>
-        @if ($lockoutNotice)
-            <p class="login-lockout-message" role="alert">{{ $lockoutNotice }}</p>
-        @endif
-        <form method="POST" action="{{ route('login.attempt') }}" class="form-container">
-            @csrf
-            <div class="form-group">
-                <label for="email">Email:</label>
-        <input type="email" name="email" id="email" required class="form-input" value="{{ old('email', $lockedOutEmail) }}">
-            </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <div class="password-field">
-                    <input type="password" id="password" name="password" required class="form-input" autocomplete="current-password">
-                    <button type="button" id="togglePassword" class="password-toggle" aria-controls="password" aria-pressed="false">Show</button>
+    <div class="overlay">
+        <section id="login-form" class="form-section container">
+            <header id="page-title">Login!</header>
+            @if ($lockoutNotice)
+                <p class="login-lockout-message" role="alert">{{ $lockoutNotice }}</p>
+            @endif
+            <form method="POST" action="{{ route('login.attempt') }}" class="form-container">
+                @csrf
+                <div class="form-group">
+                    <label for="email">Email:</label>
+            <input type="email" name="email" id="email" required class="form-input" value="{{ old('email', $lockedOutEmail) }}">
                 </div>
-                <a href="#">Forgot Password?</a>
-            </div>
-            <div style="text-align: center;">
-                <button type="submit" class="btn-primary">Login</button>
-            </div>
-        </form>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <div class="password-field">
+                        <input type="password" id="password" name="password" required class="form-input" autocomplete="current-password">
+                        <button type="button" id="togglePassword" class="password-toggle" aria-controls="password" aria-pressed="false">Show</button>
+                    </div>
+                    <a href="?modal=forgot">Forgot Password?</a>
+                </div>
+                <div style="text-align: center;">
+                    <button type="submit" class="btn-primary">Login</button>
+                </div>
+                <p style="padding-top: 1rem; text-align: center;">Don't have an account? <a href="{{ route('apply') }}">Sign Up</a></p>
+            </form>
 
-        @if($errors->any())
-            <div class="modal">
-                <div class="card user-modal receipt-modal" style="text-align: center;">
-                    <h2 class="modal-title">ERROR</h2>
-                    <div class="receipt-box" style="padding: 1rem;">
-                        @foreach($errors->all() as $error)
-                            <p style="padding: 0.5rem;">{{ $error }}</p>
-                        @endforeach
-                    </div>
-                    <div class="form-buttons">
-                        <button
-                            type="button"
-                            class="btn-primary"
-                            onclick="this.closest('.modal').remove()">
-                            OK
-                        </button>
+            @if(request('modal') === 'forgot')
+                <div class="modal">
+                    <div class="card user-modal receipt-modal" style="text-align: center;">
+                        <h2 class="modal-title">Forgot Password?</h2>
+                        <div class="receipt-box" style="padding: 1rem;">
+                            <p style="padding: 0.5rem;">Please contact the dormitory administrator to reset your password.</p>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="button" class="btn-primary" onclick="window.location='{{ route('login') }}'">OK</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endif
-    </section>
-        <script>
+            @endif
+
+            @if($errors->any())
+                <div class="modal">
+                    <div class="card user-modal receipt-modal" style="text-align: center;">
+                        <h2 class="modal-title">ERROR</h2>
+                        <div class="receipt-box" style="padding: 1rem;">
+                            @foreach($errors->all() as $error)
+                                <p style="padding: 0.5rem;">{{ $error }}</p>
+                            @endforeach
+                        </div>
+                        <div class="form-buttons">
+                            <button type="button" class="btn-primary" onclick="this.closest('.modal').remove()">OK</button>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        </section>
+    </div>
+    <script>
         const passwordInput = document.getElementById('password');
         const togglePasswordButton = document.getElementById('togglePassword');
 

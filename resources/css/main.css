@@ -2319,3 +2319,61 @@ color: var(--primary-color);
 }
 
 /* ===== DATA ANALYTICS END ===== */
+
+/* ===== MOBILE RESPONSIVENESS ===== */
+#mobile-menu-btn {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    body {
+        display: block;
+    }
+
+    #mobile-menu-btn {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+        border: none;
+        background: var(--sidebar-color);
+        color: var(--body-color);
+        font-size: 1.2rem;
+        font-weight: 700;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 10000;
+    }
+
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 280px;
+        height: 100vh;
+        z-index: 9999;
+        transition: left .3s ease;
+        overflow-y: auto;
+    }
+
+    #sidebar.show {
+        left: 0;
+    }
+
+    #content {
+        margin: 1rem;
+    }
+
+    #sidebar header {
+        font-size: 1.25rem;
+    }
+
+    .nav-links {
+        font-size: 1rem;
+    }
+
+    #sidebar img {
+        height: auto;
+    }
+}

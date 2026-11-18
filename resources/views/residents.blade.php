@@ -64,7 +64,13 @@
                             @default
                                 Residents
                         @endswitch
-                        <div class="logs-count" style="margin-top: 5px; width: 100%;">{{ $residents->total() }} Users</div>
+                        @if(request('view') === 'inactive')
+                            <div class="logs-count" style="margin-top: 5px; width: 100%;">{{ $inactiveAccounts->count() }} Users</div>
+                        @elseif(request('view') === 'all')
+                            <div class="logs-count" style="margin-top: 5px; width: 100%;">{{ $allAccounts->total() }} Users</div>
+                        @else
+                            <div class="logs-count" style="margin-top: 5px; width: 100%;">{{ $residents->total() }} Users</div>
+                        @endif
                     </h2>
                     @if(in_array(request('view', 'resident'), ['resident', 'transient']))
                         <a href="{{ route('users.index', ['modal' => 'add-resident', 'view' => request('view')]) }}" class="btn-primary">+ Add {{ request('view') === 'transient' ? 'Transient' : 'Resident' }}</a>
@@ -108,35 +114,31 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($residents as $resident)
-                                <tr style="cursor:pointer" onclick="window.location='{{ route('users.index', ['modal' => 'edit-user', 'user' => $resident->user_id, 'view' => request('view') ]) }}'">
-                                    <td><strong>{{ $resident->id }}</strong></td>
-                                    <td><div class="resident-name"><strong>{{ $resident->user->last_name }}, {{ $resident->user->first_name }} {{ $resident->user->middle_name }}</strong></div></td>
-                                    <td>{{ $resident->resident_type }}</td>
-                                    <td>
-                                        @if($resident->is_applicant)
-                                            <span class="status-badge pending">
-                                                Applicant
-                                            </span>
-                                        @elseif($resident->accommodation_type === 'Resident')
-                                            <span class="status-badge approved">
-                                                Resident
-                                            </span>
+                            @forelse($allAccounts as $allAccount)
+                                <tr style="cursor:pointer" onclick="window.location='{{ route('users.index', ['modal' => 'edit-user', 'user' => $allAccount->user_id, 'view' => request('view') ]) }}'">
+                                    <td><strong>{{ $allAccount->id }}</strong></td>
+                                    <td><div class="resident-name"><strong>{{ $allAccount->last_name }}, {{ $allAccount->first_name }} {{ $allAccount->middle_name }}</strong></div></td>
+                                    <td style="font-weight: 600;">
+                                        @if($allAccount->user_type === 'Resident')
+                                            {{ $allAccount->resident?->resident_type }}
                                         @else
-                                            <span class="status-badge outside">
-                                                Transient
-                                            </span>
+                                            {{ $allAccount->user_type }}
                                         @endif
                                     </td>
-                                    <td>
-                                        @if($resident->user->status === 'Active')
-                                            <span class="status-badge approved">
-                                                Active
-                                            </span>
+                                    <td style="font-weight: 600;">
+                                        @if($allAccount->resident?->is_applicant)
+                                            Applicant
+                                        @elseif($allAccount->resident?->accommodation_type === 'Resident')
+                                            Resident
                                         @else
-                                            <span class="status-badge no-slip">
-                                                Inactive
-                                            </span>
+                                            Transient
+                                        @endif
+                                    </td>
+                                    <td style="font-weight: 600;">
+                                        @if($allAccount->status === 'Active')
+                                            Active
+                                        @else
+                                            Inactive
                                         @endif
                                     </td>
                                 </tr>
@@ -151,10 +153,10 @@
                             @endforelse
                         </tbody>
                     </table>
-                    @if ($residents->hasPages())
+                    @if (request('view') === 'all' && $allAccounts->hasPages())
                         @php
-                            $current = $residents->currentPage();
-                            $last = $residents->lastPage();
+                            $current = $allAccounts->currentPage();
+                            $last = $allAccounts->lastPage();
                             if ($last <= 7) {
                                 $pages = range(1, $last);
                             } elseif ($current <= 4) {
@@ -165,11 +167,11 @@
                                 $pages = [1, '...', $current - 1, $current, $current + 1, '...', $last];
                             }
                         @endphp
-                        <nav class="pager" aria-label="Pagination" data-last="{{ $last }}" data-url="{{ $residents->url(1) }}" data-page-name="{{ $residents->getPageName() }}">
-                            @if ($residents->onFirstPage())
+                        <nav class="pager" aria-label="Pagination" data-last="{{ $last }}" data-url="{{ $allAccounts->url(1) }}" data-page-name="{{ $allAccounts->getPageName() }}">
+                            @if ($allAccounts->onFirstPage())
                                 <span class="disabled">◀&#xFE0E;</span>
                             @else
-                                <a href="{{ $residents->previousPageUrl() }}">◀&#xFE0E;</a>
+                                <a href="{{ $allAccounts->previousPageUrl() }}">◀&#xFE0E;</a>
                             @endif
                             @foreach ($pages as $page)
                                 @if ($page === '...')
@@ -177,38 +179,70 @@
                                 @elseif ($page == $current)
                                     <span class="active">{{ $page }}</span>
                                 @else
-                                    <a href="{{ $residents->url($page) }}">{{ $page }}</a>
+                                    <a href="{{ $allAccounts->appends(request()->query())->url($page) }}">{{ $page }}</a>
                                 @endif
                             @endforeach
-                            @if ($residents->hasMorePages())
-                                <a href="{{ $residents->nextPageUrl() }}">▶&#xFE0E;</a>
+                            @if ($allAccounts->hasMorePages())
+                                <a href="{{ $allAccounts->nextPageUrl() }}">▶&#xFE0E;</a>
                             @else
                                 <span class="disabled">▶&#xFE0E;</span>
                             @endif
                         </nav>
                     @endif
                 </div>
+            @elseif(request('view') === 'inactive')
+                <section class="flex-view">
+                    @forelse ($inactiveAccounts as $inactiveAccount)
+                        <div class="card dorm-card">
+                            <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $inactiveAccount->id, 'view' => request('view')]) }}" style="color: inherit">
+                                <div class="dorm-card">
+                                    <div class="room-image resident-card"><img src="{{ asset($inactiveAccount->profile_picture) }}"></div>
+                                    <div class="room-number"><p>{{ $inactiveAccount->userName() }}</p></div>
+                                    @if ($inactiveAccount->resident)
+                                        <div class="room-info"><p>{{ $inactiveAccount->resident->resident_type }}</p></div>
+                                        <div class="room-info"><p>{{ $inactiveAccount->resident->accommodation_type }}</p></div>
+                                     @else
+                                        <div class="room-info"><p>{{ $inactiveAccount->user_type }}</p></div>
+                                    @endif 
+                                </div>
+                            </a>
+                        </div>
+                    @empty
+                        <p>No Users found.</p>
+                    @endforelse
+                </section>
             @else
                 <section class="flex-view">
                     @forelse ($residents as $resident)
-                        <div class="card dorm-card">
-                            <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $resident->user->id, 'view' => request('view')]) }}" style="color: inherit">
-                                <div class="dorm-card">
-                                    <div class="room-image resident-card"><img src="{{ asset($resident->user->profile_picture) }}"></div>
-                                    <div class="room-number"><p>{{ $resident->user->userName() }}</p></div>
-                                    <div class="room-info"><p>Room: {{ $resident->room?->room_number ?? 'Unassigned' }}</p></div>
-                                    <div class="room-info"><p>Dorm: {{ $resident->room?->dorm_name ?? 'Unassigned' }}</p></div>
-                                    <div class="room-info"><p>Resident Type: {{ $resident->resident_type }}</p></div>
-                                </div>
-                            </a>
-                            @if ($resident->is_applicant)
+                        @if ($resident->is_applicant)
+                            <div class="card dorm-card">
+                                <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $resident->user->id, 'view' => request('view')]) }}" style="color: inherit">
+                                    <div class="dorm-card">
+                                        <div class="room-image resident-card"><img src="{{ asset($resident->user->profile_picture) }}"></div>
+                                        <div class="room-number"><p>{{ $resident->user->userName() }}</p></div>
+                                        <div class="room-info"><p>{{ $resident->accommodation_type }}</p></div>
+                                        <div class="room-info"><p>{{ $resident->resident_type }}</p></div>
+                                    </div>
+                                </a>
                                 <form action="{{ route('applicants.approve', $resident) }}" method="POST">
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="btn-primary">Approve</button>
                                 </form>
-                            @endif 
-                        </div>
+                            </div>
+                        @else
+                            <div class="card dorm-card">
+                                <a href="{{ route('users.index', ['modal' => 'edit-user', 'user' => $resident->user->id, 'view' => request('view')]) }}" style="color: inherit">
+                                    <div class="dorm-card">
+                                        <div class="room-image resident-card"><img src="{{ asset($resident->user->profile_picture) }}"></div>
+                                        <div class="room-number"><p>{{ $resident->user->userName() }}</p></div>
+                                        <div class="room-info"><p>Room: {{ $resident->room?->room_number ?? 'Unassigned' }}</p></div>
+                                        <div class="room-info"><p>Dorm: {{ $resident->room?->dorm_name ?? 'Unassigned' }}</p></div>
+                                        <div class="room-info"><p>Resident Type: {{ $resident->resident_type }}</p></div>
+                                    </div>
+                                </a>
+                            </div>
+                        @endif 
                     @empty
                         <p>No User found.</p>
                     @endforelse

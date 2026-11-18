@@ -160,14 +160,14 @@
                 </div>
             </div>
             <br>
-            {{-- <h4 class="chart-heading">Top Resident Locations</h4>
+            <h4 class="chart-heading">Top Resident Locations</h4>
             <div class="leaderboard-card">
                 @forelse($residentLocationLeaderboard as $row)
-                    <div class="leaderboard-row"><span>{{ $row['location'] }}</span><strong>{{ $row['count'] }}</strong></div>
+                    <div class="leaderboard-row"><span>{{ $row->address }}</span><strong>{{ $row->count }}</strong></div>
                 @empty
                     <div class="empty-state">No location data available.</div>
                 @endforelse
-            </div> --}}
+            </div>
         </div>
 
         {{-- F. CONCERN ANALYTICS --}}
@@ -194,6 +194,14 @@
             <h4 class="chart-heading">Public vs Private Concerns</h4>
             <div class="monthly-chart">
                 <canvas id="concernChart"></canvas>
+            </div>
+            <h4 class="chart-heading">Most Common Concerns</h4>
+            <div class="leaderboard-card">
+                @forelse($commonConcerns as $row)
+                    <div class="leaderboard-row"><span>{{ Str::limit($row->message, 40) }}</span><strong>{{ $row->count }}</strong></div>
+                @empty
+                    <div class="empty-state">No concerns found.</div>
+                @endforelse
             </div>
         </div>
     </section>

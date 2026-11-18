@@ -9,6 +9,7 @@
     @vite(['resources/css/main.css', 'resources/js/app.js']) {{-- css stylesheet --}}
 </head>
 <body>
+    <button id="mobile-menu-btn">☰ Menu</button>
     <nav id="sidebar">
         <div class="nav-links"> 
             <div class="menu-bar">
@@ -56,5 +57,11 @@
     <main id="content">
         {{ $slot }}
     </main>
+
+    <script>
+        document.getElementById('mobile-menu-btn')?.addEventListener('click', function () {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+    </script>
 </body>
 </html>

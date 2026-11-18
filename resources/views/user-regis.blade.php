@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration</title>
+    <link rel="shortcut icon" href="images/spumlogo.png">
     @vite(['resources/css/main.css', 'resources/js/app.js']) {{-- css stylesheet --}}
 </head>
 <body style="background: url('{{ asset('images/bg.png') }}') no-repeat fixed center;">
@@ -18,6 +19,7 @@
                     <div class="user-top-section">
                         <div class="user-details">
                             <img src="images/users/user-profile.png" hidden>
+                            <input type="file" name="profile_picture" hidden>
                             <div class="fullname">
                                 <div class="form-group last_name">
                                     <label for="last_name">Last Name*:</label>
@@ -163,6 +165,7 @@
                         <button type="reset" class="btn-primary">Clear</button>
                     </div>
                 </form>
+                <p style="padding-top: 1rem; text-align: center;">Already a resident? <a href="{{ route('login') }}" style="text-decoration: underline; color: var(--secondary-color);">Login</a></p>
             </div>
         </div>
         @if(session('application_submitted'))

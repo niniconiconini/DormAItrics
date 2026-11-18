@@ -17,11 +17,12 @@ class UserController extends Controller
     // =============================== VIEW USERS ===============================
     public function index(): View
     {
-        // get active users
+        // get users
         $admins = User::whereIn('user_type', ['Admin', 'Manager', 'Guard'])
             ->where('status', 'Active')
             ->get();
-
+        $allAccounts = User::with('resident.room');
+        $inactiveAccounts = User::with(['status', 'inactive']);
         $residents = Resident::with(['user', 'room']);
 
         switch (request('view', 'resident')) {
@@ -41,13 +42,10 @@ class UserController extends Controller
                     });
                 break;
             case 'inactive':
-                $residents = Resident::with(['user', 'room'])
-                    ->whereHas('user', function ($query) {
-                        $query->where('status', 'Inactive');
-                    });
+                $inactiveAccounts = User::with('resident.room')->where('status', 'Inactive')->get();
                 break;
             case 'all':
-                // grid view
+                $allAccounts = User::with('resident.room')->paginate(10)->withQueryString();
                 break;
             default:
                 $residents = Resident::with(['user', 'room'])
@@ -74,8 +72,12 @@ class UserController extends Controller
 
         $residents = $residents->paginate(10)->withQueryString();
 
-        return view('residents', ['admins' => $admins,
-            'residents' => $residents]);
+        return view('residents', [
+            'admins' => $admins,
+            'inactiveAccounts' => $inactiveAccounts,
+            'allAccounts' => $allAccounts,
+            'residents' => $residents,
+        ]);
     }
 
     // =============================== CREATE USERS ===============================
@@ -195,7 +197,6 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8',
             'user_type' => 'required|in:Resident',
-            'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'resident_type' => 'required|in:Student,Employee',
             'accommodation_type' => 'required|in:Resident,Transient',
             'payment_schedule' => 'required|string',
@@ -204,6 +205,7 @@ class UserController extends Controller
 
         // set defaults
         $validated['status'] = 'Active';
+        $validated['profile_picture'] = '/images/users/user-profile.png';
 
         // auto capitalize name
         $validated['last_name'] = ucwords(strtolower($validated['last_name']));
@@ -235,7 +237,7 @@ class UserController extends Controller
         $resident->update(['is_applicant' => false]);
         ActivityLog::create(['user_id' => Auth::id(), 'action_taken' => 'Applicant Approved']);
 
-        return redirect()->route('users.index', ['view' => 'applicant'])->with('success', 'Applicant approved successfully. Please update check in and check out dates.');
+        return redirect()->route('users.index', ['view' => $resident->accommodation_type === 'Transient' ? 'transient' : 'resident', 'modal' => 'edit-user', 'user' => $resident->user_id])->with('success', 'Applicant approved successfully. Please update check in and check out dates.');
     }
 
     // =============================== UPDATE USERS ===============================
