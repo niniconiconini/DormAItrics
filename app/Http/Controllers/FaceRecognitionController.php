@@ -11,14 +11,17 @@ use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class FaceRecognitionController extends Controller
 {
     public function scan(): RedirectResponse
     {
         // recognizing
-        $output = shell_exec('"'.dirname(base_path()).'\facial-recognition\venv\Scripts\python.exe" "'.dirname(base_path()).'\facial-recognition\recognizeinator.py'.'" 2>&1');
-        $residentId = (int) trim((string) $output);
+        // $output = shell_exec('"'.dirname(base_path()).'\facial-recognition\venv\Scripts\python.exe" "'.dirname(base_path()).'\facial-recognition\recognizeinator.py'.'" 2>&1');
+        // $residentId = (int) trim((string) $output);
+        $response = Http::timeout(20)->get('http://192.168.254.156:5000/scan');
+        $residentId = (int) trim($response->body());
         if (! $residentId) {
             $attempts = session('scan_attempts', 0) + 1;
             session(['scan_attempts' => $attempts]);
