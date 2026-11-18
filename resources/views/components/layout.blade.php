@@ -35,6 +35,7 @@
                         <li><a href="{{ route('slips-mgmt') }}" class="nav-link {{ request()->routeIs('slips-mgmt') || request()->is('/slips-mgmt') ? 'active' : '' }}">Pass Slip Management</a></li>
                         <li><a href="{{ route('logs.index') }}" class="nav-link {{ request()->routeIs('logs.*') || request()->is('/logs') ? 'active' : '' }}">Logs</a></li>
                         <li><a href="{{ route('analytics.index') }}" class="nav-link {{ request()->routeIs('analytics.*') || request()->is('/analytics') ? 'active' : '' }}">Analytics</a></li>
+                        <li><a href="{{ route('facial-recognition') }}" class="nav-link {{ request()->routeIs('facial-recognition') || request()->is('/facial-recognition') ? 'active' : '' }}">Facial Recognition</a></li>
                     </ul>
                 @endif
                 {{-- guard view --}}
