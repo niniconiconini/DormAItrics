@@ -18,11 +18,11 @@ class FaceRecognitionController extends Controller
     public function scan(): RedirectResponse
     {
         // recognizing
-        // $output = shell_exec('"'.dirname(base_path()).'\facial-recognition\venv\Scripts\python.exe" "'.dirname(base_path()).'\facial-recognition\recognizeinator.py'.'" 2>&1');
-        // $residentId = (int) trim((string) $output);
+        $output = shell_exec('"'.dirname(base_path()).'\facial-recognition\venv\Scripts\python.exe" "'.dirname(base_path()).'\facial-recognition\recognizeinator.py'.'" 2>&1');
+        $residentId = (int) trim((string) $output);
         // $response = Http::timeout(20)->get('http://127.0.0.1:5000/scan');
-        $response = Http::withoutVerifying()->timeout(20)->get('https://blurred-roulette-unstuffed.ngrok-free.dev/scan');
-        $residentId = (int) trim($response->body());
+        // $response = Http::withoutVerifying()->timeout(20)->get('https://blurred-roulette-unstuffed.ngrok-free.dev/scan');
+        // $residentId = (int) trim($response->body());
         if (! $residentId) {
             $attempts = session('scan_attempts', 0) + 1;
             session(['scan_attempts' => $attempts]);
