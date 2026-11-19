@@ -81,6 +81,7 @@ class ConcernController extends Controller
             'resident_id' => $resident->id,
             'message' => $validated['message'],
             'visibility' => $validated['visibility'],
+            'status' => 'pending',
         ]);
 
         return redirect()->route('concerns', ['visibility' => $validated['visibility']])->with('success', 'Concern submitted. It is now waiting to be reviewed.');

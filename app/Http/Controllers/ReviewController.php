@@ -50,7 +50,7 @@ class ReviewController extends Controller
 
         $validated = $request->validate([
             'review_rating' => 'required|integer|between:1,5',
-            'title' => 'nullable|string|max:100',
+            'title' => 'nullable|required_with:message|string|max:100',
             'message' => 'nullable|string|max:500',
         ]);
 

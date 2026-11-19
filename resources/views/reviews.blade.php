@@ -1,10 +1,10 @@
 <x-layout>
     <x-slot:title>Reviews</x-slot:title>
-    <section class="announcement">
+    <section class="announcement reviews-page">
         <header class="page-title">REVIEWS</header>
 
         @if (session('success'))
-            <div class="announcement-card">
+            <div class="announcement-card review-flash-message">
                 <p class="slip-success">{{ session('success') }}</p>
             </div>
         @endif
@@ -28,11 +28,11 @@
 
         {{-- dormers who already reviewed can't submit another one --}}
         @if ($hasReviewed)
-            <div class="announcement-card">
+            <div class="announcement-card review-submitted-message">
                 <p class="slip-success">You have already submitted your review. Thank you for your feedback!</p>
             </div>
             <hr>
-        @endif  
+        @endif
         
         {{-- only dormers can submit a review --}}
         @if ($canPost)
@@ -157,7 +157,7 @@
         @if ($canPost)
             <div id="submitReviewModal" hidden>
                 <div class="modal">
-                    <div class="room-modal delete-modal">
+                    <div class="room-modal delete-modal confirmation-modal">
                         <h2 class="modal-title">Are you sure you want to submit this review?</h2>
                         <p>You won't be able to edit or delete this review afterwards.</p>
                         <div class="slip-submit">
@@ -224,7 +224,7 @@
         @can('admins')
             <div id="deleteReviewModal" hidden>
                 <div class="modal">
-                    <div class="room-modal delete-modal">
+                    <div class="room-modal delete-modal confirmation-modal">
                         <h2 class="modal-title">Delete Review</h2>
                         <p>Are you sure you want to delete this review? This cannot be undone.</p>
                         <div class="slip-submit">

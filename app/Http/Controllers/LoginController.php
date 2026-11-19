@@ -132,7 +132,7 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'email' => "The provided credentials do not match our records. Remaining attempts: {$remainingAttempts}.",
+            'email' => "The provided credentials do not match our records.\nRemaining attempts: {$remainingAttempts}.",
         ])->onlyInput('email');
     }
 }

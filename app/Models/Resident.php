@@ -95,7 +95,7 @@ class Resident extends Model
     /**
      * @return HasOne<Review, $this>
      */
-    public function review(): HasOne
+    public function review(): HasMany
     {
         return $this->hasOne(Review::class);
     }
