@@ -1,7 +1,8 @@
 <x-layout>
     <x-slot:title>facial-recognition</x-slot:title>    
     <section class="facial-recognition">
-        <header class="page-title">Please input your Email to manually log your time out / time in</header>
+        {{-- <header class="page-title">Please input your Email to manually log your time out / time in</header> --}}
+        <header class="page-title">Manually log your time out / time in</header>
         <div>
             <form action="{{ route('facial-recognition.manual') }}" method="POST">
             @csrf

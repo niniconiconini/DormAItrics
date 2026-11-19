@@ -129,7 +129,7 @@
                     </div>
                 </div>
             </div>
-            <h4 class="chart-heading">Late Return Leaderboard</h4>
+            <h4 class="chart-heading">Late Returnees</h4>
             <div class="leaderboard-card">
                 @forelse($lateReturnLeaderboard as $row)
                     <div class="leaderboard-row">

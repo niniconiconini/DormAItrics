@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Announcement extends Model
 {
     use SoftDeletes;
+
     /**
      * @return BelongsTo<User, $this>
      */

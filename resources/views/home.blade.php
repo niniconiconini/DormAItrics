@@ -133,11 +133,11 @@
             </div>
             <div class="link-item">
                 <span>Public Dormitory Website</span>
-                <a href="#" class="btn-primary">Go</a>
+                <a href="http://localhost/dms/" target="_blank" class="btn-primary">Go</a>
             </div>
             <div class="link-item">
                 <span>User Manual</span>
-                <a href="#" class="btn-primary">Go</a>
+                <a href="https://spumanila-my.sharepoint.com/:w:/g/personal/2023-1272_spumanila_edu_ph/IQAAa6e97inKTrc82ieNu_AEAf9O8Lzq-jRxBheSf-Scgks?e=WHUuaW" target="_blank" class="btn-primary">Go</a>
             </div>
         </div>
         
